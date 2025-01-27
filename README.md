@@ -9,9 +9,13 @@ This project is an implementation of the paper **"Swin Transformer: Hierarchical
 ### Repo description:
 
 📦swin_transformer
+
  ┣ 📂notebooks
+
  ┃ ┗ 📜playground.ipynb      # notebook with scetching & testing the modules 
+
  ┣ 📜model.py                # all the building blocks of the network
+ 
  ┗ 📜__init__.py
 
 ### Links & Sources:
