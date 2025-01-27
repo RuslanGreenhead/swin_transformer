@@ -1,4 +1,4 @@
-# Swin Transformer Implementation
+# Swin Transformer
 
 This project is an implementation of the paper **"Swin Transformer: Hierarchical Vision Transformer using Shifted Windows"**. The Swin Transformer serves as a general-purpose backbone for computer vision tasks, effectively addressing the challenges of adapting Transformer models from language to vision.
 
