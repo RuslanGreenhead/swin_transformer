@@ -6,6 +6,14 @@ This project is an implementation of the paper **"Swin Transformer: Hierarchical
 
 ![Swin Transformer Architecture](https://amaarora.github.io/images/swin-transformer.png)
 
+### Repo description:
+
+📦swin_transformer
+ ┣ 📂notebooks
+ ┃ ┗ 📜playground.ipynb      # notebook with scetching & testing the modules 
+ ┣ 📜model.py                # all the building blocks of the network
+ ┗ 📜__init__.py
+
 ### Links & Sources:
 
 * [Original paper](https://arxiv.org/abs/2103.14030)
