@@ -3,7 +3,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageNet, CIFAR10
 from torchvision import transforms
-from timm.layers import DropPath
+from timm.layers import DropPath, trunc_normal_
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -465,23 +465,23 @@ class SwinTransformer(nn.Module):
 
         # basic layers
         self.layers = nn.ModuleList([
-            BasicLayer(dim=int(emb_dim * 2 ** i),
-                        input_resolution=(patches_resolution[0] // (2 ** i),
-                                          patches_resolution[1] // (2 ** i)),
-                        depth=depths[i],
-                        num_heads=n_heads[i],
-                        window_size=window_size,
-                        mlp_ratio=self.mlp_ratio,
-                        qkv_bias=qkv_bias, qk_scale=qk_scale,
-                        mlp_drop=mlp_drop, attn_drop=attn_drop,
-                        drop_path=dpr[sum(depths[:i]):sum(depths[:i + 1])],
-                        norm_layer=norm_layer,
-                        downsample=PatchMerging if (i < self.n_layers - 1) else None)
+            BasicLayer(input_dim=int(emb_dim * 2 ** i),
+                       input_resolution=(patches_resolution[0] // (2 ** i),
+                                         patches_resolution[1] // (2 ** i)),
+                       depth=depths[i],
+                       n_heads=n_heads[i],
+                       window_size=window_size,
+                       mlp_ratio=self.mlp_ratio,
+                       qkv_bias=qkv_bias, qk_scale=qk_scale,
+                       mlp_drop=mlp_drop, attn_drop=attn_drop,
+                       drop_path=dpr[sum(depths[:i]):sum(depths[:i + 1])],
+                       norm_layer=norm_layer,
+                       downsample=PatchMerging if (i < self.n_layers - 1) else None)
             for i in range(self.n_layers)
         ])
 
         self.norm = norm_layer(self.num_features)
-        # self.avgpool = nn.AdaptiveAvgPool1d(1)
+        self.avgpool = nn.AdaptiveAvgPool2d(1)
         self.head = nn.Linear(self.num_features, n_classes) if n_classes > 0 else nn.Identity()
 
         self.apply(self._init_weights)
@@ -491,8 +491,8 @@ class SwinTransformer(nn.Module):
         for layer in self.layers:
             x = layer(x)
         x = self.norm(x)
-        # x = self.avgpool(x.transpose(1, 2))  # to be re-implemented
-        x = torch.flatten(x, 1)
+        x = self.avgpool(x.permute(0, 3, 1, 2))    # x -> (B, C, H, W)
+        x = x.squeeze()
 
         return x
 
@@ -503,5 +503,10 @@ class SwinTransformer(nn.Module):
         return x
 
     def _init_weights(self, m):
-        # to be implemented
-        pass
+        if isinstance(m, nn.Linear):
+            trunc_normal_(m.weight, std=.02)
+            if isinstance(m, nn.Linear) and m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+        elif isinstance(m, nn.LayerNorm):
+            nn.init.constant_(m.bias, 0)
+            nn.init.constant_(m.weight, 1.0)
