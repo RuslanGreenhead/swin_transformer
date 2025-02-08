@@ -227,6 +227,7 @@ class WMSA(nn.Module):
         sim = sim + rpb.unsqueeze(0)                      # rpb -> (1, nH, Wh*Ww, Wh*Ww)
         if mask is not None:
             nW = mask.shape[0]                            # -> n of windows in single image
+            mask = mask.to(sim.device)                    # moving mask to compatible device
             sim = rearrange(sim, "(b nW) nH i j -> b nW nH i j", nW=nW)
             sim = sim + mask.unsqueeze(1).unsqueeze(0)    # mask -> (1, nW, 1, Wh*Ww, Wh*Ww)
             attn = sim.softmax(dim=-1)
