@@ -8,11 +8,21 @@ This project is an implementation of the paper **"Swin Transformer: Hierarchical
 
 ### Repo structure:
 
-```
+ ```
 📦swin_transformer
+ ┣ 📂experiments
+ ┃ ┗ 📂experiment_0                        # Swin-T -> single testing epoch
+ ┃ ┃ ┣ 📜basic_model.pth
+ ┃ ┃ ┣ 📜task-2403241.log
+ ┃ ┃ ┗ 📜training_output.pkl
+ ┃ 
  ┣ 📂notebooks
- ┃ ┗ 📜playground.ipynb    # notebook with scetching & testing the modules 
- ┣ 📜model.py              # all the building blocks of the network
+ ┃ ┣ 📜ImageNet_classification.ipynb       # debugging ImageNet proceeding
+ ┃ ┗ 📜playground.ipynb                    # notebook with scetching & testing the modules 
+ ┃
+ ┣ 📜model.py                              # all the building blocks of the network
+ ┣ 📜train_clf_imagenet.py                 # training code -> ImageNet 1K [classification]
+ ┣ 📜train_clf_imagenet.sbatch             # cluster task  -> ImageNet 1K [classification]
  ┗ 📜__init__.py
  ```
 
