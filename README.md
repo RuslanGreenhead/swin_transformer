@@ -12,9 +12,7 @@ This project is an implementation of the paper **"Swin Transformer: Hierarchical
 📦swin_transformer
  ┣ 📂experiments
  ┃ ┗ 📂experiment_0                        # Swin-T -> single testing epoch
- ┃ ┃ ┣ 📜basic_model.pth
- ┃ ┃ ┣ 📜task-2403241.log
- ┃ ┃ ┗ 📜training_output.pkl
+ ┃ ┗ 📂experiment_1                        # Swin-T -> vanilla training over 30 epochs
  ┃ 
  ┣ 📂notebooks
  ┃ ┣ 📜ImageNet_classification.ipynb       # debugging ImageNet proceeding
