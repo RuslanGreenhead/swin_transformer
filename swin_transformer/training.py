@@ -1,19 +1,34 @@
 import torch
 import torch.nn as nn
-import torch.distributed as dist
+from torch.distributed import init_process_group, destroy_process_group
 from torch.nn.parallel import DistributedDataParallel as DDP
-from torchvision.models.swin_transformer import SwinTransformer
 from torchvision import transforms
-from torch.optim import Adam
 from torch.optim.lr_scheduler import SequentialLR, LinearLR, CosineAnnealingLR
+
+import os
 import numpy as np
+import pickle
+
+from model import SwinTransformer
 
 
-class SwinTrainer:
+def ddp_setup(rank, world_size):
+    """
+    Parameters:
+        rank: unique identifier of each process
+        world_size: total number of processes
+    """
+    os.environ["MASTER_ADDR"] = "localhost"    # required for communication btw nodes
+    os.environ["MASTER_PORT"] = "12355"
+
+    torch.cuda.set_device(rank)
+    init_process_group(backend="nccl", rank=rank, world_size=world_size)
+
+
+class TrainerCLF:
     def __init__(self, model, train_loader, val_loader,
                  optimizer, criterion, batch_size, batch_interval,
-                 num_epochs, warmup_epochs, num_gpus):
-        self.model = model
+                 num_epochs, warmup_epochs, gpu_id):
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.optimizer = optimizer
@@ -22,26 +37,27 @@ class SwinTrainer:
         self.batch_interval = batch_interval
         self.num_epochs = num_epochs
         self.warmup_epochs = warmup_epochs
-        self.num_gpus = num_gpus
-        
-        self._setup_ddp()
-        self.scheduler = self._build_scheduler()
-        
-        self.num_batches = len(self.train_loader)
-        self.train_stats = np.zeros((self.num_epochs * (self.num_batches // 2000 + 1), 4))
-        self.val_stats = np.zeros((self.num_epochs, 2))
-        self.grad_norm_stats = np.zeros((self.num_epochs * (self.num_batches // 2000 + 1), 2))
-        
+        self.gpu_id = gpu_id
 
-    def _setup_ddp(self):
-        dist.init_process_group('nccl', init_method='env://')
-        self.model = DDP(self.model, device_ids=[dist.get_rank()])
+        # self.model = model.to(gpu_id)
+        self.model = DDP(model, device_ids=[gpu_id])
+        
+        self.scheduler = self._build_scheduler()
+        self.num_batches = len(self.train_loader)
+        
+        self.stats = {
+            "train_losses": np.empty(self.num_epochs),
+            "train_accs": np.empty(self.num_epochs),
+            "val_losses": np.empty(self.num_epochs),
+            "val_accs": np.empty(self.num_epochs),
+            "grad_norms": np.empty(self.num_epochs)
+        }
 
 
     def _build_scheduler(self):
         warmup_scheduler = LinearLR(self.optimizer, start_factor=0.001, end_factor=1.0, total_iters=self.warmup_epochs)
         cosine_scheduler = CosineAnnealingLR(self.optimizer, T_max=self.num_epochs - self.warmup_epochs, eta_min=1e-6)
-        chained_scheduler = SequentialLR(self.optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[20])
+        chained_scheduler = SequentialLR(self.optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[3])
         
         return chained_scheduler
     
@@ -54,8 +70,10 @@ class SwinTrainer:
         total_accuracy = 0
         batch_counter = 0
 
+        print(f"(GPU[{self.gpu_id}]) Epoch {epoch} started.")
+
         for i, (images, labels) in enumerate(self.train_loader):
-            images, labels = images.to(dist.get_rank()), labels.to(dist.get_rank())
+            images, labels = images.to(self.gpu_id), labels.to(self.gpu_id)
             
             self.optimizer.zero_grad()
             outputs = self.model(images.permute(0, 2, 3, 1))
@@ -74,10 +92,14 @@ class SwinTrainer:
             if ((i + 1) % self.batch_interval == 0) or ((i + 1) == self.num_batches):
                 avg_interval_loss = interval_loss / batch_counter
                 avg_interval_accuracy = interval_accuracy / batch_counter
+                first_layer = list(self.model.module.parameters())[0]    # tracking grad norm on first layer
+                grad_norm = torch.norm(first_layer.grad).item() 
                 
-                print(f'batch [{i+1}/{self.num_batches}]: ' + 
-                      f'train loss={avg_interval_loss:.6f}' +
-                      f'train acc={avg_interval_accuracy:.6f}', flush=True)
+                print(f'GPU[{self.gpu_id}]: ' +
+                      f'batch [{i+1}/{self.num_batches}]: ' +
+                      f'loss={avg_interval_loss:.6f}' +
+                      f'accuracy={avg_interval_accuracy:.6f}' +
+                      f'grad_norm={grad_norm:.6f}', flush=True)
                 
                 interval_loss = 0.0
                 interval_accuracy = 0
@@ -88,7 +110,10 @@ class SwinTrainer:
         first_layer = list(self.model.module.parameters())[0]    # tracking grad norm on first layer
         grad_norm = torch.norm(first_layer.grad).item() 
 
-        return avg_loss, avg_accuracy, grad_norm
+        # writing stats
+        self.stats['train_losses'][epoch] = avg_loss
+        self.stats['train_accs'][epoch] = avg_accuracy
+        self.stats['grad_norms'][epoch] = grad_norm
 
 
     def validate(self, epoch):
@@ -98,7 +123,7 @@ class SwinTrainer:
 
         with torch.no_grad():
             for images, labels in self.val_loader:
-                images, labels = images.to(dist.get_rank()), labels.to(dist.get_rank())
+                images, labels = images.to(self.gpu_id), labels.to(self.gpu_id)
                 
                 outputs = self.model(images.permute(0, 2, 3, 1))
                 loss = self.criterion(outputs, labels)
@@ -106,26 +131,35 @@ class SwinTrainer:
                 total_loss += loss.item()
                 total_correct += (predicted == labels).sum().item()
             
-            val_accuracy = total_correct / len(self.val_loader.dataset)
-            val_loss = total_loss / len(self.val_loader.dataset)
+        val_accuracy = total_correct / len(self.val_loader.dataset)
+        val_loss = total_loss / len(self.val_loader.dataset)
             
-        return val_loss, val_accuracy
+        # writing stats
+        self.stats['val_losses'][epoch] = val_loss
+        self.stats['val_accs'][epoch] = val_accuracy
+
+        # printing stats
+        print(f'Validation: (GPU[{self.gpu_id}]) ' +
+              f'val_loss={val_loss:.6f}' +
+              f'val_accuracy={val_accuracy:.6f}', flush=True)
     
 
     def train(self):
         for epoch in range(self.num_epochs):
-            self.train_epoch(epoch)
+            self.train_one_epoch(epoch)
             self.validate(epoch)
-            self.scheduler(epoch)
+            self.scheduler.step()
         
         # saving stats
-        np.save('train_stats.npy', self.train_stats)
-        np.save('val_stats.npy', self.val_stats)
-        np.save('grad_norm_stats.npy', self.grad_norm_stats)
-        
-        dist.destroy_process_group()
+        with open('training_output.pkl', 'wb') as f:
+            pickle.dump(self.stats, f)
 
-def main(rank, num_gpus):
+        print(f"Training for {self.num_epochs} completely finished. Results saved.")
+
+
+def main(rank, world_size):                         # --> rank will be passed automatically by mp.spawn()
+    ddp_setup(rank, world_size)
+
     transform = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
@@ -133,29 +167,29 @@ def main(rank, num_gpus):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
     
-    train_dataset = ImageNet(root='./data/imagenet', split='train', transform=transform)
-    val_dataset = ImageNet(root='./data/imagenet', split='val', transform=transform)
+    train_dataset = ImageFolder(root=DATA_ROOT + "/train", transform=transform)
+    val_dataset = ImageFolder(root=DATA_ROOT + "/val", transform=transform)
     
-    # Create distributed data loaders
+    # distributed data loaders
     train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
     val_sampler = torch.utils.data.distributed.DistributedSampler(val_dataset)
     
-    train_loader = DataLoader(train_dataset, batch_size=128, sampler=train_sampler)
-    val_loader = DataLoader(val_dataset, batch_size=128, sampler=val_sampler)
+    train_loader = DataLoader(train_dataset, batch_size=1024, shuffle=False, sampler=train_sampler)
+    val_loader = DataLoader(val_dataset, batch_size=1024, shuffle=False, sampler=val_sampler)
+
+    model = SwinTransformer()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.05)
+    criterion = nn.CrossEntropyLoss()
     
-    # Initialize model
-    model = SwinTransformer(weights=None)
-    model.head = nn.Linear(model.head.in_features, 1000)  # Adjust head for ImageNet
-    
-    # Initialize optimizer
-    optimizer = Adam(model.parameters(), lr=1e-4)
-    
-    trainer = SwinTrainer(model, train_loader, val_loader, optimizer,
-                          batch_size=128, num_epochs=300, warmup_epochs=20,
-                          num_gpus=num_gpus)
+    trainer = TrainerCLF(model, train_loader, val_loader, optimizer, criterion,
+                         batch_size=1024, batch_interval=200, num_epochs=30, warmup_epochs=3,
+                         gpu_id=rank)
     trainer.train()
+
+    destroy_process_group()
 
 
 if __name__ == "__main__":
-    num_gpus = 4
-    mp.spawn(main, args=(num_gpus,), nprocs=num_gpus)
+
+    world_size = torch.cuda.device_count()                      # number of GPUs
+    mp.spawn(main, args=(world_size,), nprocs=world_size)       # spawn a process for each GPU
