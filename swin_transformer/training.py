@@ -3,7 +3,10 @@ import torch.nn as nn
 from torch.distributed import init_process_group, destroy_process_group
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torchvision import transforms
+from torchvision.datasets import ImageFolder
+from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import SequentialLR, LinearLR, CosineAnnealingLR
+import torch.multiprocessing as mp
 
 import os
 import numpy as np
@@ -11,24 +14,22 @@ import pickle
 
 from model import SwinTransformer
 
+DATA_ROOT = "/opt/software/datasets/LSVRC/imagenet" 
 
-def ddp_setup(rank, world_size):
-    """
-    Parameters:
-        rank: unique identifier of each process
-        world_size: total number of processes
-    """
-    os.environ["MASTER_ADDR"] = "localhost"    # required for communication btw nodes
-    os.environ["MASTER_PORT"] = "12355"
 
-    torch.cuda.set_device(rank)
-    init_process_group(backend="nccl", rank=rank, world_size=world_size)
+def ddp_setup():
+    """
+    Prerequisites for distributed training.
+    """
+    torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+    init_process_group(backend="nccl")
 
 
 class TrainerCLF:
     def __init__(self, model, train_loader, val_loader,
                  optimizer, criterion, batch_size, batch_interval,
-                 num_epochs, warmup_epochs, gpu_id):
+                 num_epochs, save_every, warmup_epochs, snapshot_path):
+        self.gpu_id = int(os.environ["LOCAL_RANK"])
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.optimizer = optimizer
@@ -36,11 +37,16 @@ class TrainerCLF:
         self.batch_size = batch_size
         self.batch_interval = batch_interval
         self.num_epochs = num_epochs
+        self.save_every = save_every
+        self.epochs_run = 0
         self.warmup_epochs = warmup_epochs
-        self.gpu_id = gpu_id
+        self.snapshot_path = snapshot_path
 
-        # self.model = model.to(gpu_id)
-        self.model = DDP(model, device_ids=[gpu_id])
+        self.model = model.to(self.gpu_id)
+        if os.path.exists(snapshot_path):
+            print("Loading snapshot.")
+            self._load_snapshot(snapshot_path)
+        self.model = DDP(self.model, device_ids=[self.gpu_id])
         
         self.scheduler = self._build_scheduler()
         self.num_batches = len(self.train_loader)
@@ -62,6 +68,23 @@ class TrainerCLF:
         return chained_scheduler
     
 
+    def _load_snapshot(self, snapshot_path):
+        loc = f"cuda:{self.gpu_id}"
+        snapshot = torch.load(snapshot_path, map_location=loc)
+        self.model.load_state_dict(snapshot["MODEL_STATE"])
+        self.epochs_run = snapshot["EPOCHS_RUN"]
+        print(f"Resuming training from snapshot at Epoch {self.epochs_run}.")
+    
+
+    def _save_snapshot(self, epoch):    # --> self.stats shall be added!
+        snapshot = {
+            "MODEL_STATE": self.model.module.state_dict(),
+            "EPOCHS_RUN": epoch,
+        }
+        torch.save(snapshot, self.snapshot_path)
+        print(f"Epoch {epoch} | Training snapshot saved at {self.snapshot_path}.")
+    
+
     def train_one_epoch(self, epoch):
         self.model.train()
         interval_loss = 0.0
@@ -71,6 +94,8 @@ class TrainerCLF:
         batch_counter = 0
 
         print(f"(GPU[{self.gpu_id}]) Epoch {epoch} started.")
+
+        self.train_loder.sampler.set_epoch(epoch)
 
         for i, (images, labels) in enumerate(self.train_loader):
             images, labels = images.to(self.gpu_id), labels.to(self.gpu_id)
@@ -95,6 +120,7 @@ class TrainerCLF:
                 first_layer = list(self.model.module.parameters())[0]    # tracking grad norm on first layer
                 grad_norm = torch.norm(first_layer.grad).item() 
                 
+                # printing stats
                 print(f'GPU[{self.gpu_id}]: ' +
                       f'batch [{i+1}/{self.num_batches}]: ' +
                       f'loss={avg_interval_loss:.6f}' +
@@ -121,6 +147,8 @@ class TrainerCLF:
         total_correct = 0
         total_loss = 0
 
+        self.val_loder.sampler.set_epoch(epoch)
+
         with torch.no_grad():
             for images, labels in self.val_loader:
                 images, labels = images.to(self.gpu_id), labels.to(self.gpu_id)
@@ -139,26 +167,32 @@ class TrainerCLF:
         self.stats['val_accs'][epoch] = val_accuracy
 
         # printing stats
-        print(f'Validation: (GPU[{self.gpu_id}]) ' +
+        print(f'Validation on GPU[{self.gpu_id}]:' +
               f'val_loss={val_loss:.6f}' +
               f'val_accuracy={val_accuracy:.6f}', flush=True)
     
 
     def train(self):
-        for epoch in range(self.num_epochs):
+        for epoch in range(self.epochs_run, self.num_epochs):
             self.train_one_epoch(epoch)
-            self.validate(epoch)
+            if self.gpu_id == 0:      # run validation (on one GPU)
+                self.validate(epoch)
             self.scheduler.step()
+            if self.gpu_id == 0 and epoch % self.save_every == 0:
+                self._save_snapshot(epoch)
         
-        # saving stats
-        with open('training_output.pkl', 'wb') as f:
-            pickle.dump(self.stats, f)
+        # saving stats + model weights (on one GPU)
+        if self.gpu_id == 0:
+            print(f"Saving model and stats by GPU[{self.gpu_id}]...")
+            torch.save(self.model.module.state_dict(), 'final_model.pth')
+            with open('training_output.pkl', 'wb') as f:
+                pickle.dump(self.stats, f)
 
-        print(f"Training for {self.num_epochs} completely finished. Results saved.")
+        print(f"Training for {self.num_epochs} is completely finished. Results saved.")
 
 
-def main(rank, world_size):                         # --> rank will be passed automatically by mp.spawn()
-    ddp_setup(rank, world_size)
+def main():                       
+    ddp_setup()
 
     transform = transforms.Compose([
         transforms.Resize(256),
@@ -179,17 +213,15 @@ def main(rank, world_size):                         # --> rank will be passed au
 
     model = SwinTransformer()
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.05)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(reduction='sum')
     
     trainer = TrainerCLF(model, train_loader, val_loader, optimizer, criterion,
-                         batch_size=1024, batch_interval=200, num_epochs=30, warmup_epochs=3,
-                         gpu_id=rank)
+                         batch_size=1024, batch_interval=200, num_epochs=30, 
+                         save_every=10, warmup_epochs=3, snapshot_path='model_snapshot.pth')
     trainer.train()
 
     destroy_process_group()
 
 
 if __name__ == "__main__":
-
-    world_size = torch.cuda.device_count()                      # number of GPUs
-    mp.spawn(main, args=(world_size,), nprocs=world_size)       # spawn a process for each GPU
+    main()

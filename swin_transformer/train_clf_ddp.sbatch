@@ -7,10 +7,8 @@
 #SBATCH --time=72:00:00                     # Максимальное время выполнения 
 #SBATCH --cpus-per-task=16                  # Количество CPU на одну задачу
 #SBATCH --nodes=1                           # Требуемое кол-во узлов 
-#SBATCH --gpus=4                            # Требуемое кол-во GPU
+#SBATCH --gpus=2                            # Требуемое кол-во GPU
 
 module load Python/Google_Colab_GPU_2024        # Загрузка модуля Anaconda 
-export NGPUS=4
 
-# python train_clf_imagenet.py                                                         # запуск со старого скрипта
-python -m torch.distributed.launch --nproc_per_node=$NGPUS train_clf_imagenet.py       # запуск в параллельном режиме
+torchrun training.py       # запуск в параллельном режиме

@@ -40,8 +40,10 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
     train_accs_per_epoch = []
     val_losses_per_epoch = []
     val_accs_per_epoch = []
-    batch_interval = 2000
+    batch_interval = 1000
     model = model.to(device)
+
+    # lookinto_dict = {}
 
     for epoch in range(num_epochs):
 
@@ -63,6 +65,12 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
             loss.backward()
             optimizer.step()
 
+            """ lookinto_dict[f"batch_{i}"] = {
+                "imgs": images,
+                "labels": labels,
+                "outputs": outputs
+            } """
+
             train_loss_2000b += loss.item()
             train_loss_epoch += loss.item()
             _, preds = torch.max(outputs.data, 1)
@@ -74,7 +82,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
             if ((i + 1) % batch_interval == 0) or ((i + 1) == total_batches):
                 train_losses_per_2000b.append(train_loss_2000b / total_samples_2000b)
                 print(f'batch [{i+1}/{total_batches}]: ' + 
-                      f'train loss={train_losses_per_2000b[-1]:.4f}', flush=True)
+                      f'train loss={train_losses_per_2000b[-1]:.6f}', flush=True)
                 train_loss_2000b = 0.0
                 total_samples_2000b = 0
         
@@ -98,16 +106,17 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
                 correct_val += (val_preds == val_labels).sum().item()
                 total_val_samples += val_labels.size(0)
 
-        val_loss /= len(val_loader)
+        val_loss /= total_val_samples # or len(val_loader.dataset) devide by num of validation samples
         val_accuracy = correct_val / total_val_samples
         val_losses_per_epoch.append(val_loss)
         val_accs_per_epoch.append(val_accuracy)
-
-        model.train()  # set back to training mode
             
         print(f'Epoch [{epoch+1}/{num_epochs}] completed:', flush=True)
         print(f'val loss: {val_loss:.4f}, val accuracy: {val_accuracy:.4f}', flush=True)
 
+    """ with open('lookinto_dict.pkl', 'wb') as f:
+        pickle.dump(lookinto_dict, f)
+     """
     output = {
         "train_losses_per_2000b": train_losses_per_2000b,
         "train_losses_per_epoch": train_losses_per_epoch,
@@ -134,14 +143,16 @@ if __name__ == "__main__":
     train_dataset = ImageFolder(root=DATA_ROOT + "/train", transform=transform)
     val_dataset = ImageFolder(root=DATA_ROOT + "/val", transform=transform)
 
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False, num_workers=4)
 
     model = SwinTransformer()    # default is (Swin-T)
 
-    num_epochs = 30
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    num_epochs = 50
+    criterion = nn.CrossEntropyLoss(reduction='sum')
+    # optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.05)
+    optimizer = optim.SGD(model.parameters(), lr=0.001)
+    
 
     # training
     output = train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device)
