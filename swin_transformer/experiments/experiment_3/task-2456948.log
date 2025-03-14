@@ -1,0 +1,651 @@
+batch [1000/10010]: train loss=6.620279
+batch [2000/10010]: train loss=6.209434
+batch [3000/10010]: train loss=5.714461
+batch [4000/10010]: train loss=5.350153
+batch [5000/10010]: train loss=5.086124
+batch [6000/10010]: train loss=4.855865
+batch [7000/10010]: train loss=4.668059
+batch [8000/10010]: train loss=4.501631
+batch [9000/10010]: train loss=4.325422
+batch [10000/10010]: train loss=4.168513
+batch [10010/10010]: train loss=4.079313
+Epoch [1/50] completed:
+val loss: 4.1591, val accuracy: 0.1908
+batch [1000/10010]: train loss=4.003695
+batch [2000/10010]: train loss=3.887541
+batch [3000/10010]: train loss=3.783503
+batch [4000/10010]: train loss=3.681388
+batch [5000/10010]: train loss=3.583189
+batch [6000/10010]: train loss=3.497125
+batch [7000/10010]: train loss=3.417500
+batch [8000/10010]: train loss=3.362557
+batch [9000/10010]: train loss=3.269674
+batch [10000/10010]: train loss=3.200182
+batch [10010/10010]: train loss=3.251198
+Epoch [2/50] completed:
+val loss: 3.2556, val accuracy: 0.3209
+batch [1000/10010]: train loss=3.033508
+batch [2000/10010]: train loss=3.016261
+batch [3000/10010]: train loss=2.966223
+batch [4000/10010]: train loss=2.935520
+batch [5000/10010]: train loss=2.879486
+batch [6000/10010]: train loss=2.824834
+batch [7000/10010]: train loss=2.787411
+batch [8000/10010]: train loss=2.752248
+batch [9000/10010]: train loss=2.702088
+batch [10000/10010]: train loss=2.679441
+batch [10010/10010]: train loss=2.660278
+Epoch [3/50] completed:
+val loss: 2.8016, val accuracy: 0.3967
+batch [1000/10010]: train loss=2.488908
+batch [2000/10010]: train loss=2.487946
+batch [3000/10010]: train loss=2.481253
+batch [4000/10010]: train loss=2.462238
+batch [5000/10010]: train loss=2.447230
+batch [6000/10010]: train loss=2.423142
+batch [7000/10010]: train loss=2.398577
+batch [8000/10010]: train loss=2.363377
+batch [9000/10010]: train loss=2.356336
+batch [10000/10010]: train loss=2.319719
+batch [10010/10010]: train loss=2.351754
+Epoch [4/50] completed:
+val loss: 2.4860, val accuracy: 0.4512
+batch [1000/10010]: train loss=2.114663
+batch [2000/10010]: train loss=2.141167
+batch [3000/10010]: train loss=2.140412
+batch [4000/10010]: train loss=2.140467
+batch [5000/10010]: train loss=2.131196
+batch [6000/10010]: train loss=2.120826
+batch [7000/10010]: train loss=2.112410
+batch [8000/10010]: train loss=2.091531
+batch [9000/10010]: train loss=2.077374
+batch [10000/10010]: train loss=2.072455
+batch [10010/10010]: train loss=2.071387
+Epoch [5/50] completed:
+val loss: 2.3153, val accuracy: 0.4792
+batch [1000/10010]: train loss=1.837219
+batch [2000/10010]: train loss=1.857627
+batch [3000/10010]: train loss=1.880017
+batch [4000/10010]: train loss=1.891062
+batch [5000/10010]: train loss=1.884435
+batch [6000/10010]: train loss=1.888766
+batch [7000/10010]: train loss=1.880712
+batch [8000/10010]: train loss=1.874967
+batch [9000/10010]: train loss=1.865357
+batch [10000/10010]: train loss=1.868018
+batch [10010/10010]: train loss=1.923575
+Epoch [6/50] completed:
+val loss: 2.1942, val accuracy: 0.5062
+batch [1000/10010]: train loss=1.613405
+batch [2000/10010]: train loss=1.641546
+batch [3000/10010]: train loss=1.663876
+batch [4000/10010]: train loss=1.675686
+batch [5000/10010]: train loss=1.684182
+batch [6000/10010]: train loss=1.692792
+batch [7000/10010]: train loss=1.689439
+batch [8000/10010]: train loss=1.702813
+batch [9000/10010]: train loss=1.692162
+batch [10000/10010]: train loss=1.677417
+batch [10010/10010]: train loss=1.650190
+Epoch [7/50] completed:
+val loss: 2.1016, val accuracy: 0.5233
+batch [1000/10010]: train loss=1.415109
+batch [2000/10010]: train loss=1.458028
+batch [3000/10010]: train loss=1.482955
+batch [4000/10010]: train loss=1.497024
+batch [5000/10010]: train loss=1.521249
+batch [6000/10010]: train loss=1.515501
+batch [7000/10010]: train loss=1.524228
+batch [8000/10010]: train loss=1.534628
+batch [9000/10010]: train loss=1.524215
+batch [10000/10010]: train loss=1.525334
+batch [10010/10010]: train loss=1.655989
+Epoch [8/50] completed:
+val loss: 2.0447, val accuracy: 0.5393
+batch [1000/10010]: train loss=1.220408
+batch [2000/10010]: train loss=1.280627
+batch [3000/10010]: train loss=1.319772
+batch [4000/10010]: train loss=1.345165
+batch [5000/10010]: train loss=1.354724
+batch [6000/10010]: train loss=1.365709
+batch [7000/10010]: train loss=1.378061
+batch [8000/10010]: train loss=1.389551
+batch [9000/10010]: train loss=1.392622
+batch [10000/10010]: train loss=1.396321
+batch [10010/10010]: train loss=1.346672
+Epoch [9/50] completed:
+val loss: 2.0400, val accuracy: 0.5427
+batch [1000/10010]: train loss=1.068534
+batch [2000/10010]: train loss=1.111079
+batch [3000/10010]: train loss=1.160801
+batch [4000/10010]: train loss=1.188987
+batch [5000/10010]: train loss=1.205289
+batch [6000/10010]: train loss=1.230249
+batch [7000/10010]: train loss=1.241726
+batch [8000/10010]: train loss=1.253076
+batch [9000/10010]: train loss=1.266624
+batch [10000/10010]: train loss=1.265241
+batch [10010/10010]: train loss=1.323862
+Epoch [10/50] completed:
+val loss: 2.0533, val accuracy: 0.5464
+batch [1000/10010]: train loss=0.918268
+batch [2000/10010]: train loss=0.969975
+batch [3000/10010]: train loss=1.009805
+batch [4000/10010]: train loss=1.046623
+batch [5000/10010]: train loss=1.075682
+batch [6000/10010]: train loss=1.096953
+batch [7000/10010]: train loss=1.123849
+batch [8000/10010]: train loss=1.127022
+batch [9000/10010]: train loss=1.135982
+batch [10000/10010]: train loss=1.144113
+batch [10010/10010]: train loss=1.134009
+Epoch [11/50] completed:
+val loss: 2.1084, val accuracy: 0.5446
+batch [1000/10010]: train loss=0.776872
+batch [2000/10010]: train loss=0.833825
+batch [3000/10010]: train loss=0.863301
+batch [4000/10010]: train loss=0.911571
+batch [5000/10010]: train loss=0.948362
+batch [6000/10010]: train loss=0.972504
+batch [7000/10010]: train loss=0.992685
+batch [8000/10010]: train loss=1.004543
+batch [9000/10010]: train loss=1.020514
+batch [10000/10010]: train loss=1.032256
+batch [10010/10010]: train loss=0.886710
+Epoch [12/50] completed:
+val loss: 2.1821, val accuracy: 0.5402
+batch [1000/10010]: train loss=0.648447
+batch [2000/10010]: train loss=0.700245
+batch [3000/10010]: train loss=0.744602
+batch [4000/10010]: train loss=0.783972
+batch [5000/10010]: train loss=0.822887
+batch [6000/10010]: train loss=0.847984
+batch [7000/10010]: train loss=0.882753
+batch [8000/10010]: train loss=0.894994
+batch [9000/10010]: train loss=0.906932
+batch [10000/10010]: train loss=0.925861
+batch [10010/10010]: train loss=1.002788
+Epoch [13/50] completed:
+val loss: 2.2453, val accuracy: 0.5419
+batch [1000/10010]: train loss=0.549471
+batch [2000/10010]: train loss=0.584409
+batch [3000/10010]: train loss=0.625345
+batch [4000/10010]: train loss=0.671473
+batch [5000/10010]: train loss=0.703096
+batch [6000/10010]: train loss=0.741925
+batch [7000/10010]: train loss=0.768854
+batch [8000/10010]: train loss=0.781935
+batch [9000/10010]: train loss=0.802093
+batch [10000/10010]: train loss=0.816619
+batch [10010/10010]: train loss=0.806793
+Epoch [14/50] completed:
+val loss: 2.3651, val accuracy: 0.5356
+batch [1000/10010]: train loss=0.454824
+batch [2000/10010]: train loss=0.475757
+batch [3000/10010]: train loss=0.524812
+batch [4000/10010]: train loss=0.566601
+batch [5000/10010]: train loss=0.603970
+batch [6000/10010]: train loss=0.638979
+batch [7000/10010]: train loss=0.663836
+batch [8000/10010]: train loss=0.695519
+batch [9000/10010]: train loss=0.707370
+batch [10000/10010]: train loss=0.726405
+batch [10010/10010]: train loss=0.722124
+Epoch [15/50] completed:
+val loss: 2.4647, val accuracy: 0.5346
+batch [1000/10010]: train loss=0.390054
+batch [2000/10010]: train loss=0.402901
+batch [3000/10010]: train loss=0.432797
+batch [4000/10010]: train loss=0.478816
+batch [5000/10010]: train loss=0.511753
+batch [6000/10010]: train loss=0.540377
+batch [7000/10010]: train loss=0.568262
+batch [8000/10010]: train loss=0.600042
+batch [9000/10010]: train loss=0.614361
+batch [10000/10010]: train loss=0.638705
+batch [10010/10010]: train loss=0.702619
+Epoch [16/50] completed:
+val loss: 2.5800, val accuracy: 0.5288
+batch [1000/10010]: train loss=0.331888
+batch [2000/10010]: train loss=0.342915
+batch [3000/10010]: train loss=0.366201
+batch [4000/10010]: train loss=0.405141
+batch [5000/10010]: train loss=0.430491
+batch [6000/10010]: train loss=0.455217
+batch [7000/10010]: train loss=0.487551
+batch [8000/10010]: train loss=0.513423
+batch [9000/10010]: train loss=0.525550
+batch [10000/10010]: train loss=0.549547
+batch [10010/10010]: train loss=0.591694
+Epoch [17/50] completed:
+val loss: 2.7079, val accuracy: 0.5292
+batch [1000/10010]: train loss=0.290803
+batch [2000/10010]: train loss=0.289764
+batch [3000/10010]: train loss=0.318541
+batch [4000/10010]: train loss=0.339437
+batch [5000/10010]: train loss=0.367512
+batch [6000/10010]: train loss=0.391158
+batch [7000/10010]: train loss=0.416605
+batch [8000/10010]: train loss=0.442854
+batch [9000/10010]: train loss=0.456282
+batch [10000/10010]: train loss=0.479369
+batch [10010/10010]: train loss=0.462986
+Epoch [18/50] completed:
+val loss: 2.7924, val accuracy: 0.5292
+batch [1000/10010]: train loss=0.245096
+batch [2000/10010]: train loss=0.254428
+batch [3000/10010]: train loss=0.272111
+batch [4000/10010]: train loss=0.288449
+batch [5000/10010]: train loss=0.311738
+batch [6000/10010]: train loss=0.337556
+batch [7000/10010]: train loss=0.358514
+batch [8000/10010]: train loss=0.377468
+batch [9000/10010]: train loss=0.398774
+batch [10000/10010]: train loss=0.413177
+batch [10010/10010]: train loss=0.421181
+Epoch [19/50] completed:
+val loss: 2.8703, val accuracy: 0.5293
+batch [1000/10010]: train loss=0.221993
+batch [2000/10010]: train loss=0.222965
+batch [3000/10010]: train loss=0.232401
+batch [4000/10010]: train loss=0.252240
+batch [5000/10010]: train loss=0.264788
+batch [6000/10010]: train loss=0.286008
+batch [7000/10010]: train loss=0.308917
+batch [8000/10010]: train loss=0.329632
+batch [9000/10010]: train loss=0.340433
+batch [10000/10010]: train loss=0.359611
+batch [10010/10010]: train loss=0.354663
+Epoch [20/50] completed:
+val loss: 3.0059, val accuracy: 0.5253
+batch [1000/10010]: train loss=0.195017
+batch [2000/10010]: train loss=0.201234
+batch [3000/10010]: train loss=0.210316
+batch [4000/10010]: train loss=0.230034
+batch [5000/10010]: train loss=0.244952
+batch [6000/10010]: train loss=0.254294
+batch [7000/10010]: train loss=0.274791
+batch [8000/10010]: train loss=0.289302
+batch [9000/10010]: train loss=0.303075
+batch [10000/10010]: train loss=0.319420
+batch [10010/10010]: train loss=0.338574
+Epoch [21/50] completed:
+val loss: 3.0273, val accuracy: 0.5305
+batch [1000/10010]: train loss=0.180026
+batch [2000/10010]: train loss=0.179557
+batch [3000/10010]: train loss=0.195347
+batch [4000/10010]: train loss=0.206884
+batch [5000/10010]: train loss=0.212372
+batch [6000/10010]: train loss=0.232244
+batch [7000/10010]: train loss=0.239528
+batch [8000/10010]: train loss=0.251967
+batch [9000/10010]: train loss=0.267023
+batch [10000/10010]: train loss=0.283053
+batch [10010/10010]: train loss=0.273521
+Epoch [22/50] completed:
+val loss: 3.0808, val accuracy: 0.5323
+batch [1000/10010]: train loss=0.162258
+batch [2000/10010]: train loss=0.167054
+batch [3000/10010]: train loss=0.175593
+batch [4000/10010]: train loss=0.186676
+batch [5000/10010]: train loss=0.186346
+batch [6000/10010]: train loss=0.201319
+batch [7000/10010]: train loss=0.217050
+batch [8000/10010]: train loss=0.219819
+batch [9000/10010]: train loss=0.234897
+batch [10000/10010]: train loss=0.249340
+batch [10010/10010]: train loss=0.224102
+Epoch [23/50] completed:
+val loss: 3.1282, val accuracy: 0.5349
+batch [1000/10010]: train loss=0.145501
+batch [2000/10010]: train loss=0.148189
+batch [3000/10010]: train loss=0.157164
+batch [4000/10010]: train loss=0.165751
+batch [5000/10010]: train loss=0.174874
+batch [6000/10010]: train loss=0.184745
+batch [7000/10010]: train loss=0.189533
+batch [8000/10010]: train loss=0.200498
+batch [9000/10010]: train loss=0.212748
+batch [10000/10010]: train loss=0.226046
+batch [10010/10010]: train loss=0.215051
+Epoch [24/50] completed:
+val loss: 3.1846, val accuracy: 0.5330
+batch [1000/10010]: train loss=0.133124
+batch [2000/10010]: train loss=0.142051
+batch [3000/10010]: train loss=0.146942
+batch [4000/10010]: train loss=0.155184
+batch [5000/10010]: train loss=0.163822
+batch [6000/10010]: train loss=0.171813
+batch [7000/10010]: train loss=0.178781
+batch [8000/10010]: train loss=0.190132
+batch [9000/10010]: train loss=0.191468
+batch [10000/10010]: train loss=0.202687
+batch [10010/10010]: train loss=0.232900
+Epoch [25/50] completed:
+val loss: 3.2033, val accuracy: 0.5367
+batch [1000/10010]: train loss=0.126864
+batch [2000/10010]: train loss=0.130168
+batch [3000/10010]: train loss=0.135856
+batch [4000/10010]: train loss=0.140944
+batch [5000/10010]: train loss=0.146576
+batch [6000/10010]: train loss=0.154146
+batch [7000/10010]: train loss=0.163456
+batch [8000/10010]: train loss=0.166995
+batch [9000/10010]: train loss=0.178577
+batch [10000/10010]: train loss=0.183725
+batch [10010/10010]: train loss=0.189753
+Epoch [26/50] completed:
+val loss: 3.2285, val accuracy: 0.5381
+batch [1000/10010]: train loss=0.116327
+batch [2000/10010]: train loss=0.121183
+batch [3000/10010]: train loss=0.128973
+batch [4000/10010]: train loss=0.134025
+batch [5000/10010]: train loss=0.139402
+batch [6000/10010]: train loss=0.144320
+batch [7000/10010]: train loss=0.152587
+batch [8000/10010]: train loss=0.152182
+batch [9000/10010]: train loss=0.160009
+batch [10000/10010]: train loss=0.172584
+batch [10010/10010]: train loss=0.213763
+Epoch [27/50] completed:
+val loss: 3.2589, val accuracy: 0.5352
+batch [1000/10010]: train loss=0.109276
+batch [2000/10010]: train loss=0.115315
+batch [3000/10010]: train loss=0.118029
+batch [4000/10010]: train loss=0.126418
+batch [5000/10010]: train loss=0.131025
+batch [6000/10010]: train loss=0.133344
+batch [7000/10010]: train loss=0.140549
+batch [8000/10010]: train loss=0.145461
+batch [9000/10010]: train loss=0.150999
+batch [10000/10010]: train loss=0.163540
+batch [10010/10010]: train loss=0.172400
+Epoch [28/50] completed:
+val loss: 3.2671, val accuracy: 0.5372
+batch [1000/10010]: train loss=0.104839
+batch [2000/10010]: train loss=0.106443
+batch [3000/10010]: train loss=0.109305
+batch [4000/10010]: train loss=0.111378
+batch [5000/10010]: train loss=0.120799
+batch [6000/10010]: train loss=0.127482
+batch [7000/10010]: train loss=0.134150
+batch [8000/10010]: train loss=0.132154
+batch [9000/10010]: train loss=0.139840
+batch [10000/10010]: train loss=0.150113
+batch [10010/10010]: train loss=0.119597
+Epoch [29/50] completed:
+val loss: 3.2831, val accuracy: 0.5408
+batch [1000/10010]: train loss=0.099641
+batch [2000/10010]: train loss=0.099915
+batch [3000/10010]: train loss=0.101096
+batch [4000/10010]: train loss=0.108769
+batch [5000/10010]: train loss=0.110712
+batch [6000/10010]: train loss=0.113988
+batch [7000/10010]: train loss=0.121950
+batch [8000/10010]: train loss=0.125299
+batch [9000/10010]: train loss=0.136174
+batch [10000/10010]: train loss=0.133249
+batch [10010/10010]: train loss=0.187072
+Epoch [30/50] completed:
+val loss: 3.3398, val accuracy: 0.5404
+batch [1000/10010]: train loss=0.090278
+batch [2000/10010]: train loss=0.095768
+batch [3000/10010]: train loss=0.099550
+batch [4000/10010]: train loss=0.103950
+batch [5000/10010]: train loss=0.107785
+batch [6000/10010]: train loss=0.111369
+batch [7000/10010]: train loss=0.112709
+batch [8000/10010]: train loss=0.118731
+batch [9000/10010]: train loss=0.121438
+batch [10000/10010]: train loss=0.129475
+batch [10010/10010]: train loss=0.144923
+Epoch [31/50] completed:
+val loss: 3.3079, val accuracy: 0.5422
+batch [1000/10010]: train loss=0.087492
+batch [2000/10010]: train loss=0.091439
+batch [3000/10010]: train loss=0.094557
+batch [4000/10010]: train loss=0.093853
+batch [5000/10010]: train loss=0.099711
+batch [6000/10010]: train loss=0.107122
+batch [7000/10010]: train loss=0.110794
+batch [8000/10010]: train loss=0.113776
+batch [9000/10010]: train loss=0.119242
+batch [10000/10010]: train loss=0.118205
+batch [10010/10010]: train loss=0.134521
+Epoch [32/50] completed:
+val loss: 3.3617, val accuracy: 0.5414
+batch [1000/10010]: train loss=0.082503
+batch [2000/10010]: train loss=0.084569
+batch [3000/10010]: train loss=0.088753
+batch [4000/10010]: train loss=0.092852
+batch [5000/10010]: train loss=0.097369
+batch [6000/10010]: train loss=0.097089
+batch [7000/10010]: train loss=0.100716
+batch [8000/10010]: train loss=0.106030
+batch [9000/10010]: train loss=0.114061
+batch [10000/10010]: train loss=0.117496
+batch [10010/10010]: train loss=0.115434
+Epoch [33/50] completed:
+val loss: 3.3564, val accuracy: 0.5451
+batch [1000/10010]: train loss=0.076051
+batch [2000/10010]: train loss=0.080121
+batch [3000/10010]: train loss=0.082630
+batch [4000/10010]: train loss=0.083631
+batch [5000/10010]: train loss=0.095331
+batch [6000/10010]: train loss=0.096458
+batch [7000/10010]: train loss=0.100822
+batch [8000/10010]: train loss=0.102797
+batch [9000/10010]: train loss=0.107173
+batch [10000/10010]: train loss=0.112122
+batch [10010/10010]: train loss=0.096666
+Epoch [34/50] completed:
+val loss: 3.3549, val accuracy: 0.5405
+batch [1000/10010]: train loss=0.075831
+batch [2000/10010]: train loss=0.077247
+batch [3000/10010]: train loss=0.079508
+batch [4000/10010]: train loss=0.081770
+batch [5000/10010]: train loss=0.090930
+batch [6000/10010]: train loss=0.092073
+batch [7000/10010]: train loss=0.091637
+batch [8000/10010]: train loss=0.094898
+batch [9000/10010]: train loss=0.099245
+batch [10000/10010]: train loss=0.105117
+batch [10010/10010]: train loss=0.093614
+Epoch [35/50] completed:
+val loss: 3.3404, val accuracy: 0.5431
+batch [1000/10010]: train loss=0.069887
+batch [2000/10010]: train loss=0.072361
+batch [3000/10010]: train loss=0.075377
+batch [4000/10010]: train loss=0.077356
+batch [5000/10010]: train loss=0.081115
+batch [6000/10010]: train loss=0.088241
+batch [7000/10010]: train loss=0.094536
+batch [8000/10010]: train loss=0.093658
+batch [9000/10010]: train loss=0.095725
+batch [10000/10010]: train loss=0.099163
+batch [10010/10010]: train loss=0.108585
+Epoch [36/50] completed:
+val loss: 3.3683, val accuracy: 0.5439
+batch [1000/10010]: train loss=0.067944
+batch [2000/10010]: train loss=0.068610
+batch [3000/10010]: train loss=0.072506
+batch [4000/10010]: train loss=0.074122
+batch [5000/10010]: train loss=0.078175
+batch [6000/10010]: train loss=0.083523
+batch [7000/10010]: train loss=0.085612
+batch [8000/10010]: train loss=0.088315
+batch [9000/10010]: train loss=0.086285
+batch [10000/10010]: train loss=0.093675
+batch [10010/10010]: train loss=0.084162
+Epoch [37/50] completed:
+val loss: 3.3646, val accuracy: 0.5463
+batch [1000/10010]: train loss=0.066202
+batch [2000/10010]: train loss=0.067017
+batch [3000/10010]: train loss=0.067803
+batch [4000/10010]: train loss=0.073075
+batch [5000/10010]: train loss=0.075297
+batch [6000/10010]: train loss=0.081717
+batch [7000/10010]: train loss=0.083542
+batch [8000/10010]: train loss=0.086209
+batch [9000/10010]: train loss=0.088980
+batch [10000/10010]: train loss=0.093603
+batch [10010/10010]: train loss=0.112710
+Epoch [38/50] completed:
+val loss: 3.3534, val accuracy: 0.5454
+batch [1000/10010]: train loss=0.061840
+batch [2000/10010]: train loss=0.060650
+batch [3000/10010]: train loss=0.070990
+batch [4000/10010]: train loss=0.074542
+batch [5000/10010]: train loss=0.070848
+batch [6000/10010]: train loss=0.078838
+batch [7000/10010]: train loss=0.079217
+batch [8000/10010]: train loss=0.083619
+batch [9000/10010]: train loss=0.085098
+batch [10000/10010]: train loss=0.090228
+batch [10010/10010]: train loss=0.100309
+Epoch [39/50] completed:
+val loss: 3.3655, val accuracy: 0.5451
+batch [1000/10010]: train loss=0.059262
+batch [2000/10010]: train loss=0.063705
+batch [3000/10010]: train loss=0.063059
+batch [4000/10010]: train loss=0.069606
+batch [5000/10010]: train loss=0.071312
+batch [6000/10010]: train loss=0.077389
+batch [7000/10010]: train loss=0.075428
+batch [8000/10010]: train loss=0.082366
+batch [9000/10010]: train loss=0.079129
+batch [10000/10010]: train loss=0.085697
+batch [10010/10010]: train loss=0.110384
+Epoch [40/50] completed:
+val loss: 3.3695, val accuracy: 0.5450
+batch [1000/10010]: train loss=0.060342
+batch [2000/10010]: train loss=0.061910
+batch [3000/10010]: train loss=0.062387
+batch [4000/10010]: train loss=0.064910
+batch [5000/10010]: train loss=0.069840
+batch [6000/10010]: train loss=0.072771
+batch [7000/10010]: train loss=0.076184
+batch [8000/10010]: train loss=0.076258
+batch [9000/10010]: train loss=0.078277
+batch [10000/10010]: train loss=0.079832
+batch [10010/10010]: train loss=0.077756
+Epoch [41/50] completed:
+val loss: 3.3911, val accuracy: 0.5450
+batch [1000/10010]: train loss=0.057092
+batch [2000/10010]: train loss=0.058304
+batch [3000/10010]: train loss=0.061624
+batch [4000/10010]: train loss=0.063405
+batch [5000/10010]: train loss=0.065695
+batch [6000/10010]: train loss=0.071352
+batch [7000/10010]: train loss=0.074509
+batch [8000/10010]: train loss=0.072314
+batch [9000/10010]: train loss=0.076358
+batch [10000/10010]: train loss=0.083992
+batch [10010/10010]: train loss=0.110546
+Epoch [42/50] completed:
+val loss: 3.3847, val accuracy: 0.5439
+batch [1000/10010]: train loss=0.055500
+batch [2000/10010]: train loss=0.058210
+batch [3000/10010]: train loss=0.060206
+batch [4000/10010]: train loss=0.060156
+batch [5000/10010]: train loss=0.062754
+batch [6000/10010]: train loss=0.068623
+batch [7000/10010]: train loss=0.068308
+batch [8000/10010]: train loss=0.073574
+batch [9000/10010]: train loss=0.074797
+batch [10000/10010]: train loss=0.076235
+batch [10010/10010]: train loss=0.058248
+Epoch [43/50] completed:
+val loss: 3.3885, val accuracy: 0.5458
+batch [1000/10010]: train loss=0.050820
+batch [2000/10010]: train loss=0.055093
+batch [3000/10010]: train loss=0.057123
+batch [4000/10010]: train loss=0.061719
+batch [5000/10010]: train loss=0.065109
+batch [6000/10010]: train loss=0.063711
+batch [7000/10010]: train loss=0.067440
+batch [8000/10010]: train loss=0.068471
+batch [9000/10010]: train loss=0.074827
+batch [10000/10010]: train loss=0.076950
+batch [10010/10010]: train loss=0.067633
+Epoch [44/50] completed:
+val loss: 3.3706, val accuracy: 0.5449
+batch [1000/10010]: train loss=0.052613
+batch [2000/10010]: train loss=0.050896
+batch [3000/10010]: train loss=0.055290
+batch [4000/10010]: train loss=0.056903
+batch [5000/10010]: train loss=0.058057
+batch [6000/10010]: train loss=0.063375
+batch [7000/10010]: train loss=0.065431
+batch [8000/10010]: train loss=0.069587
+batch [9000/10010]: train loss=0.070551
+batch [10000/10010]: train loss=0.073571
+batch [10010/10010]: train loss=0.093011
+Epoch [45/50] completed:
+val loss: 3.3628, val accuracy: 0.5486
+batch [1000/10010]: train loss=0.051233
+batch [2000/10010]: train loss=0.050266
+batch [3000/10010]: train loss=0.052213
+batch [4000/10010]: train loss=0.053745
+batch [5000/10010]: train loss=0.058586
+batch [6000/10010]: train loss=0.062035
+batch [7000/10010]: train loss=0.063961
+batch [8000/10010]: train loss=0.064296
+batch [9000/10010]: train loss=0.069703
+batch [10000/10010]: train loss=0.075470
+batch [10010/10010]: train loss=0.052861
+Epoch [46/50] completed:
+val loss: 3.3574, val accuracy: 0.5493
+batch [1000/10010]: train loss=0.049419
+batch [2000/10010]: train loss=0.049082
+batch [3000/10010]: train loss=0.054629
+batch [4000/10010]: train loss=0.054662
+batch [5000/10010]: train loss=0.055704
+batch [6000/10010]: train loss=0.056045
+batch [7000/10010]: train loss=0.062678
+batch [8000/10010]: train loss=0.064160
+batch [9000/10010]: train loss=0.069533
+batch [10000/10010]: train loss=0.068701
+batch [10010/10010]: train loss=0.052805
+Epoch [47/50] completed:
+val loss: 3.3146, val accuracy: 0.5523
+batch [1000/10010]: train loss=0.048626
+batch [2000/10010]: train loss=0.048216
+batch [3000/10010]: train loss=0.053721
+batch [4000/10010]: train loss=0.053411
+batch [5000/10010]: train loss=0.057725
+batch [6000/10010]: train loss=0.057870
+batch [7000/10010]: train loss=0.060120
+batch [8000/10010]: train loss=0.062044
+batch [9000/10010]: train loss=0.063791
+batch [10000/10010]: train loss=0.068384
+batch [10010/10010]: train loss=0.064109
+Epoch [48/50] completed:
+val loss: 3.3426, val accuracy: 0.5490
+batch [1000/10010]: train loss=0.045220
+batch [2000/10010]: train loss=0.047485
+batch [3000/10010]: train loss=0.049773
+batch [4000/10010]: train loss=0.051819
+batch [5000/10010]: train loss=0.054022
+batch [6000/10010]: train loss=0.056941
+batch [7000/10010]: train loss=0.059674
+batch [8000/10010]: train loss=0.061122
+batch [9000/10010]: train loss=0.062901
+batch [10000/10010]: train loss=0.064629
+batch [10010/10010]: train loss=0.096775
+Epoch [49/50] completed:
+val loss: 3.3796, val accuracy: 0.5478
+batch [1000/10010]: train loss=0.043815
+batch [2000/10010]: train loss=0.047240
+batch [3000/10010]: train loss=0.048390
+batch [4000/10010]: train loss=0.048641
+batch [5000/10010]: train loss=0.052888
+batch [6000/10010]: train loss=0.055461
+batch [7000/10010]: train loss=0.059011
+batch [8000/10010]: train loss=0.059456
+batch [9000/10010]: train loss=0.060624
+batch [10000/10010]: train loss=0.065480
+batch [10010/10010]: train loss=0.074849
+Epoch [50/50] completed:
+val loss: 3.3437, val accuracy: 0.5500
+Trainig finished, results saved.
