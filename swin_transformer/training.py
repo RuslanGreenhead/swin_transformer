@@ -11,10 +11,18 @@ import torch.multiprocessing as mp
 import os
 import numpy as np
 import pickle
+import yaml
 
 from model import SwinTransformer
+from data import build_loaders                  # WHOLE config to be put here
 
-DATA_ROOT = "/opt/software/datasets/LSVRC/imagenet" 
+CONFIG_PATH = "configs/SwinT_300e_1024bs.yaml"
+
+def load_config(cfg_path):
+    with open(cfg_path, 'r') as f:
+        config = yaml.safe_load(f)
+
+    return config
 
 
 def ddp_setup():
@@ -26,26 +34,24 @@ def ddp_setup():
 
 
 class TrainerCLF:
-    def __init__(self, model, train_loader, val_loader,
-                 optimizer, criterion, batch_size, batch_interval,
-                 num_epochs, save_every, warmup_epochs, snapshot_path):
+    def __init__(self, model, train_loader, val_loader, optimizer, criterion, cfg):
         self.gpu_id = int(os.environ["LOCAL_RANK"])
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.optimizer = optimizer
         self.criterion = criterion
-        self.batch_size = batch_size
-        self.batch_interval = batch_interval
-        self.num_epochs = num_epochs
-        self.save_every = save_every
+        self.batch_size = cfg['batch_size']
+        self.batch_interval = cfg['batch_interval']
+        self.num_epochs = cfg['num_epochs']
+        self.save_every = cfg['save_every']
         self.epochs_run = 0
-        self.warmup_epochs = warmup_epochs
-        self.snapshot_path = snapshot_path
+        self.warmup_epochs = cfg['warmup_epochs']
+        self.snapshot_path = cfg['snapshot_path']
 
         self.model = model.to(self.gpu_id)
-        if os.path.exists(snapshot_path):
-            print("Loading snapshot.")
-            self._load_snapshot(snapshot_path)
+        if os.path.exists(self.snapshot_path):
+            print("Loading snapshot...")
+            self._load_snapshot(self.snapshot_path)
         self.model = DDP(self.model, device_ids=[self.gpu_id])
         
         self.scheduler = self._build_scheduler()
@@ -95,7 +101,7 @@ class TrainerCLF:
 
         print(f"(GPU[{self.gpu_id}]) Epoch {epoch} started.")
 
-        self.train_loder.sampler.set_epoch(epoch)
+        self.train_loader.sampler.set_epoch(epoch)
 
         for i, (images, labels) in enumerate(self.train_loader):
             images, labels = images.to(self.gpu_id), labels.to(self.gpu_id)
@@ -147,7 +153,7 @@ class TrainerCLF:
         total_correct = 0
         total_loss = 0
 
-        self.val_loder.sampler.set_epoch(epoch)
+        self.val_loader.sampler.set_epoch(epoch)
 
         with torch.no_grad():
             for images, labels in self.val_loader:
@@ -157,7 +163,7 @@ class TrainerCLF:
                 loss = self.criterion(outputs, labels)
                 _, preds = torch.max(outputs, dim=1)
                 total_loss += loss.item()
-                total_correct += (predicted == labels).sum().item()
+                total_correct += (preds == labels).sum().item()
             
         val_accuracy = total_correct / len(self.val_loader.dataset)
         val_loss = total_loss / len(self.val_loader.dataset)
@@ -191,37 +197,20 @@ class TrainerCLF:
         print(f"Training for {self.num_epochs} is completely finished. Results saved.")
 
 
-def main():                       
+def main(cfg):                       
     ddp_setup()
-
-    transform = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
     
-    train_dataset = ImageFolder(root=DATA_ROOT + "/train", transform=transform)
-    val_dataset = ImageFolder(root=DATA_ROOT + "/val", transform=transform)
-    
-    # distributed data loaders
-    train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
-    val_sampler = torch.utils.data.distributed.DistributedSampler(val_dataset)
-    
-    train_loader = DataLoader(train_dataset, batch_size=1024, shuffle=False, sampler=train_sampler)
-    val_loader = DataLoader(val_dataset, batch_size=1024, shuffle=False, sampler=val_sampler)
-
+    train_loader, val_loader = build_loaders(cfg)
     model = SwinTransformer()
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.05)
     criterion = nn.CrossEntropyLoss(reduction='sum')
     
-    trainer = TrainerCLF(model, train_loader, val_loader, optimizer, criterion,
-                         batch_size=1024, batch_interval=200, num_epochs=30, 
-                         save_every=10, warmup_epochs=3, snapshot_path='model_snapshot.pth')
+    trainer = TrainerCLF(model, train_loader, val_loader, optimizer, criterion, cfg['training'])
     trainer.train()
 
     destroy_process_group()
 
 
 if __name__ == "__main__":
-    main()
+    cfg = load_config(CONFIG_PATH)
+    main(cfg)

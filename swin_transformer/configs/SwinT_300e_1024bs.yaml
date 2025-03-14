@@ -1,0 +1,30 @@
+# standard classification config
+model:
+  name: "Swin-T"
+  hidden_dim: 96
+  depths: [2, 2, 6, 2]
+  num_heads: [3, 6, 12, 24]
+
+training:
+  num_epochs: 300
+  warmup_epochs: 20
+  initial_lr: 0.0001
+  batch_size: 1024
+  batch_interval: 200
+  save_every: 20
+  snapshot_path: 'model_snapshot.pth'
+
+dataset:
+  name: "ImageNet-1k"
+  root: "/opt/software/datasets/LSVRC/imagenet" 
+  img_size: 224
+  interpolation: 'bicubic'
+  test_crop: True   # Whether to crop images for test
+  aug:
+    color_jitter: 0.4
+    auto_augment: 'rand-m9-mstd0.5-inc1'
+    reprob: 0.25
+    remode: 'pixel'
+    recount: 1
+    
+
