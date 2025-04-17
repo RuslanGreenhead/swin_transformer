@@ -50,6 +50,7 @@ def window_merging(x, window_size, h, w):
     w_ = w // window_size
 
     patches = rearrange(x, '(b h w) h2 w2 c -> b (h h2) (w w2) c', h=h_, w=w_)
+    patches = patches.contiguous()
 
     return patches
 
@@ -105,18 +106,18 @@ class PatchEmbedding(nn.Module):
             stride=patch_size
         )
         self.patch_size = patch_size
-        self.patches_resolution = (img_size // patch_size, img_size // patch_size)
         self.emb_dim = emb_dim
         self.norm_layer = norm_layer(emb_dim) if norm_layer is not None else None
+        self.patches_resolution = (img_size // patch_size, img_size // patch_size)
+        self.num_patches = self.patches_resolution[0] * self.patches_resolution[1]
 
-    def forward(self, x):
+    def forward(self, x):                                    # x -> (B, C, H, W)
         assert len(x.shape) == 4, "only batched 3d tensors supported"
-        assert x.shape[3] == 3, "input tensor has to be in (B, H, W, 3) format"
-        assert x.shape[1] % self.patch_size == 0, "tensor size has to be divisible by patch_size"
+        assert x.shape[1] == 3, "input tensor has to be in (B, 3, H, W) format"
+        assert x.shape[2] % self.patch_size == 0, "tensor size has to be divisible by patch_size"
 
-        permuted_x = x.permute(0, 3, 1, 2)      # -> (B, C, H, W)
-        res = self.patch_conv(permuted_x)
-        res = res.permute(0, 2, 3, 1)           # -> (B, H, W, C)
+        res = self.patch_conv(x)                             # x -> (B, C, H, W)
+        res = res.permute(0, 2, 3, 1).contiguous()           # -> (B, H, W, C)
         if self.norm_layer is not None:
             res = self.norm_layer(res)
 
@@ -180,8 +181,8 @@ class WMSA(nn.Module):
         self.head_dim = input_dim // n_heads
         self.qk_scale = qk_scale or self.head_dim ** -0.5
 
-        self.to_qkv = nn.Conv2d(input_dim, self.n_heads * self.head_dim * 3, 1, bias=qkv_bias)
-        self.to_out = nn.Conv2d(self.n_heads * self.head_dim, input_dim, 1)
+        self.to_qkv = nn.Linear(input_dim, self.n_heads * self.head_dim * 3, bias=qkv_bias)
+        self.to_out = nn.Linear(self.n_heads * self.head_dim, input_dim)
         self.attn_drop = nn.Dropout(attn_drop)
         self.output_drop = nn.Dropout(output_drop)
 
@@ -204,16 +205,16 @@ class WMSA(nn.Module):
         coords_rel[:, :, 0] *= 2 * window_size[1] - 1
         self.relative_position_index = coords_rel.sum(-1)
 
+        trunc_normal_(self.rpb_table, std=.02)
+        self.softmax = nn.Softmax(dim=-1)
+
 
     def forward(self, x, mask=None):
-        x = x.permute(0, 3, 1, 2)               # -> (bW, C, Wh, Ww)
-        bW, c, Wh, Ww = x.shape                 # bW = B * nW
+        bW, Wh, Ww, C = x.shape                              # bW = B * nW
 
-        qkv = self.to_qkv(x).chunk(3, dim=1)    # -> 3 x (bW, C, Wh, Ww)
-
-        q, k, v = map(
-            lambda t: rearrange(t, "b (h d) x y -> b h d (x y)", h=self.n_heads), qkv
-        )
+        qkv = rearrange(self.to_qkv(x), "b x y (c n) -> n b c x y", n=3).contiguous()
+        qkv = rearrange(qkv, "n b (nh hd) x y -> n b nh hd (x y)", nh=self.n_heads)
+        q, k, v = qkv[0], qkv[1], qkv[2]
         q = q * self.qk_scale                                # -> (bW, nH, C, Wh*Ww)  for q, k, v
 
         sim = einsum("b h d i, b h d j -> b h i j", q, k)    # -> (bW, nH, Wh*Ww, Wh*Ww)
@@ -223,22 +224,23 @@ class WMSA(nn.Module):
             self.window_size[0] * self.window_size[1], self.window_size[0] * self.window_size[1], -1   # -> (Wh*Ww, Wh*Ww, nH)
         )
         rpb = rpb.permute(2, 0, 1).contiguous()           # -> (nH, Wh*Ww, Wh*Ww)
-
         sim = sim + rpb.unsqueeze(0)                      # rpb -> (1, nH, Wh*Ww, Wh*Ww)
-        if mask is not None:
-            nW = mask.shape[0]                            # -> n of windows in single image
-            mask = mask.to(sim.device)                    # moving mask to compatible device
-            sim = rearrange(sim, "(b nW) nH i j -> b nW nH i j", nW=nW)
-            sim = sim + mask.unsqueeze(1).unsqueeze(0)    # mask -> (1, nW, 1, Wh*Ww, Wh*Ww)
-            attn = sim.softmax(dim=-1)
-            attn = rearrange(attn, "b nW nH i j -> (b nW) nH i j")
-        else:
-            attn = sim.softmax(dim=-1)
 
-        output = einsum("b h i j, b h d j -> b h i d", attn, v)                 # -> (bW, nH, Wh*Ww, C)
-        output = rearrange(output, "b h (x y) d -> b (h d) x y", x=Wh, y=Ww)    # -> (bW, C, Wh, Ww)
+        if mask is not None:
+            nW = mask.shape[0]                                            # -> n of windows in single image
+            mask = mask.to(sim.device)                                    # moving mask to compatible device
+            sim = rearrange(sim, "(b nW) nH i j -> b nW nH i j", nW=nW)
+            sim = sim + mask.unsqueeze(1).unsqueeze(0)                    # mask -> (1, nW, 1, Wh*Ww, Wh*Ww)
+            sim = rearrange(sim, "b nW nH i j -> (b nW) nH i j")
+            attn = self.softmax(sim)
+        else:
+            attn = self.softmax(sim)
+        attn = self.attn_drop(attn)
+
+        output = einsum("b h i j, b h d j -> b h i d", attn, v)           # -> (bW, nH, Wh*Ww, C)
+        output = rearrange(output, "b h (x y) d -> b x y (h d)", x=Wh, y=Ww).contiguous()
         output = self.to_out(output)
-        output = output.permute(0, 2, 3, 1)                                     # -> (bW, Wh, Ww, C)
+        output = self.output_drop(output)
 
         return output
 
@@ -258,14 +260,14 @@ class PatchMerging(nn.Module):
         self.reduction = nn.Conv2d(input_dim, 2 * input_dim, kernel_size=2, stride=2, bias=False)
         self.norm_layer = norm_layer(input_dim)
 
-    def forward(self, x):           # x -> (B, H, W, C)
+    def forward(self, x):                        # x -> (B, H, W, C)
         x = self.norm_layer(x)
-        x = x.permute(0, 3, 1, 2)   # -> (B, C, H, W)
+        x = x.permute(0, 3, 1, 2).contiguous()   # -> (B, C, H, W)
         x = self.reduction(x)
-        x = x.permute(0, 2, 3, 1)   # -> (B, H, W, C)
+        x = x.permute(0, 2, 3, 1).contiguous()   # -> (B, H, W, C)
 
         return x
-        
+
 
 # ----------------------------------------------- Architectural Blocks ---------------------------------------------------- #
 
@@ -296,7 +298,7 @@ class SwinTransformerBlock(nn.Module):
                  act_layer=nn.GELU, norm_layer=nn.LayerNorm):
         super().__init__()
         self.input_dim = input_dim
-        self.input_resolution = input_resolution 
+        self.input_resolution = input_resolution
         self.n_heads = n_heads
         self.window_size = window_size
         self.shift_size = shift_size
@@ -331,8 +333,7 @@ class SwinTransformerBlock(nn.Module):
         B, H, W, C = x.shape
 
         residual = x
-        x = self.norm1(x.view(B, H*W, C))
-        x = x.view(B, H, W, C)
+        x = self.norm1(x)
 
         # cyclic shift
         if self.shift_size > 0:
@@ -345,19 +346,18 @@ class SwinTransformerBlock(nn.Module):
 
         # WMSA with shifts
         attn_windows = self.attn(x_windows, mask=self.attn_mask)     # -> (bW, Wh, Ww, C)
+        attn_windows = attn_windows.contiguous()
 
         # reverse cyclic shift
         if self.shift_size > 0:
             x_shifted = window_merging(attn_windows, self.window_size, H, W)    # -> (B, H, W, C)
             x = torch.roll(x_shifted, shifts=(self.shift_size, self.shift_size), dims=(1, 2))
         else:
-            shifted_x = window_merging(attn_windows, self.window_size, H, W)    # -> (B, H, W, C)
-            x = shifted_x
+            x_shifted = window_merging(attn_windows, self.window_size, H, W)    # -> (B, H, W, C)
+            x = x_shifted
 
         x = x + residual
-        x = x.view(B, H * W, C)
         x = x + self.drop_path(self.mlp(self.norm2(x)))
-        x = x.view(B, H, W, C)
 
         return x
 
@@ -438,10 +438,12 @@ class SwinTransformer(nn.Module):
         mlp_ratio (float): ratio of MLP hidden dim to embedding dim
         qkv_bias (bool, optional): if True, add a learnable bias to query, key, value
         qk_scale (float, optional): override default qk scale of head_dim ** -0.5 if set
+        pos_drop (float, optional): dropout rate for APE
         mlp_drop (float, optional): MLP dropout rate
         attn_drop (float, optional): attention dropout rate
         drop_path (float | Tuple[float], optional): stochastic depth rate
         norm_layer (nn.Module, optional): normalization to apply after feature extraction
+        ape (bool, optional): whether to use APE
         patch_norm (nn.Module, optional): normalization for PatchEmbedding layer
 
     """
@@ -449,20 +451,29 @@ class SwinTransformer(nn.Module):
     def __init__(self, img_size=224, patch_size=4, input_dim=3, n_classes=1000,
                  emb_dim=96, depths=[2, 2, 6, 2], n_heads=[3, 6, 12, 24],
                  window_size=7, mlp_ratio=4., qkv_bias=True, qk_scale=None,
-                 mlp_drop=0., attn_drop=0., drop_path=0.1,
-                 norm_layer=nn.LayerNorm, patch_norm=True, **kwargs):
+                 pos_drop=0., mlp_drop=0., attn_drop=0., drop_path=0.1,
+                 norm_layer=nn.LayerNorm, ape=False, patch_norm=True, **kwargs):
         super().__init__()
 
         self.n_classes = n_classes
         self.n_layers = len(depths)
         self.emb_dim = emb_dim
         self.patch_norm = patch_norm
+        self.ape = ape
         self.num_features = int(emb_dim * 2 ** (self.n_layers - 1))
         self.mlp_ratio = mlp_ratio
 
         self.patch_embed = PatchEmbedding(patch_size=patch_size, emb_dim=emb_dim,
                                           norm_layer=norm_layer if self.patch_norm else None)
         patches_resolution = self.patch_embed.patches_resolution
+        num_patches = self.patch_embed.num_patches
+
+        # absolute position embedding (APE)
+        if self.ape:
+            self.absolute_pos_emb = nn.Parameter(torch.zeros(1, num_patches, emb_dim))
+            trunc_normal_(self.absolute_pos_emb, std=.02)
+        
+        self.pos_drop = nn.Dropout(p=pos_drop)
 
         # stochastic depth decay
         dpr = [x.item() for x in torch.linspace(0, drop_path, sum(depths))]
@@ -488,12 +499,17 @@ class SwinTransformer(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d(1)
         self.head = nn.Linear(self.num_features, n_classes) if n_classes > 0 else nn.Identity()
 
-        self.apply(self._init_weights)
+        self._init_weights()
 
     def extract_features(self, x):
         x = self.patch_embed(x)                    # -> (B, H, W, C)
+
+        if self.ape:
+            x = x + self.absolute_pos_emb
+        x = self.pos_drop(x)
+
         for layer in self.layers:
-            x = layer(x)                           
+            x = layer(x)
         x = self.norm(x)                           # -> (B, H, W, C)
         x = self.avgpool(x.permute(0, 3, 1, 2))    # -> (B, C, 1, 1)
         x = x.squeeze()                            # -> (B, C)
@@ -506,11 +522,18 @@ class SwinTransformer(nn.Module):
 
         return x
 
-    def _init_weights(self, m):
-        if isinstance(m, nn.Linear):
-            trunc_normal_(m.weight, std=.02)
-            if isinstance(m, nn.Linear) and m.bias is not None:
+    def _init_weights(self):
+        for name, m in self.named_modules():
+            if "downsampling" in name:
+                for layer in m.children():
+                    if isinstance(layer, nn.Conv2d):
+                        trunc_normal_(layer.weight, std=.02)
+                        if layer.bias is not None:
+                            nn.init.constant_(layer.bias, 0)
+            if isinstance(m, nn.Linear):
+                trunc_normal_(m.weight, std=.02)
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.LayerNorm):
                 nn.init.constant_(m.bias, 0)
-        elif isinstance(m, nn.LayerNorm):
-            nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.weight, 1.0)
+                nn.init.constant_(m.weight, 1.0)

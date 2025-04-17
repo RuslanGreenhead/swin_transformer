@@ -4,11 +4,13 @@
 #SBATCH --output=task-%j.log                # Файл для вывода результатов
 #SBATCH --mail-user=ramolokanov@edu.hse.ru
 #SBATCH --mail-type=ALL 
-#SBATCH --time=72:00:00                     # Максимальное время выполнения 
-#SBATCH --cpus-per-task=16                  # Количество CPU на одну задачу
+#SBATCH --time=36:00:00                    # Макс. время выполнения -> 1.5 дня 
+#SBATCH --cpus-per-task=8                   # Количество CPU на одну задачу
 #SBATCH --nodes=1                           # Требуемое кол-во узлов 
-#SBATCH --gpus=2                            # Требуемое кол-во GPU
+#SBATCH --gpus=4                            # Требуемое кол-во GPU
 
-module load Python/Google_Colab_GPU_2024        # Загрузка модуля Anaconda 
+module load Python/Google_Colab_GPU_2024        # Загрузка модуля
+export NGPUS=4
 
-torchrun training.py       # запуск в параллельном режиме
+torchrun --nproc_per_node=$NGPUS training.py    # запуск в параллельном режиме
+# python training.py                                # запуск в стандартном режиме

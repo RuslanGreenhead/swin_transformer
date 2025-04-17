@@ -9,24 +9,61 @@ from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
 
 from timm.data.constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from timm.data import Mixup  # donnow 'bout muxup yet... 
+from timm.data import Mixup
 from timm.data import create_transform
-from timm.data.transforms import _pil_interp
+
+
+def _pil_interp(method):
+    if method == 'bicubic':
+        return transforms.InterpolationMode.BICUBIC
+    elif method == 'lanczos':
+        return transforms.InterpolationMode.LANCZOS
+    elif method == 'hamming':
+        return transforms.InterpolationMode.HAMMING
+    else:
+        return transforms.InterpolationMode.BILINEAR    # default bilinear
 
 
 def build_loaders(cfg):
-    train_set = build_dataset(is_train=True, cfg=cfg['data'])
-    val_set = build_dataset(is_train=False, cfg=cfg['data'])
-
-    train_sampler = torch.utils.data.distributed.DistributedSampler(train_set)
-    val_sampler = torch.utils.data.distributed.DistributedSampler(val_set)
+    train_set, _ = build_dataset(is_train=True, cfg=cfg['dataset'])
+    val_set, _ = build_dataset(is_train=False, cfg=cfg['dataset'])
     
-    train_loader = DataLoader(train_set, batch_size=cfg['training']['batch_size'],
-                              shuffle=False, sampler=train_sampler)
-    val_loader = DataLoader(val_set, batch_size=cfg['training']['batch_size'],
-                            shuffle=False, sampler=val_sampler)
+    train_sampler = torch.utils.data.distributed.DistributedSampler(
+        train_set, shuffle=True
+    )
+    val_sampler = torch.utils.data.distributed.DistributedSampler(
+        val_set, shuffle=cfg['dataset']['test_shuffle']
+    )
+    
+    train_loader = DataLoader(
+        train_set,
+        batch_size=cfg['training']['batch_size'],
+        num_workers=cfg['training']['num_workers'],
+        pin_memory=True,
+        sampler=train_sampler,
+        drop_last=True
+    )
 
-    return train_loader, val_loader
+    val_loader = DataLoader(
+        val_set,
+        batch_size=cfg['training']['batch_size'],
+        num_workers=cfg['training']['num_workers'],
+        pin_memory=True,
+        shuffle=False,
+        sampler=val_sampler,
+        drop_last=False
+    )
+
+    mixup_fn = None
+    if cfg['dataset']['aug']['mixup'] > 0 or cfg['dataset']['aug']['cutmix'] > 0:
+        mixup_fn = Mixup(
+            mixup_alpha=cfg['dataset']['aug']['mixup'], cutmix_alpha=cfg['dataset']['aug']['cutmix'],
+            cutmix_minmax=cfg['dataset']['aug']['cutmix_minmax'], prob=cfg['dataset']['aug']['mixup_prob'],
+            switch_prob=cfg['dataset']['aug']['mixup_switch_prob'], mode=cfg['dataset']['aug']['mixup_mode'],
+            label_smoothing=cfg['dataset']['aug']['label_smoothing'], num_classes=cfg['dataset']['num_classes']
+        )
+
+    return train_loader, val_loader, mixup_fn
 
 
 def build_dataset(cfg, is_train=True):
