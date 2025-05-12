@@ -3,6 +3,21 @@ from torch import nn
 import numpy as np
 
 
+def build_coco_label_index():
+    '''
+    Maps COCO category ID ([1-90] with gaps) to a continuous range [0-79]
+    '''
+    excluded_ids = [12, 26, 29, 30, 45, 66, 68, 69, 71, 83]
+    coco_ids = list(set(range(1, 91)) - set(excluded_ids))
+
+    map_dict =  {id: idx for idx, id in enumerate(coco_ids)}
+    map_tensor = torch.zeros(max(map_dict.keys()) + 1, dtype=torch.long)    #  == int64
+    for k, v in map_dict.items():
+        map_tensor[k] = v
+    
+    return map_tensor
+
+
 def xy_to_cxcy(xy):
 
     return torch.cat([(xy[:, 2:] + xy[:, :2]) / 2,  # c_x, c_y
@@ -11,8 +26,26 @@ def xy_to_cxcy(xy):
 
 def cxcy_to_xy(cxcy):
 
-    return torch.cat([cxcy[:, :2] - (cxcy[:, 2:] / 2),  # x_min, y_min
+    return torch.cat([cxcy[:, :2] - (cxcy[:, 2:] / 2),      # x_min, y_min
                       cxcy[:, :2] + (cxcy[:, 2:] / 2)], 1)  # x_max, y_max
+
+
+def coco_to_xy(coco):
+    '''
+    (x_min, y_min, w, h) -> (x_min, y_min, x_max, y_max)
+    '''
+
+    return torch.cat([coco[:, :2],                          # x_min, y_min
+                      coco[:, :2] + coco[:, 2:]], 1)        # x_max, y_max
+
+
+def coco_to_cxcy(coco):
+    '''
+    (x_min, y_min, w, h) -> (cx, cy, w, h)
+    '''
+
+    return torch.cat([coco[:, :2] + coco[:, 2:] / 2,        # cx, cy
+                      coco[:, 2:]], 1)                      # w, h
 
 
 def cxcy_to_gcxgcy(cxcy, priors_cxcy):
@@ -62,3 +95,23 @@ def calculate_iou(set_1, set_2):
     union = areas_set_1.unsqueeze(1) + areas_set_2.unsqueeze(0) - intersection  # (n1, n2)
 
     return intersection / union  # (n1, n2)
+
+
+class AverageMeter:
+    """
+    Tracker for various metrics & statistics.
+    """
+    def __init__(self):
+        self.reset()
+    
+    def reset(self):
+        self.val = 0
+        self.sum = 0
+        self.count = 0
+        self.mean = 0
+    
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.mean = self.sum / self.count

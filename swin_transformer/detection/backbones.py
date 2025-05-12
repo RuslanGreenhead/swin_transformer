@@ -4,10 +4,14 @@ from torchvision.models import resnet50, ResNet50_Weights
 
 
 class ResNet50Backbone(torch.nn.Module):
-    def __init__(self, weights=ResNet50_Weights.DEFAULT):
+    def __init__(self, weights="IMAGENET_V2"):
         super().__init__()
-        # Load pretrained torchvision ResNet50
-        base_model = resnet50(weights=weights)
+        # Load pure ResNet50
+        base_model = resnet50(weights=None)
+        # Load pretrained weights
+        if weights == "IMAGENET_V2":
+            state_dict = torch.load("../saved_weights/resnet50_statedict.pth")
+            base_model.load_state_dict(state_dict)
 
         # copy base layers (except for fc head)
         self.conv1 = base_model.conv1

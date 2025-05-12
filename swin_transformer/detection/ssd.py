@@ -1,52 +1,11 @@
 import torch
 from torch import nn
+import torch.nn.functional as F
 import numpy as np
 
 from utils import cxcy_to_xy, xy_to_cxcy, cxcy_to_gcxgcy, gcxgcy_to_cxcy
-from utils import calculate_iou
-
-
-def generate_priors(image_size=224):
-    feature_map_dims = [28, 14, 7, 4, 2, 1]  # Approximated for 224x224
-
-    # Scales for each feature map (as fractions of image size)
-    scales = np.empty(len(feature_map_dims))
-    scales[0] = 0.1
-    scales[1:] = np.linspace(0.2, 0.9, len(feature_map_dims) - 1)
-
-    # Aspect ratios per feature map
-    aspect_ratios = [
-        [1.0, 2.0, 0.5],
-        [1.0, 2.0, 3.0, 0.5, 1.0/3],
-        [1.0, 2.0, 3.0, 0.5, 1.0/3],
-        [1.0, 2.0, 3.0, 0.5, 1.0/3],
-        [1.0, 2.0, 0.5],
-        [1.0, 2.0, 0.5],
-    ]
-
-    priors = []
-    for k, fm_dim in enumerate(feature_map_dims):
-        scale = scales[k]
-        scale_next = scales[k + 1] if k + 1 < len(scales) else 1.0
-
-        for i in range(fm_dim):
-            for j in range(fm_dim):
-                cx = (j + 0.5) / fm_dim
-                cy = (i + 0.5) / fm_dim
-
-                for ar in aspect_ratios[k]:
-                    w = scale * np.sqrt(ar)
-                    h = scale / np.sqrt(ar)
-                    priors.append([cx, cy, w, h])
-                    # For aspect ratio 1, add an extra prior with scale = sqrt(s_k * s_{k+1})
-                    if ar == 1.0:
-                        if k < len(feature_map_dims) - 1:
-                            extra_scale = np.sqrt(scale * scale_next)
-                            priors.append([cx, cy, extra_scale, extra_scale])
-
-    priors = np.clip(priors, 0.0, 1.0)
-
-    return np.array(priors)  # shape: (4721, 4)
+from utils import coco_to_cxcy, coco_to_xy
+from utils import calculate_iou, build_coco_label_index
 
 
 class SSD(nn.Module):
@@ -73,9 +32,13 @@ class SSD(nn.Module):
             nn.Conv2d(256, 4 * n_classes, kernel_size=3, padding=1)
         ])
 
+        self.priors_cxcy = self.generate_priors(image_size=input_size)
+
 
     def forward(self, x):
+        print(f"Input shape: {x.shape}")
         feature_maps = self.backbone(x)   # -> [C3 - C8]
+        print(f"FMs shapes: {[x.shape for x in feature_maps]}")
         batch_size = feature_maps[0].size(0)
         bbox_offsets = []
         bbox_scores = []
@@ -97,6 +60,52 @@ class SSD(nn.Module):
         return bbox_offsets, bbox_scores
 
 
+    def generate_priors(self, image_size=224):
+        if image_size == 224:
+            feature_map_dims = [28, 14, 7, 4, 2, 1]  # Approximated for 224x224
+        else:
+            feature_map_dims = None 
+
+        # Scales for each feature map (as fractions of image size)
+        scales = np.empty(len(feature_map_dims))
+        scales[0] = 0.1
+        scales[1:] = np.linspace(0.2, 0.9, len(feature_map_dims) - 1)
+
+        # Aspect ratios per feature map
+        aspect_ratios = [
+            [1.0, 2.0, 0.5],
+            [1.0, 2.0, 3.0, 0.5, 1.0/3],
+            [1.0, 2.0, 3.0, 0.5, 1.0/3],
+            [1.0, 2.0, 3.0, 0.5, 1.0/3],
+            [1.0, 2.0, 0.5],
+            [1.0, 2.0, 0.5],
+        ]
+
+        priors = []
+        for k, fm_dim in enumerate(feature_map_dims):
+            scale = scales[k]
+            scale_next = scales[k + 1] if k + 1 < len(scales) else 1.0
+
+            for i in range(fm_dim):
+                for j in range(fm_dim):
+                    cx = (j + 0.5) / fm_dim
+                    cy = (i + 0.5) / fm_dim
+
+                    for ar in aspect_ratios[k]:
+                        w = scale * np.sqrt(ar)
+                        h = scale / np.sqrt(ar)
+                        priors.append([cx, cy, w, h])
+                        # For aspect ratio 1, add an extra prior with scale = sqrt(s_k * s_{k+1})
+                        if ar == 1.0:
+                            if k < len(feature_map_dims):
+                                extra_scale = np.sqrt(scale * scale_next)
+                                priors.append([cx, cy, extra_scale, extra_scale])
+
+        priors = torch.FloatTensor(np.clip(priors, 0.0, 1.0))    # --> to.(device)
+
+        return priors  # shape: (4722, 4)
+
+
     def detect_objects(self, pred_locs, pred_scores, min_score, max_overlap, top_k):
         """
         Decipher the 8732 locations and class scores (output of ths SSD300) to detect objects.
@@ -112,7 +121,7 @@ class SSD(nn.Module):
         batch_size = pred_locs.size(0)
         n_priors = self.priors_cxcy.size(0)
         pred_scores = F.softmax(pred_scores, dim=2)  # (N, 4721, n_classes)
-        device = pred_locs.device()
+        device = pred_locs.device
 
         # Lists to store final predicted boxes, labels, and scores for all images
         all_images_boxes = list()
@@ -212,12 +221,17 @@ class MultiBoxLoss(nn.Module):
 
         self.smooth_l1 = nn.L1Loss()  # *smooth* L1 loss in the paper; see Remarks section in the tutorial
         self.cross_entropy = nn.CrossEntropyLoss(reduce=False)
+        self.id_to_idx = build_coco_label_index()
 
     def forward(self, pred_locs, pred_scores, gt_boxes, gt_labels):
         batch_size = pred_locs.size(0)
         n_priors = self.priors_cxcy.size(0)
         n_classes = pred_scores.size(2)
-        device = pred_locs.device()
+        device = pred_locs.device
+
+        # print(n_priors, pred_locs.shape, pred_scores.shape)
+        # print(f"{gt_labels=}")
+        gt_labels = [self.id_to_idx[img_labels] for img_labels in gt_labels]
 
         assert n_priors == pred_locs.size(1) == pred_scores.size(1)
 
@@ -245,7 +259,7 @@ class MultiBoxLoss(nn.Module):
             true_classes[i] = label_for_each_prior
 
             # Encode center-size object coordinates into the form we regressed predicted boxes to
-            true_locs[i] = cxcy_to_gcxgcy(xy_to_cxcy(gt_boxes[i][object_for_each_prior]), self.priors_cxcy)  # (4721, 4)
+            true_locs[i] = cxcy_to_gcxgcy(coco_to_cxcy(gt_boxes[i][object_for_each_prior]), self.priors_cxcy)  # (4721, 4)
 
         positive_priors = true_classes != 0  # (N, 8732)
 
