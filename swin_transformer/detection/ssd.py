@@ -33,6 +33,7 @@ class SSD(nn.Module):
         ])
 
         self.priors_cxcy = self.generate_priors(image_size=input_size)
+        self.id_to_idx = build_coco_label_index()
 
 
     def forward(self, x):
@@ -108,7 +109,7 @@ class SSD(nn.Module):
 
     def detect_objects(self, pred_locs, pred_scores, min_score, max_overlap, top_k):
         """
-        Decipher the 8732 locations and class scores (output of ths SSD300) to detect objects.
+        Decipher the 4722 locations and class scores (output of ths SSD300) to detect objects.
         For each class, perform Non-Maximum Suppression (NMS) on boxes that are above a minimum threshold.
 
         :predicted_locs: predicted locations/boxes w.r.t the 8732 prior boxes, a tensor of dimensions (N, 8732, 4)
@@ -148,7 +149,7 @@ class SSD(nn.Module):
                 n_above_min_score = score_above_min_score.sum().item()
                 if n_above_min_score == 0:
                     continue
-                class_scores = class_scores[score_above_min_score]  # (n_qualified), n_min_score <= 8732
+                class_scores = class_scores[score_above_min_score]        # (n_qualified), n_min_score <= 4722
                 class_decoded_locs = decoded_locs[score_above_min_score]  # (n_qualified, 4)
 
                 # Sort predicted boxes and scores by scores
