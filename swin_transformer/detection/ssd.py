@@ -34,12 +34,13 @@ class SSD(nn.Module):
 
         self.priors_cxcy = self.generate_priors(image_size=input_size)
         self.id_to_idx = build_coco_label_index()
+        self._init_head_convs()
 
 
     def forward(self, x):
-        print(f"Input shape: {x.shape}")
+        # print(f"Input shape: {x.shape}")
         feature_maps = self.backbone(x)   # -> [C3 - C8]
-        print(f"FMs shapes: {[x.shape for x in feature_maps]}")
+        # print(f"FMs shapes: {[x.shape for x in feature_maps]}")
         batch_size = feature_maps[0].size(0)
         bbox_offsets = []
         bbox_scores = []
@@ -132,7 +133,7 @@ class SSD(nn.Module):
         assert n_priors == pred_locs.size(1) == pred_scores.size(1)
 
         for i in range(batch_size):
-            decoded_locs = cxcy_to_xy(gcxgcy_to_cxcy(pred_locs[i], self.priors_cxcy))  # (4721, 4)
+            decoded_locs = cxcy_to_xy(gcxgcy_to_cxcy(pred_locs[i], self.priors_cxcy.to(device)))  # (4721, 4)
 
             # Lists to store boxes and scores for this image
             image_boxes = list()
@@ -211,6 +212,16 @@ class SSD(nn.Module):
         return all_images_boxes, all_images_labels, all_images_scores  # lists of length batch_size
 
 
+    def _init_head_convs(self):
+        for name, module in self.named_modules():
+            if ("score_convs" in name) or ("location_convs" in name):
+                for m in module.modules():
+                    if isinstance(m, nn.Conv2d):
+                        nn.init.xavier_uniform_(m.weight)
+                        if m.bias is not None:
+                            nn.init.zeros_(m.bias)
+
+
 class MultiBoxLoss(nn.Module):
     def __init__(self, priors_cxcy, threshold=0.5, neg_pos_ratio=3, alpha=1.):
         super(MultiBoxLoss, self).__init__()
@@ -220,7 +231,7 @@ class MultiBoxLoss(nn.Module):
         self.neg_pos_ratio = neg_pos_ratio
         self.alpha = alpha
 
-        self.smooth_l1 = nn.L1Loss()  # *smooth* L1 loss in the paper; see Remarks section in the tutorial
+        self.smooth_l1 = nn.SmoothL1Loss()  # *smooth* L1 loss in the paper; see Remarks section in the tutorial
         self.cross_entropy = nn.CrossEntropyLoss(reduce=False)
         self.id_to_idx = build_coco_label_index()
 
@@ -230,10 +241,6 @@ class MultiBoxLoss(nn.Module):
         n_classes = pred_scores.size(2)
         device = pred_locs.device
 
-        # print(n_priors, pred_locs.shape, pred_scores.shape)
-        # print(f"{gt_labels=}")
-        gt_labels = [self.id_to_idx[img_labels] for img_labels in gt_labels]
-
         assert n_priors == pred_locs.size(1) == pred_scores.size(1)
 
         true_locs = torch.zeros((batch_size, n_priors, 4), dtype=torch.float).to(device)  # (N, 4721, 4)
@@ -242,8 +249,11 @@ class MultiBoxLoss(nn.Module):
         # For each image
         for i in range(batch_size):
             n_objects = gt_boxes[i].size(0)
+            # If image contains no objects -> skip it
+            if n_objects == 0: 
+                continue
 
-            overlap = calculate_iou(gt_boxes[i], self.priors_xy)                 # (n_objects, 8732)
+            overlap = calculate_iou(gt_boxes[i], self.priors_xy.to(device))                 # (n_objects, 8732)
             overlap_for_each_prior, object_for_each_prior = overlap.max(dim=0)   # (4721)
 
             _, prior_for_each_object = overlap.max(dim=1)                        # (n_objects)
@@ -260,17 +270,20 @@ class MultiBoxLoss(nn.Module):
             true_classes[i] = label_for_each_prior
 
             # Encode center-size object coordinates into the form we regressed predicted boxes to
-            true_locs[i] = cxcy_to_gcxgcy(coco_to_cxcy(gt_boxes[i][object_for_each_prior]), self.priors_cxcy)  # (4721, 4)
+            true_locs[i] = cxcy_to_gcxgcy(coco_to_cxcy(gt_boxes[i][object_for_each_prior]), self.priors_cxcy.to(device))  # (4721, 4)
 
-        positive_priors = true_classes != 0  # (N, 8732)
+        positive_priors = true_classes != 0                           # (N, 8732)
+        n_positives = positive_priors.sum(dim=1)                      # (N)
+        n_positives_clamped = n_positives.clamp(min=1.).float()
+        n_hard_negatives = self.neg_pos_ratio * n_positives_clamped   # (N)
 
         # LOCALIZATION LOSS
-        loc_loss = self.smooth_l1(pred_locs[positive_priors], true_locs[positive_priors])  # (), scalar
+        if n_positives.sum() > 0:
+            loc_loss = self.smooth_l1(pred_locs[positive_priors], true_locs[positive_priors])  # (), scalar
+        else:
+            loc_loss = torch.tensor(0., device=device)
 
         # CONFIDENCE LOSS
-        n_positives = positive_priors.sum(dim=1)  # (N)
-        n_hard_negatives = self.neg_pos_ratio * n_positives  # (N)
-
         conf_loss_all = self.cross_entropy(pred_scores.view(-1, n_classes), true_classes.view(-1))  # (N * 8732)
         conf_loss_all = conf_loss_all.view(batch_size, n_priors)                                    # (N, 8732)
         conf_loss_pos = conf_loss_all[positive_priors]  # (sum(n_positives))
@@ -283,7 +296,7 @@ class MultiBoxLoss(nn.Module):
         conf_loss_hard_neg = conf_loss_neg[hard_negatives]  # (sum(n_hard_negatives))
 
         # As in the paper, averaged over positive priors only, although computed over both positive and hard-negative priors
-        conf_loss = (conf_loss_hard_neg.sum() + conf_loss_pos.sum()) / n_positives.sum().float()  # (), scalar
+        conf_loss = (conf_loss_hard_neg.sum() + conf_loss_pos.sum()) / n_positives_clamped.sum()  # (), scalar
 
         return conf_loss + self.alpha * loc_loss
 

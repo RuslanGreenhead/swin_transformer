@@ -70,30 +70,30 @@ def build_loaders(cfg):
     train_set, _ = build_dataset(is_train=True, cfg=cfg['dataset'])
     val_set, _ = build_dataset(is_train=False, cfg=cfg['dataset'])
     
-    """ train_sampler = torch.utils.data.distributed.DistributedSampler(
+    train_sampler = torch.utils.data.distributed.DistributedSampler(
         train_set, shuffle=True
     )
     val_sampler = torch.utils.data.distributed.DistributedSampler(
         val_set, shuffle=cfg['dataset']['test_shuffle']
-    ) """
+    )
     
     train_loader = DataLoader(
         train_set,
-        batch_size=cfg['training']['batch_size'],
-        num_workers=cfg['training']['num_workers'],
+        batch_size=cfg['train']['batch_size'],
+        num_workers=cfg['train']['num_workers'],
         pin_memory=True,
-        # sampler=train_sampler,
+        sampler=train_sampler,
         drop_last=True,
         collate_fn=collate_coco
     )
 
     val_loader = DataLoader(
         val_set,
-        batch_size=cfg['training']['batch_size'],
-        num_workers=cfg['training']['num_workers'],
+        batch_size=cfg['train']['batch_size'],
+        num_workers=cfg['train']['num_workers'],
         pin_memory=True,
         shuffle=False,
-        # sampler=val_sampler,
+        sampler=val_sampler,
         drop_last=False,
         collate_fn=collate_coco
     )
@@ -119,11 +119,13 @@ def build_dataset(cfg, is_train=True):
 
 def build_transform(cfg, train=True):
     if train:
-        transform = A.Compose([
+        """ transform = A.Compose([
             A.OneOf([
                 A.RandomResizedCrop(224, 224, scale=(0.5, 1.0), ratio=(0.75, 1.33), p=0.7),
                 A.Resize(224, 224, p=0.3),
             ], p=1.0),
+            
+            
             A.HorizontalFlip(p=0.5),
             A.ShiftScaleRotate(shift_limit=0.0625, scale_limit=0.1, rotate_limit=10, border_mode=0, p=0.5),
             A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1, p=0.5),
@@ -137,16 +139,27 @@ def build_transform(cfg, train=True):
                 min_holes=1, min_height=16, min_width=16,
                 fill_value=0  # fill with black
             ),
+           
             A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
         ],
-        bbox_params=A.BboxParams(format='coco', min_area=1, min_visibility=0.2, label_fields=['category_ids'])
-        )
+        bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids'])
+        ) """
+
+        transform = A.Compose([
+            A.OneOf([
+                A.RandomResizedCrop(224, 224, scale=(0.5, 1.0), ratio=(0.75, 1.33), p=0.7),
+                A.Resize(224, 224, p=0.3),
+            ], p=1.0),
+            A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+        ],
+        bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids'])
+        ) 
     else:
         transform = A.Compose([
             A.Resize(224, 224),
             A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
         ],
-        bbox_params=A.BboxParams(format='coco', min_area=1, min_visibility=0.0, label_fields=['category_ids'])
+        bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.0, label_fields=['category_ids'])
         )
     
     return transform

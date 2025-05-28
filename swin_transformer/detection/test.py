@@ -8,7 +8,7 @@ from ssd import SSD, MultiBoxLoss
 from backbones import ResNet50Backbone
 from utils import calculate_coco_mAP, coco_to_xy, gcxgcy_to_cxcy, cxcy_to_xy
 
-CONFIG_PATH = "../configs/detection_default.yaml"
+CONFIG_PATH = "../configs/detection_ssd_resnet50.yaml"
 
 def load_config(cfg_path):
     with open(cfg_path, 'r') as f:
@@ -19,9 +19,9 @@ def load_config(cfg_path):
 if __name__ == "__main__":
     cfg = load_config(CONFIG_PATH)
     train_loader, val_loader = build_loaders(cfg)
-    model = SSD(backbone=ResNet50Backbone(weights=cfg['model']['backbone_weights']), n_classes=cfg['model']['n_classes'])
+    """ model = SSD(backbone=ResNet50Backbone(weights=cfg['model']['backbone_weights']), n_classes=cfg['model']['n_classes'])
     model.train()
-    criterion = MultiBoxLoss(model.priors_cxcy)
+    criterion = MultiBoxLoss(model.priors_cxcy) """
 
     """ for i, (images, boxes, labels) in enumerate(train_loader):
         print("--> iteraion ", i)
@@ -45,9 +45,22 @@ if __name__ == "__main__":
         print("Backward performed!") """
     
     print("Validation:")
-    model.eval()
+    # model.eval()
 
-    for i, (images, boxes, labels) in enumerate(val_loader):
+    no_objects_images = 0
+    all_images = 0
+
+    for i, (images, boxes, labels) in enumerate(train_loader):
+
+        boxes_lens = torch.tensor([len(img_boxes) for img_boxes in boxes])
+        no_objects_images += (boxes_lens == 0).sum()
+        all_images += len(boxes_lens)
+        print(f"{no_objects_images=}    batch {i+1}/{len(train_loader)}", flush=True)
+
+
+        """ if i == 0: continue
+        elif i == 3: break
+
         pred_locs, pred_scores = model(images)
         batch_boxes, batch_labels, batch_scores = model.detect_objects(pred_locs, pred_scores, 
                                                                        min_score=0.5, max_overlap=0.5, top_k=5)
@@ -56,12 +69,16 @@ if __name__ == "__main__":
         print(f"{batch_boxes[0].shape=}, {boxes[0].shape=}")
         labels = [model.id_to_idx[img_labels] for img_labels in labels]                   # labels to continious range
 
-        torch.save(batch_boxes, "batch_boxes.pth")
-        torch.save(batch_labels, "batch_labels.pth")
-        torch.save(batch_scores, "batch_scores.pth")
-        torch.save(boxes, "boxes.pth")
-        torch.save(labels, "lablels.pth") 
+        torch.save(batch_boxes, f"batch_boxes_{i}.pth")
+        torch.save(batch_labels, f"batch_labels_{i}.pth")
+        torch.save(batch_scores, f"batch_scores_{i}.pth")
+        torch.save(boxes, f"boxes_{i}.pth")
+        torch.save(labels, f"lablels_{i}.pth") 
         mAP = calculate_coco_mAP(batch_boxes, batch_labels, batch_scores, boxes, labels)
 
-        print("Manually calculated mAP: ", mAP)
-        break
+        print("Manually calculated mAP: ", mAP) """
+
+    print("Train Images with no boxes:", no_objects_images)
+    print("Total train images:", all_images)
+
+        

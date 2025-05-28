@@ -1,22 +1,9 @@
 import torch
 from torch import nn
 import numpy as np
+# from torchmetrics.detection import MeanAveragePrecision
 
-
-def build_coco_label_index():
-    '''
-    Maps COCO category ID ([1-90] with gaps) to a continuous range [0-79]
-    '''
-    excluded_ids = [12, 26, 29, 30, 45, 66, 68, 69, 71, 83]
-    coco_ids = list(set(range(1, 91)) - set(excluded_ids))
-
-    map_dict =  {id: idx for idx, id in enumerate(coco_ids)}
-    map_tensor = torch.zeros(max(map_dict.keys()) + 1, dtype=torch.long)    #  == int64
-    for k, v in map_dict.items():
-        map_tensor[k] = v
-    
-    return map_tensor
-
+# -------------------------------------------------------- Bounding-boxes issues -------------------------------------------------------- #
 
 def xy_to_cxcy(xy):
 
@@ -69,6 +56,10 @@ def find_intersection(set_1, set_2):
     :return: intersection of each of the boxes in set 1 with respect to each of the boxes in set 2, a tensor of dimensions (n1, n2)
     """
 
+    if len(set_1.shape) + len(set_2.shape) < 4:
+        print(f"{set_1.shape=}, {set_2.shape=}")
+        print(f"{set_1=}")
+
     # PyTorch auto-broadcasts singleton dimensions
     lower_bounds = torch.max(set_1[:, :2].unsqueeze(1), set_2[:, :2].unsqueeze(0))  # (n1, n2, 2)
     upper_bounds = torch.min(set_1[:, 2:].unsqueeze(1), set_2[:, 2:].unsqueeze(0))  # (n1, n2, 2)
@@ -97,37 +88,33 @@ def calculate_iou(set_1, set_2):
     return intersection / union  # (n1, n2)
 
 
-class AverageMeter:
-    """
-    Tracker for various metrics & statistics.
-    """
-    def __init__(self):
-        self.reset()
-    
-    def reset(self):
-        self.val = 0
-        self.sum = 0
-        self.count = 0
-        self.mean = 0
-    
-    def update(self, val, n=1):
-        self.val = val
-        self.sum += val * n
-        self.count += n
-        self.mean = self.sum / self.count
+# ---------------------------------------------------------- Metric issues ---------------------------------------------------------- #
 
-
-def calculate_AP(recalls, precisions):
+def calculate_AP(recalls, precisions, interpolation_mode="all_points"):
     """
-    Compute Average Precision (AP) using 11-point interpolation.
+    Compute Average Precision (AP) using various interpolations.
     recall, precision are 1D tensors sorted by recall ascending.
     """
-    
-    recall_levels = torch.linspace(0, 1, 11)
-    ap = 0.0
-    for t in recall_levels:
-        p = precisions[recalls >= t].max() if (recalls >= t).any() else 0
-        ap += p / 11
+
+    if interpolation_mode == "11_points":
+        recall_levels = torch.linspace(0, 1, 11)
+        ap = 0.0
+        for t in recall_levels:
+            p = precisions[recalls >= t].max() if (recalls >= t).any() else 0
+            ap += p / 11
+
+    elif interpolation_mode == "all_points":
+        # Create list of "postfix maximums" for precisions
+        max_prec = precisions.clone()
+        for i in range(max_prec.size(0) - 2, -1, -1):
+            max_prec[i] = torch.maximum(max_prec[i], max_prec[i + 1])
+
+        indices = torch.where(recalls[1:] != recalls[:-1])[0]
+
+        ap = 0.0
+        for i in indices:
+            ap += ((recalls[i + 1] - recalls[i]) * max_prec[i + 1])
+            # ap += (recalls[i + 1] - recalls[i]) * precisions[i + 1:].max() # -> но тут минус, что AP будет считаться за О(N)!
 
     return ap.item()
 
@@ -139,8 +126,8 @@ def calculate_mAP(det_boxes, det_labels, det_scores,
 
     Arguments:
         det_boxes: list of tensors of shape (n_detections, 4), each describing single image
-        det_labels: list of tensors of shape (n_detections,), each describing single image  
-        det_scores: list of tensors of shape (n_detections,), each describing single image  
+        det_labels: list of tensors of shape (n_detections,), each describing single image
+        det_scores: list of tensors of shape (n_detections,), each describing single image
         true_boxes: list of tensors of shape (n_objects, 4), each describing single image
         true_labels: list of tensors of shape (n_objects,), each describing single image
 
@@ -149,8 +136,8 @@ def calculate_mAP(det_boxes, det_labels, det_scores,
         (dict): [c: v] -> AP value (v) for each class (c)
     """
     if n_classes is None:
-        n_classes = int(torch.cat(true_labels).max().item()) + 1  
-    device = det_boxes[0].device  
+        n_classes = int(torch.cat(true_labels).max().item()) + 1
+    device = det_boxes[0].device
 
     assert len(det_boxes) == len(det_labels) == len(det_scores) == len(true_boxes) == len(true_labels)
 
@@ -204,11 +191,12 @@ def calculate_mAP(det_boxes, det_labels, det_scores,
                 false_positives[d] = 1
                 continue
 
-            overlaps = calculate_iou(this_detection_box, object_boxes)    # (1, n_class_objects_in_img)
+            overlaps = calculate_iou(this_detection_box, object_boxes)
             max_overlap, idx = torch.max(overlaps.squeeze(0), dim=0)      # (), () - scalars
             # Нам нужно дополнрительно хранить оригинальный ID (ID в общем пуле детекций), так как считали IoU и выбирали из результатов максимальный
             # мы только из детекций одного конкретного изображение (и, соответствено, получили ID в рамках этого изображения):
-            original_idx = torch.LongTensor(range(true_class_boxes.size(0)))[true_class_images == this_image][idx]
+            original_idx = torch.LongTensor(range(true_class_boxes.size(0))).to(device)
+            original_idx = original_idx[true_class_images == this_image][idx]
 
             if max_overlap.item() > iou_threshold:
                 # If this object has already not been detected, it's a true positive
@@ -229,9 +217,9 @@ def calculate_mAP(det_boxes, det_labels, det_scores,
         recalls = tp_cum / max(len(true_class_boxes), 1)
         precisions = tp_cum / (tp_cum + fp_cum + 1e-10)
 
-        # Add (0,1) point for recall and precision to complete curve
-        recalls = torch.cat((torch.tensor([0.0]), recalls))
-        precisions = torch.cat((torch.tensor([1.0]), precisions))
+        # Add (0,1) and (1, 0) points for recall and precision to complete the curve
+        recalls = torch.cat((torch.tensor([0.0]).to(device), recalls, torch.tensor([1.0]).to(device)))
+        precisions = torch.cat((torch.tensor([1.0]).to(device), precisions, torch.tensor([0.0]).to(device)))
 
         # Compute AP for this class
         ap = calculate_AP(recalls, precisions)
@@ -253,11 +241,78 @@ def calculate_coco_mAP(det_boxes, det_labels, det_scores,
     aps = []
 
     for t in ious:
-        mean_ap, ap_per_class = calculate_mAP(det_boxes, det_labels, det_scores,
-                                              true_boxes, true_labels, iou_threshold=t, n_classes=80)
+        mean_ap, _ = calculate_mAP(det_boxes, det_labels, det_scores,
+                                   true_boxes, true_labels, iou_threshold=t, n_classes=n_classes)
         aps.append(mean_ap)
 
     coco_map = sum(aps) / len(aps)
-    # print(f"COCO-style mAP @[0.5:0.95]: {coco_map:.4f}")
 
     return coco_map
+
+
+def calculate_coco_mAP_tm(det_boxes, det_labels, det_scores,
+                          true_boxes, true_labels, n_classes=80):
+    """
+    Calculate COCO-style mAP using torchmetrics instrument
+    """
+
+    preds = [
+        {
+            "boxes": det_boxes[i],      # Tensor of shape [num_detections, 4]
+            "scores": det_scores[i],    # Tensor of shape [num_detections]
+            "labels": det_labels[i],    # Tensor of shape [num_detections]
+        }
+        for i in range(len(det_boxes))
+    ]
+
+    targets = [
+        {
+            "boxes": true_boxes[i],     # Tensor of shape [num_true_boxes, 4]
+            "labels": true_labels[i],   # Tensor of shape [num_true_boxes]
+        }
+        for i in range(len(true_boxes))
+    ]
+
+
+    """ metric = MeanAveragePrecision(iou_type="bbox", box_format="xyxy")  # assuming boxes are in xyxy format
+    metric.update(preds, targets)
+    results = metric.compute()
+
+    return results["map"].item() """
+
+
+# ---------------------------------------------------------- Other ---------------------------------------------------------- #
+
+def build_coco_label_index():
+    '''
+    Maps COCO category ID ([1-90] with gaps) to a continuous range [0-79]
+    '''
+    excluded_ids = [12, 26, 29, 30, 45, 66, 68, 69, 71, 83]
+    coco_ids = list(set(range(1, 91)) - set(excluded_ids))
+
+    map_dict =  {id: idx for idx, id in enumerate(coco_ids)}
+    map_tensor = torch.zeros(max(map_dict.keys()) + 1, dtype=torch.long)    #  == int64
+    for k, v in map_dict.items():
+        map_tensor[k] = v
+    
+    return map_tensor
+
+
+class AverageMeter:
+    """
+    Tracker for various metrics & statistics.
+    """
+    def __init__(self):
+        self.reset()
+    
+    def reset(self):
+        self.val = 0
+        self.sum = 0
+        self.count = 0
+        self.avg = 0
+    
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count

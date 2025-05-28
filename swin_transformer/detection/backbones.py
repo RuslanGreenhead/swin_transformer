@@ -10,7 +10,7 @@ class ResNet50Backbone(torch.nn.Module):
         base_model = resnet50(weights=None)
         # Load pretrained weights
         if weights == "IMAGENET_V2":
-            state_dict = torch.load("../saved_weights/resnet50_statedict.pth")
+            state_dict = torch.load("../saved_weights/resnet50_statedict.pth", weights_only=True)
             base_model.load_state_dict(state_dict)
 
         # copy base layers (except for fc head)
@@ -25,24 +25,33 @@ class ResNet50Backbone(torch.nn.Module):
 
         self.aux1 = nn.Sequential(
             nn.Conv2d(2048, 512, kernel_size=1),
+            nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
             nn.Conv2d(512, 1024, kernel_size=3, stride=2, padding=1),
+            nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True)
         )  # output: 4x4x1024 (approximate due to stride 2)
 
         self.aux2 = nn.Sequential(
             nn.Conv2d(1024, 256, kernel_size=1),
+            nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
             nn.Conv2d(256, 512, kernel_size=3, stride=2, padding=1),
+            nn.BatchNorm2d(512),
             nn.ReLU(inplace=True)
         )  # output: 2x2x512
 
         self.aux3 = nn.Sequential(
             nn.Conv2d(512, 128, kernel_size=1),
+            nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
             nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1),
+            nn.BatchNorm2d(256),
             nn.ReLU(inplace=True)
         )  # output: 1x1x256
+
+        self._init_auxilary_layers()
+
 
     def forward(self, x):
         x = self.conv1(x)
@@ -60,6 +69,16 @@ class ResNet50Backbone(torch.nn.Module):
 
         # return {"c3": c3, "c4": c4, "c5": c5, "c6": c6, "c7": c7, "c8": c8}
         return c3, c4, c5, c6, c7, c8
+    
+
+    def _init_auxilary_layers(self):
+        for name, module in self.named_modules():
+            if "aux" in name:
+                for m in module.modules():
+                    if isinstance(m, (nn.Conv2d, nn.Linear)):
+                        nn.init.xavier_uniform_(m.weight)
+                        if m.bias is not None:
+                            nn.init.zeros_(m.bias)
 
 
 if __name__ == "__main__":
