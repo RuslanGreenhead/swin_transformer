@@ -4,8 +4,8 @@
 #SBATCH --output=task-%j.log                # Файл для вывода результатов
 #SBATCH --mail-user=ramolokanov@edu.hse.ru
 #SBATCH --mail-type=ALL 
-#SBATCH --time=36:00:00                    # Макс. время выполнения -> 1.5 дня 
-#SBATCH --cpus-per-task=8                   # Количество CPU на одну задачу
+#SBATCH --time=600:00:00                    # Макс. время выполнения -> 25 суток 
+#SBATCH --cpus-per-task=16                  # 4 gpus -> 16 cpus; 2 gpus - 8 cpus (maintain 1/4 ratio)
 #SBATCH --nodes=1                           # Требуемое кол-во узлов 
 #SBATCH --gpus=4                            # Требуемое кол-во GPU
 

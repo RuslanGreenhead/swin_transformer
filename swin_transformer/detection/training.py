@@ -325,9 +325,9 @@ def main(cfg):
     ddp_setup()
 
     # learning rates scaling (according to total batch size of 128 -- for ResNet)
-    linear_scaled_lr = cfg['train']['initial_lr'] * cfg['train']['batch_size'] * get_world_size() / 128.0
-    linear_scaled_warmup_lr = cfg['train']['warmup_lr'] * cfg['train']['batch_size'] * get_world_size() / 128.0
-    linear_scaled_min_lr = cfg['train']['min_lr'] * cfg['train']['batch_size'] * get_world_size() / 128.0
+    linear_scaled_lr = cfg['train']['initial_lr'] * cfg['train']['batch_size'] * get_world_size() / 32.0
+    linear_scaled_warmup_lr = cfg['train']['warmup_lr'] * cfg['train']['batch_size'] * get_world_size() / 32.0
+    linear_scaled_min_lr = cfg['train']['min_lr'] * cfg['train']['batch_size'] * get_world_size() / 32.0
     if cfg['train']['accumulation_steps'] > 1:
         linear_scaled_lr = linear_scaled_lr * cfg['train']['accumulation_steps']
         linear_scaled_warmup_lr = linear_scaled_warmup_lr * cfg['train']['accumulation_steps']

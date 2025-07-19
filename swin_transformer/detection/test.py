@@ -56,6 +56,14 @@ if __name__ == "__main__":
         no_objects_images += (boxes_lens == 0).sum()
         all_images += len(boxes_lens)
         print(f"{no_objects_images=}    batch {i+1}/{len(train_loader)}", flush=True)
+        
+        torch.save({
+            "images": images,
+            "boxes": boxes,
+            "labels": labels
+        }, "coco_batch.pth")
+
+        break
 
 
         """ if i == 0: continue

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name="SwinT_clf_imagenet"     # Название задачи 
+#SBATCH --job-name="SwinT_det_COCO"     # Название задачи 
 #SBATCH --error=task-%j.err                 # Файл для вывода ошибок 
 #SBATCH --output=task-%j.log                # Файл для вывода результатов
 #SBATCH --mail-user=ramolokanov@edu.hse.ru

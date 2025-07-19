@@ -1,0 +1,32 @@
+# Standard Swin-T classification config
+model:
+  backbone: "resnet50"
+  backbone_weights: "IMAGENET_V2"
+  n_classes: 80
+
+train:
+  num_epochs: 65
+  warmup_epochs: 1
+  accumulation_steps: 1
+  weight_decay: 0.0005
+  initial_lr: 0.001       # 1e-3 
+  momentum: 0.9
+  warmup_lr: 0.00001      # 1e-5
+  lr_decay_rate: 0.1
+  warmup_prefix: True
+  max_grad_norm: 5.0        # no gradient clipping
+  min_lr: 0               # just for code compatibility, not needed here
+  
+  batch_size: 8          # (4 gpus) * (32 per each) --> 128 (total)  | changed to 8 for experiment
+  batch_interval: 200     # with total bs=128 -> we have ~2570 batches   
+  num_workers: 8          # 8 regardless of number of CPUs/GPUs
+  save_every: 15
+  snapshot_path: 'model_snapshot.pth'
+
+dataset:
+  name: "COCO-2020"
+  root: "/opt/software/datasets/COCO" 
+  img_size: 224
+  n_classes: 80
+  test_crop: True      # whether to crop images for test
+  test_shuffle: False  # whether to shuffle images for test

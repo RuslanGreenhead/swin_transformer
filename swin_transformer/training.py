@@ -2,11 +2,6 @@ import torch
 import torch.nn as nn
 from torch.distributed import init_process_group, destroy_process_group, get_world_size
 from torch.nn.parallel import DistributedDataParallel as DDP
-from torchvision import transforms
-from torchvision.datasets import ImageFolder
-from torch.utils.data import DataLoader
-from torch.optim.lr_scheduler import SequentialLR, LinearLR, CosineAnnealingLR
-import torch.multiprocessing as mp
 from timm.scheduler.cosine_lr import CosineLRScheduler
 from timm.loss import SoftTargetCrossEntropy
 import time
@@ -221,6 +216,7 @@ class TrainerCLF:
 
     def validate(self, epoch):
         self.model.eval()
+        total_samples = 0
         total_correct = 0
         total_top5_correct = 0
         total_loss = 0
@@ -237,6 +233,7 @@ class TrainerCLF:
                 loss = val_criterion(outputs, labels)
                 _, preds = torch.max(outputs, dim=1)
                 total_loss += loss.item()
+                total_samples += len(labels)
                 total_correct += (preds == labels).sum().item()
 
                 _, top5_indices = torch.topk(outputs, k=5, dim=1)
@@ -244,9 +241,9 @@ class TrainerCLF:
                     if labels[i] in top5_indices[i]:
                         total_top5_correct += 1
             
-        val_top1_accuracy = total_correct / len(self.val_loader.dataset)
-        val_top5_accuracy = total_top5_correct / len(self.val_loader.dataset)
-        val_loss = total_loss / len(self.val_loader.dataset)
+        val_top1_accuracy = total_correct / total_samples
+        val_top5_accuracy = total_top5_correct / total_samples
+        val_loss = total_loss / total_samples
             
         # writing stats
         self.stats['val_losses'][epoch] = val_loss

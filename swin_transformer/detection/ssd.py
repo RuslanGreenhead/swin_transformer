@@ -57,7 +57,7 @@ class SSD(nn.Module):
         # print(f"{[x.shape for x in bbox_scores]=}")
         # input()
         bbox_offsets = torch.cat(bbox_offsets, axis=1)
-        bbox_scores = torch.cat(bbox_scores, axis=1)
+        # bbox_scores = torch.cat(bbox_scores, axis=1)
 
         return bbox_offsets, bbox_scores
 
@@ -253,7 +253,7 @@ class MultiBoxLoss(nn.Module):
             if n_objects == 0: 
                 continue
 
-            overlap = calculate_iou(gt_boxes[i], self.priors_xy.to(device))                 # (n_objects, 8732)
+            overlap = calculate_iou(gt_boxes[i], self.priors_xy.to(device))                 # (n_objects, 4721)
             overlap_for_each_prior, object_for_each_prior = overlap.max(dim=0)   # (4721)
 
             _, prior_for_each_object = overlap.max(dim=1)                        # (n_objects)
@@ -264,7 +264,7 @@ class MultiBoxLoss(nn.Module):
 
             # Labels for each prior
             label_for_each_prior = gt_labels[i][object_for_each_prior]          # (4721)
-            label_for_each_prior[overlap_for_each_prior < self.threshold] = 0   # (4721)
+            label_for_each_prior[overlap_for_each_prior < self.threshold] = 0   # (4721) -> background ID
 
             # Store
             true_classes[i] = label_for_each_prior
@@ -272,7 +272,7 @@ class MultiBoxLoss(nn.Module):
             # Encode center-size object coordinates into the form we regressed predicted boxes to
             true_locs[i] = cxcy_to_gcxgcy(coco_to_cxcy(gt_boxes[i][object_for_each_prior]), self.priors_cxcy.to(device))  # (4721, 4)
 
-        positive_priors = true_classes != 0                           # (N, 8732)
+        positive_priors = true_classes != 0                           # (N, 4721)
         n_positives = positive_priors.sum(dim=1)                      # (N)
         n_positives_clamped = n_positives.clamp(min=1.).float()
         n_hard_negatives = self.neg_pos_ratio * n_positives_clamped   # (N)
@@ -284,19 +284,20 @@ class MultiBoxLoss(nn.Module):
             loc_loss = torch.tensor(0., device=device)
 
         # CONFIDENCE LOSS
-        conf_loss_all = self.cross_entropy(pred_scores.view(-1, n_classes), true_classes.view(-1))  # (N * 8732)
-        conf_loss_all = conf_loss_all.view(batch_size, n_priors)                                    # (N, 8732)
+        conf_loss_all = self.cross_entropy(pred_scores.view(-1, n_classes), true_classes.view(-1))  # (N * 4721)
+        conf_loss_all = conf_loss_all.view(batch_size, n_priors)                                    # (N, 4721)
         conf_loss_pos = conf_loss_all[positive_priors]  # (sum(n_positives))
 
-        conf_loss_neg = conf_loss_all.clone()  # (N, 8732)
-        conf_loss_neg[positive_priors] = 0.  # (N, 8732), positive priors are ignored (never in top n_hard_negatives)
-        conf_loss_neg, _ = conf_loss_neg.sort(dim=1, descending=True)  # (N, 8732), sorted by decreasing hardness
-        hardness_ranks = torch.LongTensor(range(n_priors)).unsqueeze(0).expand_as(conf_loss_neg).to(device)  # (N, 8732)
-        hard_negatives = hardness_ranks < n_hard_negatives.unsqueeze(1)  # (N, 8732)
+        conf_loss_neg = conf_loss_all.clone()  # (N, 4721)
+        conf_loss_neg[positive_priors] = 0.  # (N, 4721), positive priors are ignored (never in top n_hard_negatives)
+        conf_loss_neg, _ = conf_loss_neg.sort(dim=1, descending=True)  # (N, 4721), sorted by decreasing hardness
+        hardness_ranks = torch.LongTensor(range(n_priors)).unsqueeze(0).expand_as(conf_loss_neg).to(device)  # (N, 4721)
+        hard_negatives = hardness_ranks < n_hard_negatives.unsqueeze(1)  # (N, 4721)
         conf_loss_hard_neg = conf_loss_neg[hard_negatives]  # (sum(n_hard_negatives))
 
         # As in the paper, averaged over positive priors only, although computed over both positive and hard-negative priors
         conf_loss = (conf_loss_hard_neg.sum() + conf_loss_pos.sum()) / n_positives_clamped.sum()  # (), scalar
 
-        return conf_loss + self.alpha * loc_loss
+        # return conf_loss + self.alpha * loc_loss
+        return loc_loss
 

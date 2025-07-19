@@ -5,6 +5,7 @@ from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
 import torch.nn as nn
 import torch.optim as optim
+from torch.optim.lr_scheduler import SequentialLR, LinearLR, CosineAnnealingLR
 
 from tqdm import tqdm
 import numpy as np
@@ -15,7 +16,7 @@ from model import SwinTransformer
 DATA_ROOT = "/opt/software/datasets/LSVRC/imagenet" 
 
 
-def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device):
+def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, num_epochs, device):
     """
     Training model
         + train loss for each 2000 batches
@@ -40,7 +41,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
     train_accs_per_epoch = []
     val_losses_per_epoch = []
     val_accs_per_epoch = []
-    batch_interval = 1000
+    batch_interval = 500
     model = model.to(device)
 
     # lookinto_dict = {}
@@ -110,6 +111,8 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
         val_accuracy = correct_val / total_val_samples
         val_losses_per_epoch.append(val_loss)
         val_accs_per_epoch.append(val_accuracy)
+
+        scheduler.step()
             
         print(f'Epoch [{epoch+1}/{num_epochs}] completed:', flush=True)
         print(f'val loss: {val_loss:.4f}, val accuracy: {val_accuracy:.4f}', flush=True)
@@ -143,19 +146,25 @@ if __name__ == "__main__":
     train_dataset = ImageFolder(root=DATA_ROOT + "/train", transform=transform)
     val_dataset = ImageFolder(root=DATA_ROOT + "/val", transform=transform)
 
-    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_dataset, batch_size=128, shuffle=False, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=256, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=256, shuffle=False)
 
     model = SwinTransformer()    # default is (Swin-T)
 
-    num_epochs = 50
+    num_epochs = 300
+    warmup_epochs = 20
     criterion = nn.CrossEntropyLoss(reduction='sum')
-    # optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.05)
-    optimizer = optim.SGD(model.parameters(), lr=0.001)
+    optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.05)
+    warmup_scheduler = LinearLR(optimizer, total_iters=warmup_epochs)
+    cosine_scheduler = CosineAnnealingLR(optimizer, T_max=num_epochs - warmup_epochs, eta_min=1e-6)
+    chained_scheduler = SequentialLR(optimizer,
+                                     schedulers=[warmup_scheduler, cosine_scheduler],
+                                     milestones=[warmup_epochs])
     
 
     # training
-    output = train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device)
+    output = train_model(model, train_loader, val_loader, criterion, optimizer,
+                         chained_scheduler, num_epochs, device)
 
     # saving trained model and statistics
     torch.save(model.state_dict(), 'basic_model.pth')
