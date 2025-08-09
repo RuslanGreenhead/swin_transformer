@@ -7,10 +7,8 @@
 #SBATCH --time=1:00:00                    # Макс. время выполнения -> 25 суток 
 #SBATCH --cpus-per-task=2                  # 4 gpus -> 16 cpus; 2 gpus - 8 cpus (maintain 1/4 ratio)
 #SBATCH --nodes=1                           # Требуемое кол-во узлов 
-#SBATCH --gpus=0                            # Требуемое кол-во GPU
+#SBATCH --gpus=1                            # Требуемое кол-во GPU
 
 module load Python/Google_Colab_GPU_2024        # Загрузка модуля
 
-
-# torchrun --nproc_per_node=$NGPUS training.py    # запуск в параллельном режиме
 python test.py                                # запуск в стандартном режиме

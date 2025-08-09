@@ -2,7 +2,8 @@
 model:
   backbone: "resnet50"
   backbone_weights: "IMAGENET_V2"
-  n_classes: 80
+  image_size: 300
+  n_classes: 80    # without "background"
 
 train:
   num_epochs: 65
@@ -17,7 +18,7 @@ train:
   max_grad_norm: 5.0        # no gradient clipping
   min_lr: 0               # just for code compatibility, not needed here
   
-  batch_size: 8          # (4 gpus) * (32 per each) --> 128 (total)  | changed to 8 for experiment
+  batch_size: 16           # (2 gpus) * (16 per each) --> 32 (total)  | maybe should increase to ...
   batch_interval: 200     # with total bs=128 -> we have ~2570 batches   
   num_workers: 8          # 8 regardless of number of CPUs/GPUs
   save_every: 15
@@ -26,7 +27,7 @@ train:
 dataset:
   name: "COCO-2020"
   root: "/opt/software/datasets/COCO" 
-  img_size: 224
-  n_classes: 80
+  image_size: 300
+  n_classes: 80        # without "background"
   test_crop: True      # whether to crop images for test
   test_shuffle: False  # whether to shuffle images for test

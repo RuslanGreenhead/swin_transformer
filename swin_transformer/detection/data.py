@@ -13,6 +13,15 @@ import albumentations as A
 
 
 class COCODetection(Dataset):
+    """
+    COCO dataset class.
+
+    Parameters:
+        img_dir (str): path to directory with images
+        ann_file (str): path to .json with annotations
+        transform (albumentations transfom): transforms for images and boxes
+    """
+    
     def __init__(self, img_dir, ann_file, transform=None):
         self.img_dir = img_dir
         self.transform = transform
@@ -20,10 +29,22 @@ class COCODetection(Dataset):
             self.coco = json.load(f)
         self.imgs = self.coco['images']
         self.anns = self.coco['annotations']
+        self.categories = self.coco['categories']
 
         self.img_id_to_anns = {}
         for ann in self.anns:
             self.img_id_to_anns.setdefault(ann['image_id'], []).append(ann)
+        
+        # mapping original labels to a continuous range of indexes
+        # + storing labels' names
+        self.label_map = {}
+        self.label_names = {}
+        cnt = 0
+        self.label_names[cnt] = "background"
+        for cat in self.categories:
+            cnt += 1
+            self.label_map[cat["id"]] = cnt
+            self.label_names[cnt] = cat["name"]
 
     def __len__(self):
         return len(self.imgs)
@@ -35,7 +56,7 @@ class COCODetection(Dataset):
 
         anns = self.img_id_to_anns.get(img_info['id'], [])
         bboxes = [ann['bbox'] for ann in anns]
-        category_ids = [ann['category_id'] for ann in anns]
+        category_ids = [self.label_map[ann['category_id']] for ann in anns]    # map to index
 
         if self.transform:
             transformed = self.transform(
@@ -118,11 +139,13 @@ def build_dataset(cfg, is_train=True):
 
 
 def build_transform(cfg, train=True):
+    img_size = cfg['image_size']
+
     if train:
-        """ transform = A.Compose([
+        transform = A.Compose([
             A.OneOf([
-                A.RandomResizedCrop(224, 224, scale=(0.5, 1.0), ratio=(0.75, 1.33), p=0.7),
-                A.Resize(224, 224, p=0.3),
+                A.RandomResizedCrop(img_size, img_size, scale=(0.5, 1.0), ratio=(0.75, 1.33), p=0.7),
+                A.Resize(img_size, img_size, p=0.3),
             ], p=1.0),
             
             
@@ -137,26 +160,28 @@ def build_transform(cfg, train=True):
                 max_holes=1,  # always one hole
                 max_height=16, max_width=16,  # size of the hole
                 min_holes=1, min_height=16, min_width=16,
-                fill_value=0  # fill with black
+                fill_value=0,  # fill with black
+                p=1.0
             ),
            
             A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
-        ],
+            ],
         bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids'])
-        ) """
+        )
 
-        transform = A.Compose([
-            A.OneOf([
-                A.RandomResizedCrop(224, 224, scale=(0.5, 1.0), ratio=(0.75, 1.33), p=0.7),
-                A.Resize(224, 224, p=0.3),
-            ], p=1.0),
-            A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
-        ],
-        bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids'])
-        ) 
+        # transform = A.Compose([
+        #     A.OneOf([
+        #         A.RandomResizedCrop(img_size, img_size, scale=(0.5, 1.0), ratio=(0.75, 1.33), p=0.7),
+        #         A.Resize(img_size, img_size, p=0.3),
+        #     ], p=1.0),
+        #     A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+        # ],
+        # bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids'])
+        # ) 
+
     else:
         transform = A.Compose([
-            A.Resize(224, 224),
+            A.Resize(img_size, img_size),
             A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
         ],
         bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.0, label_fields=['category_ids'])

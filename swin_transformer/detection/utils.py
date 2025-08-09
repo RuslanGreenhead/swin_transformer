@@ -1,7 +1,15 @@
+import copy
+import sys
+from io import StringIO
+
 import torch
 from torch import nn
 import numpy as np
+
+from pycocotools.coco import COCO
+from pycocotools.cocoeval import COCOeval
 # from torchmetrics.detection import MeanAveragePrecision
+
 
 # -------------------------------------------------------- Bounding-boxes issues -------------------------------------------------------- #
 
@@ -21,7 +29,8 @@ def coco_to_xy(coco):
     '''
     (x_min, y_min, w, h) -> (x_min, y_min, x_max, y_max)
     '''
-
+    if coco.numel() == 0: return coco
+    
     return torch.cat([coco[:, :2],                          # x_min, y_min
                       coco[:, :2] + coco[:, 2:]], 1)        # x_max, y_max
 
@@ -86,6 +95,25 @@ def calculate_iou(set_1, set_2):
     union = areas_set_1.unsqueeze(1) + areas_set_2.unsqueeze(0) - intersection  # (n1, n2)
 
     return intersection / union  # (n1, n2)
+
+
+def normalize_boxes(boxes, img_width, img_height, box_format="xy"):
+    """
+    Normalize box descriptions if they are not normalize
+    """
+    if torch.all((boxes >= 0) & (boxes <= 1)):
+        return boxes
+    else:
+        norm_boxes = boxes.clone()
+
+    if box_format not in ("xy", "cxcy", "coco"):
+        raise NotImplementedError("Unknown box mode for normalization")
+    
+    norm_boxes[:, [0, 2]] /= img_width 
+    norm_boxes[:, [1, 3]] /= img_height
+    
+    return norm_boxes
+
 
 
 # ---------------------------------------------------------- Metric issues ---------------------------------------------------------- #
@@ -281,16 +309,117 @@ def calculate_coco_mAP_tm(det_boxes, det_labels, det_scores,
     return results["map"].item() """
 
 
+def tensors_list_to_coco_dicts(pred_boxes_list, pred_labels_list, scores_list, true_boxes_list, true_labels_list):
+    """
+    Convert lists of tensors (per image) to COCO-style dicts for GT and detection results.
+
+    Args:
+        true_boxes_list (List[tensor]): gt boxes like [(M_i,4), ...]
+        true_labels_list (List[tensor]): gt labels like [(M_i,), ...]
+        scores_list (List[tensor]): scores like [(N_i,), ...]
+        pred_boxes_list (List[tensor]): pred boxes like [(N_i,4), ...]
+        pred_labels_list (list of np.ndarray): pred labels like [(N_i,), ...]
+
+    Returns:
+        coco_gt_dict (dict): COCO format dict of ground truth annotations covering all images.
+        coco_dt_list (list): List of detection dicts covering all images.
+    """
+    annotations = []
+    detections = []
+    images = []
+    categories_set = set()
+
+    ann_id = 1  # Unique annotation id across all images
+    for image_id, (pb, pl, sc, tb, tl) in enumerate(zip(pred_boxes_list, pred_labels_list, scores_list, true_boxes_list, true_labels_list, ), start=1):
+        images.append({"id": image_id})
+
+        # ground truth annotations
+        for i in range(len(tb)):
+            x1, y1, x2, y2 = tb[i]
+            w, h = x2 - x1, y2 - y1
+            annotations.append({
+                "id": ann_id,
+                "image_id": image_id,
+                "category_id": int(tl[i]),
+                "bbox": [float(x1), float(y1), float(w), float(h)],
+                "area": float(w * h),
+                "iscrowd": 0,
+            })
+            ann_id += 1
+            categories_set.add(int(tl[i]))
+
+        # detection results
+        for i in range(len(pb)):
+            x1, y1, x2, y2 = pb[i]
+            w, h = x2 - x1, y2 - y1
+            detections.append({
+                "image_id": image_id,
+                "category_id": int(pl[i]),
+                "bbox": [float(x1), float(y1), float(w), float(h)],
+                "score": float(sc[i]),
+            })
+            categories_set.add(int(pl[i]))
+
+    categories = [{"id": cid} for cid in sorted(categories_set)]
+
+    coco_gt_dict = {
+        "info": {},
+        "images": images,
+        "annotations": annotations,
+        "categories": categories,
+    }
+
+    return coco_gt_dict, detections
+
+
+def calculate_coco_mAP_pcct(pred_boxes_list, pred_labels_list, scores_list, true_boxes_list, true_labels_list):
+    """
+    Calculte COCO-style mAP using pycocotools toolkit.
+    """
+    # convert lists of tensors to COCO dict format
+    coco_gt_dict, coco_dt_list = tensors_list_to_coco_dicts(
+        pred_boxes_list, pred_labels_list, scores_list, true_boxes_list, true_labels_list
+    )
+    
+    # create COCO object for GT dataset
+    coco_gt = COCO()
+    coco_gt.dataset = copy.deepcopy(coco_gt_dict)
+    coco_gt.createIndex()
+    
+    # load detection results
+    coco_dt = coco_gt.loadRes(coco_dt_list)
+    
+    # run COCO evaluation
+    coco_eval = COCOeval(coco_gt, coco_dt, iouType='bbox')
+    coco_eval.evaluate()
+    coco_eval.accumulate()
+    
+    # capture stdout to string
+    original_stdout = sys.stdout
+    string_stdout = StringIO()
+    sys.stdout = string_stdout
+    
+    coco_eval.summarize()
+    sys.stdout = original_stdout
+    mean_ap = coco_eval.stats[0]
+    detail = string_stdout.getvalue()
+    
+    return mean_ap, detail
+
+
 # ---------------------------------------------------------- Other ---------------------------------------------------------- #
 
 def build_coco_label_index():
     '''
-    Maps COCO category ID ([1-90] with gaps) to a continuous range [0-79]
+    ** CURRENTLY UNUSED **
+    Maps COCO category ID ([1-90] with gaps) to a continuous range [1-80]
+    (+ index 0 reserved for "background")
     '''
     excluded_ids = [12, 26, 29, 30, 45, 66, 68, 69, 71, 83]
     coco_ids = list(set(range(1, 91)) - set(excluded_ids))
+    coco_ids = sorted(coco_ids)    # 'cos order is not guaranteed due to "sets" above
 
-    map_dict =  {id: idx for idx, id in enumerate(coco_ids)}
+    map_dict =  {id: idx for idx, id in enumerate(coco_ids, start=1)}
     map_tensor = torch.zeros(max(map_dict.keys()) + 1, dtype=torch.long)    #  == int64
     for k, v in map_dict.items():
         map_tensor[k] = v

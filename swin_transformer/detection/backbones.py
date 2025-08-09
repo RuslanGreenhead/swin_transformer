@@ -4,11 +4,12 @@ from torchvision.models import resnet50, ResNet50_Weights
 
 
 class ResNet50Backbone(torch.nn.Module):
-    def __init__(self, weights="IMAGENET_V2"):
+    def __init__(self, img_size=224, weights="IMAGENET_V2"):
         super().__init__()
-        # Load pure ResNet50
+
+        # load pure ResNet50
         base_model = resnet50(weights=None)
-        # Load pretrained weights
+        # load pretrained weights
         if weights == "IMAGENET_V2":
             state_dict = torch.load("../saved_weights/resnet50_statedict.pth", weights_only=True)
             base_model.load_state_dict(state_dict)
@@ -19,36 +20,36 @@ class ResNet50Backbone(torch.nn.Module):
         self.relu = base_model.relu
         self.maxpool = base_model.maxpool
         self.layer1 = base_model.layer1
-        self.layer2 = base_model.layer2  # C3 -> 28x28x512
-        self.layer3 = base_model.layer3  # C4 -> 14x14x1024
-        self.layer4 = base_model.layer4  # C5 -> 7x7x2048
+        self.layer2 = base_model.layer2  
+        self.layer3 = base_model.layer3 
+        self.layer4 = base_model.layer4
 
         self.aux1 = nn.Sequential(
-            nn.Conv2d(2048, 512, kernel_size=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(512, 1024, kernel_size=3, stride=2, padding=1),
-            nn.BatchNorm2d(1024),
-            nn.ReLU(inplace=True)
-        )  # output: 4x4x1024 (approximate due to stride 2)
-
-        self.aux2 = nn.Sequential(
-            nn.Conv2d(1024, 256, kernel_size=1),
+            nn.Conv2d(2048, 256, kernel_size=1),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
             nn.Conv2d(256, 512, kernel_size=3, stride=2, padding=1),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True)
-        )  # output: 2x2x512
+        )
 
-        self.aux3 = nn.Sequential(
+        self.aux2 = nn.Sequential(
             nn.Conv2d(512, 128, kernel_size=1),
             nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
             nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True)
-        )  # output: 1x1x256
+        )
+
+        self.aux3 = nn.Sequential(
+            nn.Conv2d(256, 128, kernel_size=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=(1 if img_size == 224 else 0)),
+            nn.BatchNorm2d(256),
+            nn.ReLU(inplace=True)
+        )
 
         self._init_auxilary_layers()
 
@@ -59,15 +60,14 @@ class ResNet50Backbone(torch.nn.Module):
         x = self.relu(x)
         c1 = self.maxpool(x)
         c2 = self.layer1(c1)
-        c3 = self.layer2(c2)    # C3 -> 28 * 28
-        c4 = self.layer3(c3)    # C4 -> 14 * 14
-        c5 = self.layer4(c4)    # C5 -> 7 * 7
+        c3 = self.layer2(c2)    # (224x224) -> 512x28x28      (300x300) -> 512x38x38
+        c4 = self.layer3(c3)    # (224x224) -> 1024x14x14     (300x300) -> 1024x19x19
+        c5 = self.layer4(c4)    # (224x224) -> 2048x7x7       (300x300) -> 2048x10x10
+    
+        c6 = self.aux1(c5)      # (224x224) -> 512x4x4        (300x300) -> 512x5x5
+        c7 = self.aux2(c6)      # (224x224) -> 256x2x2        (300x300) -> 256x3x3
+        c8 = self.aux3(c7)      # (224x224) -> 256x1x1        (300x300) -> 256x1x1
 
-        c6 = self.aux1(c5)      # C6 -> 4 * 4
-        c7 = self.aux2(c6)      # C7 -> 2 * 2
-        c8 = self.aux3(c7)      # C8 -> 1 * 1
-
-        # return {"c3": c3, "c4": c4, "c5": c5, "c6": c6, "c7": c7, "c8": c8}
         return c3, c4, c5, c6, c7, c8
     
 

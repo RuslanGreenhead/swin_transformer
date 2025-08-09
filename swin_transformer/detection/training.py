@@ -16,7 +16,8 @@ from tqdm import tqdm
 from ssd import SSD, MultiBoxLoss
 from backbones import ResNet50Backbone
 from data import build_loaders
-from utils import AverageMeter, calculate_coco_mAP, calculate_coco_mAP_tm
+from utils import AverageMeter, calculate_coco_mAP, calculate_coco_mAP_pcct
+from utils import normalize_boxes, coco_to_xy
 
 CONFIG_PATH = "../configs/detection_ssd_resnet50.yaml"
 
@@ -40,11 +41,12 @@ def build_model(cfg):
     if cfg['model']['backbone'] == "swin":
         pass
     elif cfg['model']['backbone'] == "resnet50":
-        backbone = ResNet50Backbone()
+        backbone = ResNet50Backbone(img_size=cfg['model']['image_size'], weights=cfg['model']['backbone_weights'])
     else:
         raise NotImplementedError("Unsupported backbone.")
     
-    model = SSD(backbone=backbone, n_classes=cfg['model']['n_classes'])
+    # here we increase the number of classes by one for the background
+    model = SSD(backbone=backbone, n_classes=cfg['model']['n_classes'] + 1, input_size=cfg['model']['image_size'])
 
     return model
 
@@ -99,6 +101,7 @@ class TrainerDET:
         self.warmup_epochs = cfg['train']['warmup_epochs']
         self.snapshot_path = cfg['train']['snapshot_path']
         self.max_grad_norm = cfg['train']['max_grad_norm']
+        self.image_size = cfg['model']['image_size']
 
         if self.max_grad_norm is None:
             self.max_grad_norm = 1e10
@@ -118,6 +121,7 @@ class TrainerDET:
             "train_mAP": np.empty(self.num_epochs),
             "val_losses": np.empty(self.num_epochs),
             "val_mAP": np.empty(self.num_epochs),
+            "val_mAP_pycoco": np.empty(self.num_epochs),
             "grad_norms": np.empty(self.num_epochs)
         }
 
@@ -133,7 +137,7 @@ class TrainerDET:
         if cfg['model']['backbone'] == "resnet50":
             lr_scheduler = MultiStepLRScheduler(
                 self.optimizer,
-                decay_t=[43 * n_iter_per_epoch, 54 * n_iter_per_epoch],     # тут можно тоже запихнуть в конфиг       
+                decay_t=[33 * n_iter_per_epoch, 50 * n_iter_per_epoch],     # тут можно тоже запихнуть в конфиг       
                 decay_rate=cfg['train']['lr_decay_rate'],         
                 warmup_t=warmup_steps,             
                 warmup_lr_init=cfg['train']['warmup_lr'],
@@ -196,7 +200,7 @@ class TrainerDET:
         for i, (images, boxes, labels) in enumerate(tqdm(self.train_loader)):
             images = images.to(self.gpu_id)
             boxes = [img_boxes.to(self.gpu_id) for img_boxes in boxes]
-            labels = [self.model.module.id_to_idx[img_labels].to(self.gpu_id) for img_labels in labels]
+            labels = [img_labels.to(self.gpu_id) for img_labels in labels]
             
             pred_locs, pred_scores = self.model(images)
             loss = self.criterion(pred_locs, pred_scores, boxes, labels)
@@ -231,14 +235,19 @@ class TrainerDET:
                         pred_locs, pred_scores, 
                         min_score=0.5, max_overlap=0.5, top_k=5
                     )
-                    mAP = calculate_coco_mAP(det_boxes, det_labels, det_scores, boxes, labels)
-                    # mAP_tm = calculate_coco_mAP_tm(det_boxes, det_labels, det_scores, boxes, labels)
+                    # normalize GT boxes and cast them to "xyxy" format
+                    boxes_n_xyxy = [normalize_boxes(coco_to_xy(boxes_n_img),
+                                                    img_width=self.image_size,
+                                                    img_height=self.image_size,
+                                                    box_format="xy") for boxes_n_img in boxes]
+                    # mAP = calculate_coco_mAP(det_boxes, det_labels, det_scores, boxes_n_xyxy, labels)
+                    mAP_pycoco, _ = calculate_coco_mAP_pcct(det_boxes, det_labels, det_scores, boxes_n_xyxy, labels)
                 
                 # logging stats
                 logging.info(f'GPU[{self.gpu_id}]:  ' +
                              f'batch [{i+1}/{self.num_batches}]:  ' +
                              f'loss={interval_loss_meter.avg:.4f}  ' +
-                             f'COCO_mAP={mAP:.4f}  ' +
+                             f'COCO_mAP={mAP_pycoco:.6f}  ' +
                              f'grad_norm={grad_norm:.4f}  ' +
                              f'lr={lr:.6f}')
                 
@@ -263,7 +272,7 @@ class TrainerDET:
             for i, (images, boxes, labels) in enumerate(tqdm(self.val_loader)):
                 images = images.to(self.gpu_id)
                 boxes = [img_boxes.to(self.gpu_id) for img_boxes in boxes]
-                labels = [self.model.module.id_to_idx[img_labels].to(self.gpu_id) for img_labels in labels]
+                labels = [img_labels.to(self.gpu_id) for img_labels in labels]
                 
                 pred_locs, pred_scores = self.model(images)
                 loss = self.criterion(pred_locs, pred_scores, boxes, labels)
@@ -274,25 +283,30 @@ class TrainerDET:
                     min_score=0.5, max_overlap=0.5, top_k=5
                 )
 
-                all_true_boxes.extend(boxes)
+                # normalize GT boxes and cast them to "xyxy" format
+                boxes_n_xyxy = [normalize_boxes(coco_to_xy(boxes_n_img),
+                                                img_width=self.image_size,
+                                                img_height=self.image_size,
+                                                box_format="xy") for boxes_n_img in boxes]
+
+                all_true_boxes.extend(boxes_n_xyxy)
                 all_true_labels.extend(labels)
                 all_det_boxes.extend(det_boxes)
                 all_det_labels.extend(det_labels)
                 all_det_scores.extend(det_scores)
             
         # calculating COCO-style mAP
-        mAP = calculate_coco_mAP(all_det_boxes, all_det_labels, all_det_scores, all_true_boxes, all_true_labels)
-        # mAP_tm = calculate_coco_mAP_tm(all_det_boxes, all_det_labels, all_det_scores, all_true_boxes, all_true_labels)
+        # mAP = calculate_coco_mAP(all_det_boxes, all_det_labels, all_det_scores, all_true_boxes, all_true_labels)
+        mAP_pycoco, _ = calculate_coco_mAP_pcct(all_det_boxes, all_det_labels, all_det_scores, all_true_boxes, all_true_labels)
 
         # writing stats
         self.stats['val_losses'][epoch] = val_loss_meter.avg
-        self.stats['val_mAP'][epoch] = mAP
-        # self.stats['val_mAP_tm'][epoch] = mAP_tm
+        self.stats['val_mAP'][epoch] = mAP_pycoco
 
         # logging stats
         logging.info(f'Validation on GPU[{self.gpu_id}]:  ' +
                      f'val_loss={val_loss_meter.avg:.6f}  ' +
-                     f'val_COCO_mAP={mAP:.4f}')
+                     f'val_COCO_mAP={mAP_pycoco:.6f}')
     
 
     def train(self):
@@ -324,7 +338,7 @@ class TrainerDET:
 def main(cfg):                       
     ddp_setup()
 
-    # learning rates scaling (according to total batch size of 128 -- for ResNet)
+    # learning rates scaling (according to total batch size of 32 -- for ResNet)
     linear_scaled_lr = cfg['train']['initial_lr'] * cfg['train']['batch_size'] * get_world_size() / 32.0
     linear_scaled_warmup_lr = cfg['train']['warmup_lr'] * cfg['train']['batch_size'] * get_world_size() / 32.0
     linear_scaled_min_lr = cfg['train']['min_lr'] * cfg['train']['batch_size'] * get_world_size() / 32.0
@@ -338,7 +352,7 @@ def main(cfg):
     
     train_loader, val_loader = build_loaders(cfg)
     model = build_model(cfg)
-    criterion = MultiBoxLoss(model.priors_cxcy)
+    criterion = MultiBoxLoss(model.priors_cxcy, img_size=cfg['model']['image_size'])
     optimizer = build_optimizer(model, cfg)
     
     trainer = TrainerDET(model, train_loader, val_loader, optimizer, criterion, cfg)
