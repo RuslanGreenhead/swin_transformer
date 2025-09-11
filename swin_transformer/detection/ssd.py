@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
+from torchvision import ops
 import numpy as np
 
 from utils import cxcy_to_xy, xy_to_cxcy, cxcy_to_gcxgcy, gcxgcy_to_cxcy
@@ -20,32 +21,40 @@ class SSD(nn.Module):
 
     """
 
-    def __init__(self, backbone, n_classes, input_size=300, neck=None):
+    def __init__(self, backbone, n_classes, input_size=300, neck=None, rescale_first=False):
         super().__init__()
         self.backbone = backbone
         self.n_classes = n_classes
         self.input_size = input_size
         self.neck = neck
+        self.rescale_first = rescale_first
 
-        self.rescale_factors = nn.Parameter(torch.FloatTensor(1, 512, 1, 1))  # there are 512 channels in C3
-        nn.init.constant_(self.rescale_factors, 20)
+        # define channel dims of feature maps which go to heads
+        self.bb_dims = backbone.out_dims
+        self.res_dims = neck.out_dims if neck else backbone.out_dims
+        assert len(self.res_dims) == 6
+
+        # rescaling first feature map (practice introduced for VGG backbone)
+        if rescale_first:
+            self.rescale_factors = nn.Parameter(torch.FloatTensor(1, 512, 1, 1))  # there are 512 channels in C3
+            nn.init.constant_(self.rescale_factors, 20)
 
         self.location_convs = nn.ModuleList([
-            nn.Conv2d(512, 4 * 4, kernel_size=3, padding=1),
-            nn.Conv2d(1024, 6 * 4, kernel_size=3, padding=1),
-            nn.Conv2d(2048, 6 * 4, kernel_size=3, padding=1),
-            nn.Conv2d(512, 6 * 4, kernel_size=3, padding=1),
-            nn.Conv2d(256, 4 * 4, kernel_size=3, padding=1),
-            nn.Conv2d(256, 4 * 4, kernel_size=3, padding=1)
+            nn.Conv2d(self.res_dims[0], 4 * 4, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[1], 6 * 4, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[2], 6 * 4, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[3], 6 * 4, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[4], 4 * 4, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[5], 4 * 4, kernel_size=3, padding=1)
         ])
 
         self.score_convs = nn.ModuleList([
-            nn.Conv2d(512, 4 * n_classes, kernel_size=3, padding=1),
-            nn.Conv2d(1024, 6 * n_classes, kernel_size=3, padding=1),
-            nn.Conv2d(2048, 6 * n_classes, kernel_size=3, padding=1),
-            nn.Conv2d(512, 6 * n_classes, kernel_size=3, padding=1),
-            nn.Conv2d(256, 4 * n_classes, kernel_size=3, padding=1),
-            nn.Conv2d(256, 4 * n_classes, kernel_size=3, padding=1)
+            nn.Conv2d(self.res_dims[0], 4 * n_classes, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[1], 6 * n_classes, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[2], 6 * n_classes, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[3], 6 * n_classes, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[4], 4 * n_classes, kernel_size=3, padding=1),
+            nn.Conv2d(self.res_dims[5], 4 * n_classes, kernel_size=3, padding=1)
         ])
 
         self.priors_cxcy = self.generate_priors(image_size=input_size)
@@ -54,7 +63,8 @@ class SSD(nn.Module):
 
     def forward(self, x):
         feature_maps = list(self.backbone(x))   # -> [C3 - C8]
-        feature_maps[0] = F.normalize(feature_maps[0], p=2, dim=1) * self.rescale_factors    # rescale C3
+        if self.rescale_first:
+            feature_maps[0] = F.normalize(feature_maps[0], p=2, dim=1) * self.rescale_factors    # rescale C3
 
         if self.neck is not None:
             feature_maps = self.neck(feature_maps)
@@ -65,9 +75,6 @@ class SSD(nn.Module):
 
         for fmap, loc_conv in zip(feature_maps, self.location_convs):
             l = loc_conv(fmap).permute(0, 2, 3, 1).contiguous()
-            # l = l.view(batch_size, -1, 4)
-            # print(f"{l.shape=}")
-            # bbox_offsets.append(l)
             bbox_offsets.append(l.view(batch_size, -1, 4))
         for fmap, score_conv in zip(feature_maps, self.score_convs):
             s = score_conv(fmap).permute(0, 2, 3, 1).contiguous()
@@ -84,6 +91,8 @@ class SSD(nn.Module):
             feature_map_dims = [28, 14, 7, 4, 2, 1]     # n_priors = 4722
         elif image_size == 300:
             feature_map_dims = [38, 19, 10, 5, 3, 1]    # n_priors = 8732
+        elif image_size == 336:
+            feature_map_dims = [42, 21, 10, 5, 3, 1]    # n_priors = 10492
         else:
             raise NotImplementedError("Unexpected image_size for anchor generation!")
 
@@ -128,7 +137,7 @@ class SSD(nn.Module):
         return priors  # (n_priors, 4)
 
 
-    def detect_objects(self, pred_locs, pred_scores, min_score, max_overlap, top_k):
+    def detect_objects(self, pred_locs, pred_scores, min_score, max_overlap, top_k, nms_mode="torchvision"):
         """
         Decipher (n_priors) locations and class scores (output of ths SSD) to detect objects.
         For each class, perform Non-Maximum Suppression (NMS) on boxes that are above a minimum threshold.
@@ -139,6 +148,7 @@ class SSD(nn.Module):
             min_score (float): minimum threshold for a box to be considered a match for a certain class
             max_overlap (float): maximum overlap two boxes can have so that the one with the lower score is not suppressed via NMS
             top_k (int): if there are a lot of resulting detection across all classes, keep only the top 'k'
+            nms_mode (str): way to perform Non-Max Suppression over boxes
         Returns:
             detections (boxes, labels, and scores) -> lists of (batch_size) length
         """
@@ -165,7 +175,7 @@ class SSD(nn.Module):
 
             max_scores, best_label = pred_scores[i].max(dim=1)  # (4721)
 
-            # for each class
+            # for each class (except "background")
             for c in range(1, self.n_classes):
                 # Keep only predicted boxes and scores where scores for this class are above the minimum score
                 class_scores = pred_scores[i][:, c]                     # (n_priors)
@@ -180,48 +190,43 @@ class SSD(nn.Module):
                 class_scores, sort_ind = class_scores.sort(dim=0, descending=True)  # (n_qualified), (n_min_score)
                 class_decoded_locs = class_decoded_locs[sort_ind]  # (n_min_score, 4)
 
-                # Find the overlap between predicted boxes
-                overlap = calculate_iou(class_decoded_locs, class_decoded_locs)  # (n_qualified, n_min_score)
+                if nms_mode == "custom":
+                    # Find the overlap between predicted boxes
+                    overlap = calculate_iou(class_decoded_locs, class_decoded_locs)  # (n_qualified, n_min_score)
 
-                # Non-Maximum Suppression (NMS)
+                    # Non-Maximum Suppression (NMS)
 
-                # A torch.uint8 (byte) tensor to keep track of which predicted boxes to suppress
-                # 1 implies suppress, 0 implies don't suppress
-                suppress = torch.zeros((n_above_min_score), dtype=torch.uint8).to(device)  # (n_qualified)
-                keep = []
+                    # A torch.uint8 (byte) tensor to keep track of which predicted boxes to suppress
+                    # 1 implies suppress, 0 implies don't suppress
+                    suppress = torch.zeros((n_above_min_score), dtype=torch.bool).to(device)  # (n_qualified)
+                    keep = []
 
-                # # Consider each box in order of decreasing scores
-                # for box in range(class_decoded_locs.size(0)):
-                #     # If this box is already marked for suppression
-                #     if suppress[box] == 1:
-                #         continue
+                    for box in range(class_decoded_locs.size(0)):
+                        if box in keep:
+                            continue
+                        keep.append(box)
 
-                #     # Suppress boxes whose overlaps (with this box) are greater than maximum overlap
-                #     # Find such boxes and update suppress indices
-                #     suppress = torch.max(suppress, overlap[box] > max_overlap)
-                #     # The max operation retains previously suppressed boxes, like an 'OR' operation
+                        # suppress boxes with IoU > max_overlap that come after box i (lower scores)
+                        suppress_indices = (overlap[box] > max_overlap).nonzero(as_tuple=False).squeeze(1)
+                        # only suppress boxes with index > i (i.e., lower ranked boxes)
+                        suppress_indices = suppress_indices[suppress_indices > box]
 
-                #     # Don't suppress this box, even though it has an overlap of 1 with itself
-                #     suppress[box] = 0
+                        for idx in suppress_indices:
+                            if idx not in keep:
+                                suppress[idx] = 1
 
-                for box in range(class_decoded_locs.size(0)):
-                    if box in keep:
-                        continue
-                    keep.append(box)
+                    # store only unsuppressed boxes for this class
+                    image_boxes.append(class_decoded_locs[~suppress])
+                    image_labels.append(torch.LongTensor((~suppress).sum().item() * [c]).to(device))
+                    image_scores.append(class_scores[~suppress])
 
-                    # suppress boxes with IoU > max_overlap that come after box i (lower scores)
-                    suppress_indices = (overlap[box] > max_overlap).nonzero(as_tuple=False).squeeze(1)
-                    # only suppress boxes with index > i (i.e., lower ranked boxes)
-                    suppress_indices = suppress_indices[suppress_indices > box]
+                elif nms_mode == "torchvision":
+                    keep_indices = ops.nms(class_decoded_locs, class_scores, max_overlap)
 
-                    for idx in suppress_indices:
-                        if idx not in keep:
-                            suppress[idx] = 1
-
-                # Store only unsuppressed boxes for this class
-                image_boxes.append(class_decoded_locs[1 - suppress])
-                image_labels.append(torch.LongTensor((1 - suppress).sum().item() * [c]).to(device))
-                image_scores.append(class_scores[1 - suppress])
+                    # store only unsuppressed boxes for this class
+                    image_boxes.append(class_decoded_locs[keep_indices])
+                    image_labels.append(torch.LongTensor(len(keep_indices) * [c]).to(device))
+                    image_scores.append(class_scores[keep_indices])
 
             # if no object in any class is found, store a placeholder for 'background'
             if len(image_boxes) == 0:
@@ -290,7 +295,7 @@ class MultiBoxLoss(nn.Module):
         n_classes = pred_scores.size(2)
         device = pred_locs.device
 
-        print(f"{n_priors=}, {pred_locs.size(1)=}, {pred_scores.size(1)=}")
+        # print(f"{n_priors=}, {pred_locs.size(1)=}, {pred_scores.size(1)=}")
         assert n_priors == pred_locs.size(1) == pred_scores.size(1)
 
         true_locs = torch.zeros((batch_size, n_priors, 4), dtype=torch.float).to(device)  # (N, n_priors, 4)

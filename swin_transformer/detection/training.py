@@ -1,10 +1,12 @@
 import torch
 import torch.nn as nn
+import torch.distributed as dist
 from torch.distributed import init_process_group, destroy_process_group, get_world_size
 from torch.nn.parallel import DistributedDataParallel as DDP
 from timm.scheduler.cosine_lr import CosineLRScheduler
 from timm.scheduler.multistep_lr import MultiStepLRScheduler
 import time
+import datetime
 import logging
 
 import os
@@ -14,7 +16,8 @@ import yaml
 from tqdm import tqdm
 
 from ssd import SSD, MultiBoxLoss
-from backbones import ResNet50Backbone
+from backbones import ResNet50Backbone, ResNet50Backbone_Deeper
+from necks import FPN, PAN, DenseFPN
 from data import build_loaders
 from utils import AverageMeter, calculate_coco_mAP, calculate_coco_mAP_pcct
 from utils import normalize_boxes, coco_to_xy
@@ -29,24 +32,39 @@ def load_config(cfg_path):
     return config
 
 
-def ddp_setup():
+def ddp_setup(nccl_timeout=30):
     """
     Prerequisites for distributed training.
     """
     torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
-    init_process_group(backend="nccl")
+    init_process_group(backend="nccl", 
+                       timeout=datetime.timedelta(minutes=nccl_timeout)
+    )
 
 
 def build_model(cfg):
     if cfg['model']['backbone'] == "swin":
         pass
     elif cfg['model']['backbone'] == "resnet50":
-        backbone = ResNet50Backbone(img_size=cfg['model']['image_size'], weights=cfg['model']['backbone_weights'])
+        # backbone = ResNet50Backbone(img_size=cfg['model']['image_size'], weights=cfg['model']['backbone_weights'])
+        backbone = ResNet50Backbone_Deeper(img_size=cfg['model']['image_size'], weights=cfg['model']['backbone_weights'])
     else:
         raise NotImplementedError("Unsupported backbone.")
     
+    neck = None
+    if cfg['model']['neck'] == "FPN":
+        neck = FPN()
+    elif cfg['model']['neck'] == "PAN":
+        neck = PAN()
+    elif cfg['model']['neck'] == "DenseFPN":
+        neck = DenseFPN()
+    
     # here we increase the number of classes by one for the background
-    model = SSD(backbone=backbone, n_classes=cfg['model']['n_classes'] + 1, input_size=cfg['model']['image_size'])
+    model = SSD(backbone=backbone,
+                n_classes=cfg['model']['n_classes'] + 1, 
+                input_size=cfg['model']['image_size'],
+                neck=neck
+            )
 
     return model
 
@@ -57,10 +75,11 @@ def build_optimizer(model, cfg):
         decay_params = []
         no_decay_params = []
 
+        # so-called "Tencent trick"
         for name, param in model.named_parameters():
             if not param.requires_grad:
                 continue
-            if 'bias' in name or 'bn' in name or 'batchnorm' in name.lower():
+            if len(param.shape) == 1 or name.endswith(".bias"):
                 no_decay_params.append(param)
             else:
                 decay_params.append(param)
@@ -106,6 +125,10 @@ class TrainerDET:
         if self.max_grad_norm is None:
             self.max_grad_norm = 1e10
 
+        # whether to syncronise BN layers across all devices
+        if cfg['model']['sync_batchnorm']:
+            model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
+
         self.model = model.to(self.gpu_id)
         if os.path.exists(self.snapshot_path):
             print("Loading snapshot...")
@@ -136,8 +159,8 @@ class TrainerDET:
 
         if cfg['model']['backbone'] == "resnet50":
             lr_scheduler = MultiStepLRScheduler(
-                self.optimizer,
-                decay_t=[33 * n_iter_per_epoch, 50 * n_iter_per_epoch],     # тут можно тоже запихнуть в конфиг       
+                self.optimizer, 
+                decay_t=[ms * n_iter_per_epoch for ms in cfg['train']['lr_milestones']],     
                 decay_rate=cfg['train']['lr_decay_rate'],         
                 warmup_t=warmup_steps,             
                 warmup_lr_init=cfg['train']['warmup_lr'],
@@ -233,7 +256,10 @@ class TrainerDET:
                     # calculate COCO-style mAP
                     det_boxes, det_labels, det_scores = self.model.module.detect_objects(
                         pred_locs, pred_scores, 
-                        min_score=0.5, max_overlap=0.5, top_k=5
+                        min_score=cfg['model']['inference']['min_score'], 
+                        max_overlap=cfg['model']['inference']['max_overlap'], 
+                        top_k=cfg['model']['inference']['top_k'],
+                        nms_mode="torchvision"
                     )
                     # normalize GT boxes and cast them to "xyxy" format
                     boxes_n_xyxy = [normalize_boxes(coco_to_xy(boxes_n_img),
@@ -280,7 +306,10 @@ class TrainerDET:
 
                 det_boxes, det_labels, det_scores = self.model.module.detect_objects(
                     pred_locs, pred_scores, 
-                    min_score=0.5, max_overlap=0.5, top_k=5
+                    min_score=cfg['model']['inference']['min_score'], 
+                    max_overlap=cfg['model']['inference']['max_overlap'], 
+                    top_k=cfg['model']['inference']['top_k'],
+                    nms_mode="torchvision"
                 )
 
                 # normalize GT boxes and cast them to "xyxy" format
@@ -294,10 +323,14 @@ class TrainerDET:
                 all_det_boxes.extend(det_boxes)
                 all_det_labels.extend(det_labels)
                 all_det_scores.extend(det_scores)
-            
+
+        
         # calculating COCO-style mAP
         # mAP = calculate_coco_mAP(all_det_boxes, all_det_labels, all_det_scores, all_true_boxes, all_true_labels)
-        mAP_pycoco, _ = calculate_coco_mAP_pcct(all_det_boxes, all_det_labels, all_det_scores, all_true_boxes, all_true_labels)
+        mAP_pycoco, _ = calculate_coco_mAP_pcct(
+            all_det_boxes, all_det_labels, all_det_scores,
+            all_true_boxes, all_true_labels
+        )
 
         # writing stats
         self.stats['val_losses'][epoch] = val_loss_meter.avg
@@ -305,15 +338,17 @@ class TrainerDET:
 
         # logging stats
         logging.info(f'Validation on GPU[{self.gpu_id}]:  ' +
-                     f'val_loss={val_loss_meter.avg:.6f}  ' +
-                     f'val_COCO_mAP={mAP_pycoco:.6f}')
+                    f'val_loss={val_loss_meter.avg:.6f}  ' +
+                    f'val_COCO_mAP={mAP_pycoco:.6f}')
     
 
     def train(self):
         start_time = time.time()
         for epoch in range(self.epochs_run, self.num_epochs):
             self.train_one_epoch(epoch)
+            dist.barrier()
             self.validate(epoch)
+            dist.barrier()
 
             if (self.gpu_id == 0) and ((epoch + 1) % self.save_every == 0):
                 self._save_snapshot(epoch)

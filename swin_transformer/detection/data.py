@@ -91,19 +91,19 @@ def build_loaders(cfg):
     train_set, _ = build_dataset(is_train=True, cfg=cfg['dataset'])
     val_set, _ = build_dataset(is_train=False, cfg=cfg['dataset'])
     
-    train_sampler = torch.utils.data.distributed.DistributedSampler(
-        train_set, shuffle=True
-    )
-    val_sampler = torch.utils.data.distributed.DistributedSampler(
-        val_set, shuffle=cfg['dataset']['test_shuffle']
-    )
+    # train_sampler = torch.utils.data.distributed.DistributedSampler(
+    #     train_set, shuffle=True
+    # )
+    # val_sampler = torch.utils.data.distributed.DistributedSampler(
+    #     val_set, shuffle=cfg['dataset']['test_shuffle']
+    # )
     
     train_loader = DataLoader(
         train_set,
         batch_size=cfg['train']['batch_size'],
         num_workers=cfg['train']['num_workers'],
         pin_memory=True,
-        sampler=train_sampler,
+        # sampler=train_sampler,
         drop_last=True,
         collate_fn=collate_coco
     )
@@ -114,7 +114,7 @@ def build_loaders(cfg):
         num_workers=cfg['train']['num_workers'],
         pin_memory=True,
         shuffle=False,
-        sampler=val_sampler,
+        # sampler=val_sampler,
         drop_last=False,
         collate_fn=collate_coco
     )
@@ -138,46 +138,81 @@ def build_dataset(cfg, is_train=True):
     return dataset, num_classes
 
 
-def build_transform(cfg, train=True):
+def build_transform(cfg, train=True, pattern=1):
     img_size = cfg['image_size']
 
     if train:
-        transform = A.Compose([
-            A.OneOf([
-                A.RandomResizedCrop(img_size, img_size, scale=(0.5, 1.0), ratio=(0.75, 1.33), p=0.7),
-                A.Resize(img_size, img_size, p=0.3),
-            ], p=1.0),
-            
-            
-            A.HorizontalFlip(p=0.5),
-            A.ShiftScaleRotate(shift_limit=0.0625, scale_limit=0.1, rotate_limit=10, border_mode=0, p=0.5),
-            A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1, p=0.5),
-            A.RandomBrightnessContrast(p=0.5),
-            A.HueSaturationValue(p=0.3),
-            A.RGBShift(p=0.3),
-            A.ToGray(p=0.05),
-            A.CoarseDropout(
-                max_holes=1,  # always one hole
-                max_height=16, max_width=16,  # size of the hole
-                min_holes=1, min_height=16, min_width=16,
-                fill_value=0,  # fill with black
-                p=1.0
-            ),
-           
-            A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
-            ],
-        bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids'])
-        )
+        # enhanced pattern (potentially requires longer training)
+        if pattern == 0:
 
-        # transform = A.Compose([
-        #     A.OneOf([
-        #         A.RandomResizedCrop(img_size, img_size, scale=(0.5, 1.0), ratio=(0.75, 1.33), p=0.7),
-        #         A.Resize(img_size, img_size, p=0.3),
-        #     ], p=1.0),
-        #     A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
-        # ],
-        # bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids'])
-        # ) 
+            transform = A.Compose([
+                # photometric transforms
+                A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
+                A.HueSaturationValue(hue_shift_limit=10, sat_shift_limit=15, val_shift_limit=10, p=0.5),
+                A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.3),
+                A.ToGray(p=0.05),
+                A.CLAHE(clip_limit=4.0, tile_grid_size=(8, 8), p=0.3),
+                A.ChannelShuffle(p=0.1),
+
+                # blur and noise
+                A.OneOf([
+                    A.GaussianBlur(blur_limit=(3, 7), p=0.3),
+                    A.GaussNoise(var_limit=(10.0, 50.0), p=0.3),
+                ], p=0.4),
+
+                # geometric transforms
+                A.ShiftScaleRotate(shift_limit=0.0625, scale_limit=0.3, rotate_limit=10, border_mode=0, value=(104, 117, 123), p=0.7),
+                A.Perspective(scale=(0.02, 0.05), keep_size=True, pad_mode=0, pad_val=(104, 117, 123), p=0.3),
+                
+                # padding & cropping & flipping
+                A.PadIfNeeded(min_height=int(img_size * 1.5), min_width=int(img_size * 1.5),
+                            border_mode=0, value=(104, 117, 123), p=0.5),
+                A.RandomSizedBBoxSafeCrop(height=img_size, width=img_size, p=0.7),
+                A.HorizontalFlip(p=0.5),
+
+                # cutout for occlusion robustness
+                A.CoarseDropout(max_holes=5, max_height=int(img_size*0.1), max_width=int(img_size*0.1), 
+                                min_holes=1, min_height=int(img_size*0.05), min_width=int(img_size*0.05),
+                                fill_value=(104, 117, 123), p=0.5),
+
+                A.Resize(height=img_size, width=img_size),
+                A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+            ],
+            bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids'])
+            )
+
+        # baseline pattern 
+        elif pattern == 1:
+    
+            transform = A.Compose([
+                A.OneOf([
+                    A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
+                    A.HueSaturationValue(hue_shift_limit=10, sat_shift_limit=15, val_shift_limit=10, p=0.5),
+                    A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.3),
+                    A.ToGray(p=0.05),
+                ], p=1.0),
+                A.PadIfNeeded(min_height=int(img_size * 1.5), min_width=int(img_size * 1.5),
+                            border_mode=0, value=(104, 117, 123), p=0.5),
+                A.RandomSizedBBoxSafeCrop(height=img_size, width=img_size, p=0.7),
+                A.HorizontalFlip(p=0.5),
+
+                A.Resize(height=img_size, width=img_size),
+                A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+            ],
+            bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids']))
+
+        # no-augmentation pattern
+        elif pattern == 2:
+        
+            transform = A.Compose([
+                A.OneOf([
+                    A.RandomResizedCrop(img_size, img_size, scale=(0.5, 1.0), ratio=(0.75, 1.33), p=0.7),
+                    A.Resize(img_size, img_size, p=0.3),
+                ], p=1.0),
+                A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+            ],
+            bbox_params=A.BboxParams(format='coco', clip=True, min_area=1, min_visibility=0.2, label_fields=['category_ids'])
+            ) 
 
     else:
         transform = A.Compose([
