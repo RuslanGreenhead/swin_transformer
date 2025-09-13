@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import torch.nn.functional as F
 from torchvision.models import resnet50, ResNet50_Weights
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageNet, CIFAR10
@@ -12,12 +13,12 @@ from einops import rearrange
 from torch import einsum
 
 from ..model import window_partition, window_merging, build_mask
-from ..model import PatchEmbedding, MLP, WMSA, PatchMerging, SwinTransformer
+from ..model import PatchEmbedding, MLP, WMSA, PatchMerging
 
 
 # ------------------------------------------------------ ResNet backbones ------------------------------------------------------ #
 
-class ResNet50Backbone(torch.nn.Module):
+class ResNet50Backbone_A(torch.nn.Module):
     def __init__(self, img_size=224, weights="IMAGENET_V2"):
         super().__init__()
 
@@ -98,7 +99,7 @@ class ResNet50Backbone(torch.nn.Module):
                             nn.init.zeros_(m.bias)
 
 
-class ResNet50Backbone_Deeper(torch.nn.Module):
+class ResNet50Backbone_B(torch.nn.Module):
     def __init__(self, img_size=300, weights="IMAGENET_V2"):
         super().__init__()
 
@@ -204,12 +205,6 @@ class ResNet50Backbone_Deeper(torch.nn.Module):
                         if m.bias is not None:
                             nn.init.zeros_(m.bias)
 
-if __name__ == "__main__":
-    model = ResNet50Backbone()
-    features = model(torch.randn(1, 3, 224, 224))
-
-    print([k.size() for k in features])
-
 
 # -------------------------------------------- Swin adapted structural blocks -------------------------------------------- #
 # (Adaptation of the architecture for 336x336 input size - closest of all the fitting ones to 300x300)
@@ -251,9 +246,6 @@ class SwinTransformerBlock_336(nn.Module):
         if min(self.input_resolution) < self.window_size:
             self.shift_size = 0
             self.window_size = min(self.input_resolution)
-        # when resolution is 10x10 - we pad it to 14x14
-        if self.input_resolution == (10, 10):
-            self.input_resolution = (14, 14)
 
         self.norm1 = norm_layer(input_dim)
         self.attn = WMSA(input_dim=input_dim, window_size=(window_size, window_size),
@@ -277,9 +269,6 @@ class SwinTransformerBlock_336(nn.Module):
 
     def forward(self, x):    # x -> (B, H, W, C)
         B, H, W, C = x.shape
-
-        if self.input_resolution == 14:
-            x = F.pad(x, pad=(2, 2, 2, 2), mode='constant', value=0)
 
         residual = x
         x = self.norm1(x)
@@ -339,11 +328,17 @@ class BasicLayer_336(nn.Module):
         self.input_dim = input_dim
         self.input_resolution = input_resolution
         self.depth = depth
+        self.need_padding = False
+
+        # when resolution is 10x10 - we pad it to 14x14
+        if self.input_resolution == (10, 10):
+            self.input_resolution = (14, 14)
+            self.need_padding = True
 
         # SWIN blocks
         self.blocks = nn.ModuleList([
             SwinTransformerBlock_336(
-                input_dim=input_dim, input_resolution=input_resolution,
+                input_dim=input_dim, input_resolution=self.input_resolution,
                 n_heads=n_heads, window_size=window_size,
                 shift_size=0 if (i % 2 == 0) else window_size // 2,
                 mlp_ratio=mlp_ratio,
@@ -362,6 +357,11 @@ class BasicLayer_336(nn.Module):
             self.downsample = None
 
     def forward(self, x):
+        # pad tensor if needed
+        if self.need_padding:
+            x = F.pad(x.permute(0, 3, 1, 2), pad=(2, 2, 2, 2), mode='constant', value=0)
+            x = x.permute(0, 2, 3, 1).contiguous()
+
         for block in self.blocks:
             x = block(x)                     # -> (B, H, W, C)
         if self.downsample is not None:
@@ -487,16 +487,19 @@ class SwinTransformer_336(nn.Module):
                 nn.init.constant_(m.bias, 0)
                 nn.init.constant_(m.weight, 1.0)
 
-# ---------------------------------------------------- Swin backbone ----------------------------------------------------- #
+# ---------------------------------------------------- Swin backbones ----------------------------------------------------- #
 
-class SwinTBackbone(torch.nn.Module):
-    def __init__(self, weights=None):
+class SwinTBackbone_A(torch.nn.Module):
+    def __init__(self, img_size=336, weights=None):
         super().__init__()
-        # Load pretrained torchvision ResNet50
+
+        if img_size != 336:
+            raise NotImplementedError("Image size should be equal to 336.")
+
+        # load pretrained SwinT weights
         base_model = SwinTransformer_336(img_size=336)
         if weights:
             base_model.load_state_dict(weights)
-
 
         # copy base layers (except for fc head)
         self.patch_embed = base_model.patch_embed
@@ -512,41 +515,121 @@ class SwinTBackbone(torch.nn.Module):
             nn.ReLU(inplace=True),
             nn.Conv2d(512, 512, kernel_size=3, stride=2, padding=1),
             nn.ReLU(inplace=True)
-        )  # output: 5x5x512 (approximate due to stride 2)
+        )
 
         self.aux2 = nn.Sequential(
             nn.Conv2d(512, 256, kernel_size=1),
             nn.ReLU(inplace=True),
             nn.Conv2d(256, 256, kernel_size=3, stride=2, padding=1),
             nn.ReLU(inplace=True)
-        )  # output: 3x3x256
+        )
 
         self.aux3 = nn.Sequential(
             nn.Conv2d(256, 128, kernel_size=1),
             nn.ReLU(inplace=True),
             nn.Conv2d(128, 256, kernel_size=3),
             nn.ReLU(inplace=True)
-        )  # output: 1x1x256
+        )
 
-    def forward(self, x):
+    def forward(self, x):    # x -> (B, 3, 336, 336)
         out_features = []
 
-        x = self.patch_embed(x)
-        x = self.swin_block_0(x)
-        out_features.append(x.permute(0, 3, 1, 2).contiguous())
-        x = self.swin_block_1(x)
-        out_features.append(x.permute(0, 3, 1, 2).contiguous())
+        x = self.patch_embed(x)        
+        x = self.swin_block_0(x)       
+        out_features.append(x.permute(0, 3, 1, 2).contiguous())     # ->  (192, 42, 42)
+        x = self.swin_block_1(x)    
+        out_features.append(x.permute(0, 3, 1, 2).contiguous())     # ->  (384, 21, 21)
         x = self.swin_block_2(x)
 
         x = x.permute(0, 3, 1, 2).contiguous()
         
-        out_features.append(x)
+        out_features.append(x)                                      # -> (768, 10, 10)
         x = self.aux1(x)
-        out_features.append(x)
+        out_features.append(x)                                      # -> (512, 5, 5)
         x = self.aux2(x)
-        out_features.append(x)
+        out_features.append(x)                                      # -> (256, 3, 3)
         x = self.aux3(x)
-        out_features.append(x)
+        out_features.append(x)                                      # -> (256, 1, 1)
+
+        return out_features
+
+
+class SwinTBackbone_B(torch.nn.Module):
+    def __init__(self, img_size=336, weights=None):
+        super().__init__()
+
+        if img_size != 336:
+            raise NotImplementedError("Image size should be equal to 336.")
+        
+        # load pretrained torchvision ResNet50
+        base_model = SwinTransformer_336(img_size=336)
+        if weights:
+            base_model.load_state_dict(weights)
+
+        # copy base layers (except for fc head)
+        self.patch_embed = base_model.patch_embed
+        self.swin_block_0 = base_model.layers[0]
+        self.swin_block_1 = base_model.layers[1]
+        self.swin_block_1.downsample = None
+
+        # channel dims of output feature maps (for convenience in SSD)
+        self.out_dims = [192, 512, 512, 256, 256, 256]
+
+        self.aux1 = nn.Sequential(
+            nn.Conv2d(192, 512, kernel_size=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(512, 512, kernel_size=3, stride=2, padding=1),
+            nn.ReLU(inplace=True)
+        )  # -> (512x21x21)
+
+        self.aux2 = nn.Sequential(
+            nn.Conv2d(512, 256, kernel_size=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 512, kernel_size=3, stride=2, padding=1),
+            nn.ReLU(inplace=True)
+        )  # -> (512x11x11)
+
+        self.aux3 = nn.Sequential(
+            nn.Conv2d(512, 256, kernel_size=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, stride=2, padding=1),
+            nn.ReLU(inplace=True)
+        )  # -> (256x6x6)
+
+        self.aux4 = nn.Sequential(
+            nn.Conv2d(256, 128, kernel_size=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1),
+            nn.ReLU(inplace=True)
+        )  # -> (256x3x3)
+
+        self.aux5 = nn.Sequential(
+            nn.Conv2d(256, 128, kernel_size=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(128, 256, kernel_size=3),
+            nn.ReLU(inplace=True)
+        )  # -> (256x1x1)
+
+    def forward(self, x):    # x -> (B, 3, 336, 336)
+        out_features = []
+
+        x = self.patch_embed(x)        
+        x = self.swin_block_0(x)       
+        x = self.swin_block_1(x)
+
+        x = x.permute(0, 3, 1, 2).contiguous()
+            
+        out_features.append(x)                                      # -> (192, 42, 42)
+        x = self.aux1(x)
+        out_features.append(x)                                      # -> (512, 21, 21)
+        x = self.aux2(x)
+        out_features.append(x)                                      # -> (512, 11, 11)
+        x = self.aux3(x)
+        out_features.append(x)                                      # -> (256, 6, 6)
+        x = self.aux4(x)
+        out_features.append(x)                                      # -> (256, 3, 3)
+        x = self.aux5(x)
+        out_features.append(x)                                      # -> (256, 1, 1)
 
         return out_features
 
@@ -554,7 +637,7 @@ class SwinTBackbone(torch.nn.Module):
 if __name__ == "__main__":
 
     # Example usage
-    model = SwinTBackbone(weights=None)
+    model = SwinTBackbone_B(weights=None)
     features = model(torch.randn(1, 3, 336, 336))
 
     print([k.size() for k in features])
