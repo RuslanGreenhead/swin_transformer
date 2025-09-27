@@ -1,0 +1,48 @@
+# Config for SSD detector with Swin(T) backbone
+model:
+  backbone: "swin"
+  swin:
+    emb_dim: 96
+    depths: [2, 2, 6, 2]
+    n_heads: [3, 6, 12, 24]
+    mlp_drop: 0.0
+    attn_drop: 0.0
+    drop_path: 0.2
+  backbone_weights: "IMAGENET_CUSTOM"
+  neck: "PAN"
+  image_size: 336
+  n_classes: 80            # without "background"
+  sync_batchnorm: False    # syncrhronize BN calculation across all GPUs
+  inference:
+    min_score: 0.05
+    max_overlap: 0.45
+    top_k: 200
+
+train:
+  optimizer: "adam"
+  num_epochs: 52          
+  lr_milestones: [32, 42, 49]   # exp. 13 - 42 [27, 33, 40]
+  warmup_epochs: 2        # (2 for basic SSD)
+  accumulation_steps: 1 
+  warmup_prefix: True
+  initial_lr: 0.0001      # 1e-4
+  min_lr: 0.000005        # 5e-6
+  warmup_lr: 0.00000001    # 1e-7  (1e-8 for SSD with neck)
+  lr_decay_rate: 0.1
+  max_grad_norm: 5.0      # as in authors' code
+  momentum: 0.9           # for SGD optimizer
+  weight_decay: 0.05    
+  
+  batch_size: 64           # (4 gpus) * (64 per each) --> 256 (total)  | maybe should increase to ...
+  batch_interval: 100      # we have ~462 batches      
+  num_workers: 8           # 8 regardless of number of CPUs/GPUs
+  save_every: 15
+  snapshot_path: 'model_snapshot.pth'
+
+dataset:
+  name: "COCO-2020"
+  root: "/opt/software/datasets/COCO" 
+  image_size: 336
+  n_classes: 80        # without "background"
+  test_crop: True      # whether to crop images for test
+  test_shuffle: False  # whether to shuffle images for test
