@@ -16,13 +16,13 @@ import yaml
 from tqdm import tqdm
 
 from ssd import SSD, MultiBoxLoss
-from backbones import ResNet50Backbone, ResNet50Backbone_Deeper
+from backbones import ResNet50Backbone_A, ResNet50Backbone_B, SwinTBackbone_A, SwinTBackbone_B
 from necks import FPN, PAN, DenseFPN
 from data import build_loaders
 from utils import AverageMeter, calculate_coco_mAP, calculate_coco_mAP_pcct
 from utils import normalize_boxes, coco_to_xy
 
-CONFIG_PATH = "../configs/detection_ssd_resnet50.yaml"
+CONFIG_PATH = "../configs/detection_ssd_SwinT.yaml"
 
 
 def load_config(cfg_path):
@@ -44,26 +44,30 @@ def ddp_setup(nccl_timeout=30):
 
 def build_model(cfg):
     if cfg['model']['backbone'] == "swin":
-        pass
+        # backbone = SwinTBackbone_A(weights=cfg['model']['backbone_weights'], cfg=cfg)
+        backbone = SwinTBackbone_B(weights=cfg['model']['backbone_weights'], cfg=cfg)
     elif cfg['model']['backbone'] == "resnet50":
-        # backbone = ResNet50Backbone(img_size=cfg['model']['image_size'], weights=cfg['model']['backbone_weights'])
-        backbone = ResNet50Backbone_Deeper(img_size=cfg['model']['image_size'], weights=cfg['model']['backbone_weights'])
+        # backbone = ResNet50Backbone_A(img_size=cfg['model']['image_size'], weights=cfg['model']['backbone_weights'])
+        backbone = ResNet50Backbone_B(img_size=cfg['model']['image_size'], weights=cfg['model']['backbone_weights'])
     else:
         raise NotImplementedError("Unsupported backbone.")
     
+    bb_out_dims = backbone.out_dims
+    bb_out_resolutions = backbone.out_resolutions
+    
     neck = None
     if cfg['model']['neck'] == "FPN":
-        neck = FPN()
+        neck = FPN(fm_dims=bb_out_dims, fm_spacials=bb_out_resolutions)
     elif cfg['model']['neck'] == "PAN":
-        neck = PAN()
+        neck = PAN(fm_dims=bb_out_dims, fm_spacials=bb_out_resolutions)
     elif cfg['model']['neck'] == "DenseFPN":
-        neck = DenseFPN()
+        neck = DenseFPN(fm_dims=bb_out_dims, fm_spacials=bb_out_resolutions)
     
     # here we increase the number of classes by one for the background
     model = SSD(backbone=backbone,
                 n_classes=cfg['model']['n_classes'] + 1, 
                 input_size=cfg['model']['image_size'],
-                neck=neck
+                neck=neck,
             )
 
     return model
@@ -71,7 +75,7 @@ def build_model(cfg):
 
 def build_optimizer(model, cfg):
 
-    if cfg['model']['backbone'] == 'resnet50':
+    if cfg['train']['optimizer'] == 'sgd':
         decay_params = []
         no_decay_params = []
 
@@ -83,23 +87,46 @@ def build_optimizer(model, cfg):
                 no_decay_params.append(param)
             else:
                 decay_params.append(param)
+        
+        param_groups = [
+            {'params': decay_params, 'weight_decay': cfg['train']['weight_decay']},
+            {'params': no_decay_params, 'weight_decay': 0.0}
+        ]
 
         optimizer = torch.optim.SGD(
-            [{'params': decay_params, 'weight_decay': cfg['train']['weight_decay']},
-            {'params': no_decay_params, 'weight_decay': 0.0}], 
+            param_groups, 
             lr=cfg['train']['initial_lr'],
             momentum=cfg['train']['momentum']
         )
 
-    elif cfg['model']['backbone'] == 'swin':
+    elif cfg['train']['optimizer'] == 'adam':
+        decay_params = []
+        no_decay_params = []
 
-        optimizer = torch.optim.AdamW(model.parameters(),
+        # similar to "Tencent trick", but also with rpb
+        for name, param in model.named_parameters():
+            if not param.requires_grad:
+                continue
+            if ("absolute_pos_emb" in name 
+            or "rpb_table" in name
+            or "norm" in name):
+                no_decay_params.append(param)
+            else:
+                decay_params.append(param)
+        
+        param_groups = [
+            {'params': no_decay_params, 'weight_decay': 0.0},
+            {'params': decay_params, 'weight_decay': cfg['train']['weight_decay']}
+        ]
+
+        optimizer = torch.optim.AdamW(
+            param_groups,
             lr=cfg['train']['initial_lr'],
             weight_decay=cfg['train']['weight_decay']
         )
     
     else:
-        raise NotImplementedError("No optimizaer for such backbone name.")
+        raise NotImplementedError("No optimizer for such backbone name.")
     
     return optimizer
 
@@ -168,16 +195,26 @@ class TrainerDET:
                 t_in_epochs=False 
             )
         elif cfg['model']['backbone'] == "swin":
-            lr_scheduler = CosineLRScheduler(
-                self.optimizer,
-                t_initial=(num_steps - warmup_steps) if cfg['warmup_prefix'] else num_steps,
-                lr_min=cfg['min_lr'],
-                warmup_lr_init=cfg['warmup_lr'],
-                warmup_t=warmup_steps,
-                cycle_limit=1,
-                t_in_epochs=False,
-                warmup_prefix=cfg['train']['warmup_prefix']
+            lr_scheduler = MultiStepLRScheduler(
+                self.optimizer, 
+                decay_t=[ms * n_iter_per_epoch for ms in cfg['train']['lr_milestones']],     
+                decay_rate=cfg['train']['lr_decay_rate'],         
+                warmup_t=warmup_steps,             
+                warmup_lr_init=cfg['train']['warmup_lr'],
+                warmup_prefix=cfg['train']['warmup_prefix'],
+                t_in_epochs=False 
             )
+
+            # lr_scheduler = CosineLRScheduler(
+            #     self.optimizer,
+            #     t_initial=(num_steps - warmup_steps) if cfg['train']['warmup_prefix'] else num_steps,
+            #     lr_min=cfg['train']['min_lr'],
+            #     warmup_lr_init=cfg['train']['warmup_lr'],
+            #     warmup_t=warmup_steps,
+            #     cycle_limit=1,
+            #     t_in_epochs=False,
+            #     warmup_prefix=cfg['train']['warmup_prefix']
+            # )
 
         return lr_scheduler
     

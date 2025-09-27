@@ -57,7 +57,7 @@ class SSD(nn.Module):
             nn.Conv2d(self.res_dims[5], 4 * n_classes, kernel_size=3, padding=1)
         ])
 
-        self.priors_cxcy = self.generate_priors(image_size=input_size)
+        self.priors_cxcy = self.generate_priors(feature_map_dims=backbone.out_resolutions)
         self._init_head_convs()
 
 
@@ -86,15 +86,7 @@ class SSD(nn.Module):
         return bbox_offsets, bbox_scores
 
 
-    def generate_priors(self, image_size):
-        if image_size == 224:
-            feature_map_dims = [28, 14, 7, 4, 2, 1]     # n_priors = 4722
-        elif image_size == 300:
-            feature_map_dims = [38, 19, 10, 5, 3, 1]    # n_priors = 8732
-        elif image_size == 336:
-            feature_map_dims = [42, 21, 10, 5, 3, 1]    # n_priors = 10492
-        else:
-            raise NotImplementedError("Unexpected image_size for anchor generation!")
+    def generate_priors(self, feature_map_dims):
 
         # scales for each feature map (as fractions of image size)
         scales = np.empty(len(feature_map_dims))

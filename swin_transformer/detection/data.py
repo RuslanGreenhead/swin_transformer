@@ -91,19 +91,19 @@ def build_loaders(cfg):
     train_set, _ = build_dataset(is_train=True, cfg=cfg['dataset'])
     val_set, _ = build_dataset(is_train=False, cfg=cfg['dataset'])
     
-    # train_sampler = torch.utils.data.distributed.DistributedSampler(
-    #     train_set, shuffle=True
-    # )
-    # val_sampler = torch.utils.data.distributed.DistributedSampler(
-    #     val_set, shuffle=cfg['dataset']['test_shuffle']
-    # )
+    train_sampler = torch.utils.data.distributed.DistributedSampler(
+        train_set, shuffle=True
+    )
+    val_sampler = torch.utils.data.distributed.DistributedSampler(
+        val_set, shuffle=cfg['dataset']['test_shuffle']
+    )
     
     train_loader = DataLoader(
         train_set,
         batch_size=cfg['train']['batch_size'],
         num_workers=cfg['train']['num_workers'],
         pin_memory=True,
-        # sampler=train_sampler,
+        sampler=train_sampler,
         drop_last=True,
         collate_fn=collate_coco
     )
@@ -113,8 +113,7 @@ def build_loaders(cfg):
         batch_size=cfg['train']['batch_size'],
         num_workers=cfg['train']['num_workers'],
         pin_memory=True,
-        shuffle=False,
-        # sampler=val_sampler,
+        sampler=val_sampler,
         drop_last=False,
         collate_fn=collate_coco
     )

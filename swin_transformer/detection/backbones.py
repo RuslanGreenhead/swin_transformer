@@ -1,3 +1,6 @@
+import os
+import sys
+
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -12,8 +15,13 @@ import numpy as np
 from einops import rearrange
 from torch import einsum
 
-from ..model import window_partition, window_merging, build_mask
-from ..model import PatchEmbedding, MLP, WMSA, PatchMerging
+# to see "model.py" module
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
+
+from model import window_partition, window_merging, build_mask
+from model import PatchEmbedding, MLP, WMSA, PatchMerging
 
 
 # ------------------------------------------------------ ResNet backbones ------------------------------------------------------ #
@@ -31,6 +39,10 @@ class ResNet50Backbone_A(torch.nn.Module):
 
         # channel dims of output feature maps (for convenience in SSD)
         self.out_dims = [512, 1024, 2048, 512, 256, 256]
+        if img_size == 224:
+            self.out_resolutions = [28, 14, 7, 4, 2, 1]
+        elif img_size == 300:
+            self.out_resolutions = [38, 19, 10, 5, 3, 1]
 
         # copy base layers (except for fc head)
         self.conv1 = base_model.conv1
@@ -69,7 +81,7 @@ class ResNet50Backbone_A(torch.nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        self._init_auxilary_layers()
+        self._init_auxiliary_layers()
 
 
     def forward(self, x):
@@ -89,7 +101,7 @@ class ResNet50Backbone_A(torch.nn.Module):
         return c3, c4, c5, c6, c7, c8
     
 
-    def _init_auxilary_layers(self):
+    def _init_auxiliary_layers(self):
         for name, module in self.named_modules():
             if "aux" in name:
                 for m in module.modules():
@@ -115,6 +127,10 @@ class ResNet50Backbone_B(torch.nn.Module):
 
         # channel dims of output feature maps (for convenience in SSD)
         self.out_dims = [1024, 512, 512, 256, 256, 256]
+        if img_size == 224:
+            self.out_resolutions = [28, 14, 7, 4, 2, 1]
+        elif img_size == 300:
+            self.out_resolutions = [38, 19, 10, 5, 3, 1]
 
         # copy base layers (except for fc head)
         self.conv1 = base_model.conv1
@@ -175,7 +191,7 @@ class ResNet50Backbone_B(torch.nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        self._init_auxilary_layers()
+        self._init_auxiliary_layers()
 
 
     def forward(self, x):
@@ -196,7 +212,7 @@ class ResNet50Backbone_B(torch.nn.Module):
         return c4, c5, c6, c7, c8, c9
     
 
-    def _init_auxilary_layers(self):
+    def _init_auxiliary_layers(self):
         for name, module in self.named_modules():
             if "aux" in name:
                 for m in module.modules():
@@ -397,7 +413,7 @@ class SwinTransformer_336(nn.Module):
 
     """
 
-    def __init__(self, img_size=224, patch_size=4, input_dim=3, n_classes=1000,
+    def __init__(self, img_size=336, patch_size=4, input_dim=3, n_classes=1000,
                  emb_dim=96, depths=[2, 2, 6, 2], n_heads=[3, 6, 12, 24],
                  window_size=7, mlp_ratio=4., qkv_bias=True, qk_scale=None,
                  pos_drop=0., mlp_drop=0., attn_drop=0., drop_path=0.1,
@@ -487,19 +503,70 @@ class SwinTransformer_336(nn.Module):
                 nn.init.constant_(m.bias, 0)
                 nn.init.constant_(m.weight, 1.0)
 
+
+class PermuteLayerNorm(nn.Module):
+    """
+    Module to wrap LayerNorm into axis permutations. To preserve it over channel dim 
+    (applied to (N, H, W, C) tensor, according to Swin paradigm)
+    """
+    def __init__(self, dim):
+        super().__init__()
+        self.norm = nn.LayerNorm(dim)
+
+    def forward(self, x):    # x -> (N, C, H, W)
+        x = x.permute(0, 2, 3, 1).contiguous()
+        x = self.norm(x)
+        x = x.permute(0, 3, 1, 2).contiguous()
+        
+        return x
+    
+
+class PatchExpanding(nn.Module):
+    """
+    Patch Expanding (upsampling method).
+
+    Parameters:
+        input_dim (int): number of channels in input tensor
+        norm_layer (nn.Module, optional): normalization to apply before merging
+    """
+
+    def __init__(self, input_dim, norm_layer=nn.LayerNorm):
+        super().__init__()
+        self.input_dim = input_dim
+        self.projection = nn.Linear(input_dim, 2 * input_dim, bias=False)    # was 4 * input_dim
+        self.norm_layer = norm_layer(input_dim)
+
+    def forward(self, x):                        # x -> (B, H, W, C)
+        x = self.norm_layer(x)
+        b, h, w, c = x.shape
+        x = rearrange(x, "b h w c -> (b h w) c")
+        x = rearrange(self.projection(x), "(b h w) c -> b h w c", b=b, h=h, w=w)
+        x = rearrange(x, "b h w (c h1 w1) -> b (h h1) (w w1) c", h1=2, w1=2)
+
+        return x
+
 # ---------------------------------------------------- Swin backbones ----------------------------------------------------- #
 
 class SwinTBackbone_A(torch.nn.Module):
-    def __init__(self, img_size=336, weights=None):
+    def __init__(self, weights=None, cfg=None):
         super().__init__()
 
-        if img_size != 336:
+        if cfg['model']['image_size'] != 336:
             raise NotImplementedError("Image size should be equal to 336.")
 
         # load pretrained SwinT weights
-        base_model = SwinTransformer_336(img_size=336)
-        if weights:
-            base_model.load_state_dict(weights)
+        base_model = SwinTransformer_336(
+            img_size=cfg['model']['image_size'],
+            emb_dim=cfg['model']['swin']['emb_dim'],
+            depths=cfg['model']['swin']['depths'],
+            n_heads=cfg['model']['swin']['n_heads'],
+            mlp_drop=cfg['model']['swin']['mlp_drop'],     # -> 0.0  (basically)
+            attn_drop=cfg['model']['swin']['attn_drop'],   # -> 0.0  (basically)
+            drop_path=cfg['model']['swin']['drop_path'], 
+        )
+        if weights == "IMAGENET_CUSTOM":
+            state_dict = torch.load("../saved_weights/SwinT_statedict.pth")['MODEL_STATE']   # to fix - wrong file
+            base_model.load_state_dict(state_dict)
 
         # copy base layers (except for fc head)
         self.patch_embed = base_model.patch_embed
@@ -509,27 +576,43 @@ class SwinTBackbone_A(torch.nn.Module):
 
         # channel dims of output feature maps (for convenience in SSD)
         self.out_dims = [192, 384, 768, 512, 256, 256]
+        self.out_resolutions = [42, 21, 10, 5, 3, 1] 
 
         self.aux1 = nn.Sequential(
-            nn.Conv2d(768, 512, kernel_size=1),
+            nn.Conv2d(768, 512, kernel_size=1, bias=False),
+            # PermuteLayerNorm(512),
+            nn.BatchNorm2d(512), 
             nn.ReLU(inplace=True),
-            nn.Conv2d(512, 512, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(512, 512, kernel_size=3, stride=2, padding=1, bias=False),
+            # PermuteLayerNorm(512),
+            nn.BatchNorm2d(512), 
             nn.ReLU(inplace=True)
         )
 
         self.aux2 = nn.Sequential(
-            nn.Conv2d(512, 256, kernel_size=1),
+            nn.Conv2d(512, 256, kernel_size=1, bias=False),
+            # PermuteLayerNorm(256),
+            nn.BatchNorm2d(256), 
             nn.ReLU(inplace=True),
-            nn.Conv2d(256, 256, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(256, 256, kernel_size=3, stride=2, padding=1, bias=False),
+            # PermuteLayerNorm(256),
+            nn.BatchNorm2d(256), 
             nn.ReLU(inplace=True)
         )
 
         self.aux3 = nn.Sequential(
-            nn.Conv2d(256, 128, kernel_size=1),
+            nn.Conv2d(256, 128, kernel_size=1, bias=False),
+            # PermuteLayerNorm(128),
+            nn.BatchNorm2d(128), 
             nn.ReLU(inplace=True),
-            nn.Conv2d(128, 256, kernel_size=3),
+            nn.Conv2d(128, 256, kernel_size=3, bias=False),
+            # PermuteLayerNorm(256),
+            nn.BatchNorm2d(256), 
             nn.ReLU(inplace=True)
         )
+
+        self._init_auxiliary_layers()
+
 
     def forward(self, x):    # x -> (B, 3, 336, 336)
         out_features = []
@@ -554,61 +637,97 @@ class SwinTBackbone_A(torch.nn.Module):
         return out_features
 
 
+    def _init_auxiliary_layers(self):
+        for name, module in self.named_modules():
+            if "aux" in name:
+                for m in module.modules():
+                    if isinstance(m, (nn.Conv2d, nn.Linear)):
+                        nn.init.xavier_uniform_(m.weight)
+                        if m.bias is not None:
+                            nn.init.zeros_(m.bias)
+
+
 class SwinTBackbone_B(torch.nn.Module):
-    def __init__(self, img_size=336, weights=None):
+    def __init__(self, weights=None, cfg=None):
         super().__init__()
 
-        if img_size != 336:
+        if cfg['model']['image_size'] != 336:
             raise NotImplementedError("Image size should be equal to 336.")
         
-        # load pretrained torchvision ResNet50
-        base_model = SwinTransformer_336(img_size=336)
-        if weights:
-            base_model.load_state_dict(weights)
+        # load pretrained SwinT weights
+        base_model = SwinTransformer_336(
+            img_size=cfg['model']['image_size'],
+            emb_dim=cfg['model']['swin']['emb_dim'],
+            depths=cfg['model']['swin']['depths'],
+            n_heads=cfg['model']['swin']['n_heads'],
+            mlp_drop=cfg['model']['swin']['mlp_drop'],     # -> 0.0  (basically)
+            attn_drop=cfg['model']['swin']['attn_drop'],   # -> 0.0  (basically)
+            drop_path=cfg['model']['swin']['drop_path'], 
+        )
+        if weights == "IMAGENET_CUSTOM":
+            state_dict = torch.load("../saved_weights/SwinT_statedict.pth")['MODEL_STATE']   # to fix - wrong file
+            base_model.load_state_dict(state_dict)
 
         # copy base layers (except for fc head)
         self.patch_embed = base_model.patch_embed
         self.swin_block_0 = base_model.layers[0]
         self.swin_block_1 = base_model.layers[1]
-        self.swin_block_1.downsample = None
+        self.swin_block_2 = base_model.layers[2]
+        self.swin_block_2.downsample = None
+        self.patch_expanding = PatchExpanding(self.swin_block_2.input_dim)
 
         # channel dims of output feature maps (for convenience in SSD)
         self.out_dims = [192, 512, 512, 256, 256, 256]
+        self.out_resolutions = [42, 21, 11, 6, 3, 1]
 
         self.aux1 = nn.Sequential(
-            nn.Conv2d(192, 512, kernel_size=1),
+            nn.Conv2d(192, 512, kernel_size=1, bias=False),
+            PermuteLayerNorm(512),
             nn.ReLU(inplace=True),
-            nn.Conv2d(512, 512, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(512, 512, kernel_size=3, stride=2, padding=1, bias=False),
+            PermuteLayerNorm(512),
             nn.ReLU(inplace=True)
         )  # -> (512x21x21)
 
         self.aux2 = nn.Sequential(
-            nn.Conv2d(512, 256, kernel_size=1),
+            nn.Conv2d(512, 256, kernel_size=1, bias=False),
+            PermuteLayerNorm(256),
             nn.ReLU(inplace=True),
-            nn.Conv2d(256, 512, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(256, 512, kernel_size=3, stride=2, padding=1, bias=False),
+            PermuteLayerNorm(512),
             nn.ReLU(inplace=True)
         )  # -> (512x11x11)
 
         self.aux3 = nn.Sequential(
-            nn.Conv2d(512, 256, kernel_size=1),
+            nn.Conv2d(512, 256, kernel_size=1, bias=False),
+            PermuteLayerNorm(256),
             nn.ReLU(inplace=True),
-            nn.Conv2d(256, 256, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(256, 256, kernel_size=3, stride=2, padding=1, bias=False),
+            PermuteLayerNorm(256),
             nn.ReLU(inplace=True)
         )  # -> (256x6x6)
 
         self.aux4 = nn.Sequential(
-            nn.Conv2d(256, 128, kernel_size=1),
+            nn.Conv2d(256, 128, kernel_size=1, bias=False),
+            PermuteLayerNorm(128),
             nn.ReLU(inplace=True),
-            nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1),
+            nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1, bias=False),
+            PermuteLayerNorm(256),
             nn.ReLU(inplace=True)
         )  # -> (256x3x3)
 
         self.aux5 = nn.Sequential(
-            nn.Conv2d(256, 128, kernel_size=1),
+            nn.Conv2d(256, 128, kernel_size=1, bias=False),
+            PermuteLayerNorm(128),
             nn.ReLU(inplace=True),
-            nn.Conv2d(128, 256, kernel_size=3),
+            nn.Conv2d(128, 256, kernel_size=3, bias=False),
+            PermuteLayerNorm(256),
             nn.ReLU(inplace=True)
         )  # -> (256x1x1)
+
+        self._init_auxiliary_layers()
+        self._init_patch_expanding()
+
 
     def forward(self, x):    # x -> (B, 3, 336, 336)
         out_features = []
@@ -616,6 +735,8 @@ class SwinTBackbone_B(torch.nn.Module):
         x = self.patch_embed(x)        
         x = self.swin_block_0(x)       
         x = self.swin_block_1(x)
+        x = self.swin_block_2(x)
+        x = self.patch_expanding(x)
 
         x = x.permute(0, 3, 1, 2).contiguous()
             
@@ -632,6 +753,33 @@ class SwinTBackbone_B(torch.nn.Module):
         out_features.append(x)                                      # -> (256, 1, 1)
 
         return out_features
+    
+
+    def _init_auxiliary_layers(self):
+        for name, module in self.named_modules():
+            if "aux" in name:
+                for m in module.modules():
+                    if isinstance(m, (nn.Conv2d, nn.Linear)):
+                        nn.init.xavier_uniform_(m.weight)
+                        if m.bias is not None:
+                            nn.init.zeros_(m.bias)
+    
+
+    def _init_patch_expanding(self):
+        for name, m in self.patch_expanding.named_modules():
+            if "downsampling" in name:
+                for layer in m.children():
+                    if isinstance(layer, nn.Conv2d):
+                        trunc_normal_(layer.weight, std=.02)
+                        if layer.bias is not None:
+                            nn.init.constant_(layer.bias, 0)
+            if isinstance(m, nn.Linear):
+                trunc_normal_(m.weight, std=.02)
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.LayerNorm):
+                nn.init.constant_(m.bias, 0)
+                nn.init.constant_(m.weight, 1.0)
 
 
 if __name__ == "__main__":

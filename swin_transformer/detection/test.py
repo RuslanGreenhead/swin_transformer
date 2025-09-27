@@ -8,11 +8,11 @@ from tqdm import tqdm
 
 from data import build_loaders
 from ssd import SSD, MultiBoxLoss
-from backbones import ResNet50Backbone, ResNet50Backbone_Deeper
+from backbones import SwinTBackbone_B
 from utils import calculate_coco_mAP, coco_to_xy, gcxgcy_to_cxcy, cxcy_to_xy, normalize_boxes, calculate_coco_mAP_pcct
 from necks import FPN, PAN, DenseFPN
 
-CONFIG_PATH = "../configs/detection_ssd_resnet50.yaml"
+CONFIG_PATH = "../configs/detection_ssd_SwinT.yaml"
 
 def load_config(cfg_path):
     with open(cfg_path, 'r') as f:
@@ -24,11 +24,15 @@ if __name__ == "__main__":
     cfg = load_config(CONFIG_PATH)
     train_loader, val_loader = build_loaders(cfg)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    backbone = SwinTBackbone_B(weights=cfg['model']['backbone_weights'], cfg=cfg)
+    bb_out_dims = backbone.out_dims
+    bb_out_resolutions = backbone.out_resolutions
     
-    model = SSD(backbone=ResNet50Backbone_Deeper(weights=cfg['model']['backbone_weights'], img_size=300), 
+    model = SSD(backbone=backbone, 
                 n_classes=cfg['model']['n_classes'] + 1,
                 input_size=cfg['model']['image_size'],
-                neck=DenseFPN())
+                neck=FPN(fm_dims=bb_out_dims, fm_spacials=bb_out_resolutions))
     model = model.to(device)
     model.load_state_dict(torch.load("final_model.pth"))
     model.eval()
@@ -50,6 +54,9 @@ if __name__ == "__main__":
 
     # Full validation for ResNet+FPN (exp. 10): mAP=0.2502355349360508
     # Full validation for ResNet+PAN (exp. 11): mAP=0.25220221483815125
+
+    # Full validation for SwinT (no neck) (exp. 13) : mAP=0.2530098709758889  (42 [27, 33, 40])
+    #                                                 mAP=0.25810432715954446 (52 [32, 42, 49])
     
 
 
