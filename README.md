@@ -7,6 +7,11 @@ This project is an implementation of the paper **"Swin Transformer: Hierarchical
 ![Swin Transformer Architecture](https://amaarora.github.io/images/swin-transformer.png)
 
 ### Detection:
+Schemes of proposed ResNet50-based backbones:
+![ResNet50 backbones](imgs/resnet_scheme.jpg)
+
+Schemes of proposed SwinT-based backbones:
+![SwinT backbones](imgs/resnet_scheme.jpg)
 
 | necks▶<br>backbones▼  | neck_1 | neck_2 |
 |-----------------------|--------|--------|
