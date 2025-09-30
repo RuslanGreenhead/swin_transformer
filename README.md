@@ -7,7 +7,6 @@ This project is an implementation of the paper **"Swin Transformer: Hierarchical
 ![Swin Transformer Architecture](https://amaarora.github.io/images/swin-transformer.png)
 
 ---
-s
 ### Classification:
 The Swin Transformer model (SwinT variant) was pretrained on the ImageNet-1k dataset for the classification task. Training logs and detailed experiment results can be found in *experiments/experiment_1*. The achieved accuracy closely matches the results reported in the [original paper](https://arxiv.org/abs/2103.14030):
 
@@ -15,8 +14,7 @@ The Swin Transformer model (SwinT variant) was pretrained on the ImageNet-1k dat
 |---------------------|------------|-----------|
 | SwinT  (~28M params)|   0.8060   |  0.9510   |
 
-<br>  
-<br>
+---
 
 ### Detection:
 For the detection task, conducted on the Microsoft COCO dataset, an SSD framework was implemented. Several Swin-based backbones were designed alongside reference ResNet-based backbones. The SSD detector was evaluated with different backbones and neck variants—two well-known and one newly proposed. The architectures of the proposed backbone networks are illustrated below:
@@ -36,8 +34,7 @@ The key detection results are summarized in the table below. The metric reported
 | SwinTBackbone_A       | 0.164175 |     --       |    --    |     --       |
 | SwinTBackbone_B       | 0.258104 | **0.259176** | 0.258641 |   0.256729   |
 
-<br>  
-<br>
+---
 
 ### Diffusion generation:
 -- in progress 
