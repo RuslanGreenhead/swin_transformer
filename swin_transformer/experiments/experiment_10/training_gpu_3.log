@@ -1,0 +1,417 @@
+GPU[3]: Epoch 0 started.
+GPU[3]:  batch [100/462]:  loss=13.2234  COCO_mAP=0.000046  grad_norm=71.2463  lr=0.000086
+GPU[3]:  batch [200/462]:  loss=7.2881  COCO_mAP=0.001079  grad_norm=26.1710  lr=0.000172
+GPU[3]:  batch [300/462]:  loss=5.8135  COCO_mAP=0.058872  grad_norm=24.3687  lr=0.000259
+GPU[3]:  batch [400/462]:  loss=4.7326  COCO_mAP=0.115635  grad_norm=10.9009  lr=0.000346
+GPU[3]:  batch [462/462]:  loss=4.4844  COCO_mAP=0.123643  grad_norm=15.8457  lr=0.000399
+Validation on GPU[3]:  val_loss=4.440865  val_COCO_mAP=0.060873
+(GPU[3]): Epoch 0 completed. Time elapsed: 00:07:27
+GPU[3]: Epoch 1 started.
+GPU[3]:  batch [100/462]:  loss=4.4591  COCO_mAP=0.108120  grad_norm=9.4256  lr=0.000486
+GPU[3]:  batch [200/462]:  loss=4.3059  COCO_mAP=0.154063  grad_norm=6.4318  lr=0.000572
+GPU[3]:  batch [300/462]:  loss=4.2940  COCO_mAP=0.133535  grad_norm=9.9943  lr=0.000659
+GPU[3]:  batch [400/462]:  loss=4.2008  COCO_mAP=0.173596  grad_norm=8.4196  lr=0.000745
+GPU[3]:  batch [462/462]:  loss=4.4087  COCO_mAP=0.106816  grad_norm=29.4828  lr=0.000799
+Validation on GPU[3]:  val_loss=4.254282  val_COCO_mAP=0.077897
+(GPU[3]): Epoch 1 completed. Time elapsed: 00:14:51
+GPU[3]: Epoch 2 started.
+GPU[3]:  batch [100/462]:  loss=4.2684  COCO_mAP=0.157818  grad_norm=9.2865  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=4.1105  COCO_mAP=0.157599  grad_norm=20.2502  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=4.0239  COCO_mAP=0.165254  grad_norm=5.7250  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=3.9605  COCO_mAP=0.158503  grad_norm=19.9646  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=3.8914  COCO_mAP=0.195616  grad_norm=9.5929  lr=0.000800
+Validation on GPU[3]:  val_loss=3.856467  val_COCO_mAP=0.110063
+(GPU[3]): Epoch 2 completed. Time elapsed: 00:22:26
+GPU[3]: Epoch 3 started.
+GPU[3]:  batch [100/462]:  loss=3.8147  COCO_mAP=0.220667  grad_norm=3.7950  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=3.7645  COCO_mAP=0.185058  grad_norm=11.5849  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=3.7205  COCO_mAP=0.198539  grad_norm=7.4675  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=3.6892  COCO_mAP=0.165731  grad_norm=5.8987  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=3.6581  COCO_mAP=0.188333  grad_norm=5.4923  lr=0.000800
+Validation on GPU[3]:  val_loss=3.641379  val_COCO_mAP=0.134396
+(GPU[3]): Epoch 3 completed. Time elapsed: 00:30:01
+GPU[3]: Epoch 4 started.
+GPU[3]:  batch [100/462]:  loss=3.5496  COCO_mAP=0.191419  grad_norm=3.5041  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=3.5325  COCO_mAP=0.168583  grad_norm=11.2374  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=3.4897  COCO_mAP=0.190175  grad_norm=6.9062  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=3.4949  COCO_mAP=0.244381  grad_norm=5.0033  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=3.4941  COCO_mAP=0.239106  grad_norm=2.9182  lr=0.000800
+Validation on GPU[3]:  val_loss=3.435247  val_COCO_mAP=0.149384
+(GPU[3]): Epoch 4 completed. Time elapsed: 00:37:23
+GPU[3]: Epoch 5 started.
+GPU[3]:  batch [100/462]:  loss=3.3578  COCO_mAP=0.222420  grad_norm=3.2639  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=3.3813  COCO_mAP=0.246261  grad_norm=5.4019  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=3.3360  COCO_mAP=0.209884  grad_norm=3.2470  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=3.3554  COCO_mAP=0.239919  grad_norm=3.4541  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=3.3584  COCO_mAP=0.231963  grad_norm=3.0210  lr=0.000800
+Validation on GPU[3]:  val_loss=3.336354  val_COCO_mAP=0.164845
+(GPU[3]): Epoch 5 completed. Time elapsed: 00:44:49
+GPU[3]: Epoch 6 started.
+GPU[3]:  batch [100/462]:  loss=3.2327  COCO_mAP=0.290177  grad_norm=3.4610  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=3.2443  COCO_mAP=0.263693  grad_norm=3.0913  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=3.2889  COCO_mAP=0.297063  grad_norm=3.2836  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=3.2381  COCO_mAP=0.196153  grad_norm=3.6541  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=3.2325  COCO_mAP=0.247523  grad_norm=3.5403  lr=0.000800
+Validation on GPU[3]:  val_loss=3.258067  val_COCO_mAP=0.166047
+(GPU[3]): Epoch 6 completed. Time elapsed: 00:52:11
+GPU[3]: Epoch 7 started.
+GPU[3]:  batch [100/462]:  loss=3.1749  COCO_mAP=0.253023  grad_norm=3.9447  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=3.1785  COCO_mAP=0.244330  grad_norm=3.8196  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=3.1682  COCO_mAP=0.246199  grad_norm=3.4988  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=3.1679  COCO_mAP=0.241923  grad_norm=2.6386  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=3.1605  COCO_mAP=0.233181  grad_norm=3.1186  lr=0.000800
+Validation on GPU[3]:  val_loss=3.192680  val_COCO_mAP=0.176024
+(GPU[3]): Epoch 7 completed. Time elapsed: 00:59:32
+GPU[3]: Epoch 8 started.
+GPU[3]:  batch [100/462]:  loss=3.0727  COCO_mAP=0.237121  grad_norm=4.4703  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=3.1157  COCO_mAP=0.215181  grad_norm=3.6916  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=3.1031  COCO_mAP=0.253444  grad_norm=3.8644  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=3.0811  COCO_mAP=0.330452  grad_norm=2.3182  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=3.1500  COCO_mAP=0.244670  grad_norm=3.6548  lr=0.000800
+Validation on GPU[3]:  val_loss=3.173422  val_COCO_mAP=0.175553
+(GPU[3]): Epoch 8 completed. Time elapsed: 01:06:56
+GPU[3]: Epoch 9 started.
+GPU[3]:  batch [100/462]:  loss=3.0114  COCO_mAP=0.234013  grad_norm=2.9602  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=3.0360  COCO_mAP=0.320320  grad_norm=3.8788  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=3.0584  COCO_mAP=0.256954  grad_norm=2.6311  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=3.0533  COCO_mAP=0.286968  grad_norm=3.6456  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=3.0750  COCO_mAP=0.232785  grad_norm=3.0924  lr=0.000800
+Validation on GPU[3]:  val_loss=3.133821  val_COCO_mAP=0.180869
+(GPU[3]): Epoch 9 completed. Time elapsed: 01:14:22
+GPU[3]: Epoch 10 started.
+GPU[3]:  batch [100/462]:  loss=2.9565  COCO_mAP=0.230712  grad_norm=3.5839  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.9783  COCO_mAP=0.278458  grad_norm=2.2327  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.9659  COCO_mAP=0.278058  grad_norm=2.7797  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=3.0028  COCO_mAP=0.306392  grad_norm=3.6611  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.9993  COCO_mAP=0.279720  grad_norm=2.4212  lr=0.000800
+Validation on GPU[3]:  val_loss=3.097667  val_COCO_mAP=0.190413
+(GPU[3]): Epoch 10 completed. Time elapsed: 01:21:49
+GPU[3]: Epoch 11 started.
+GPU[3]:  batch [100/462]:  loss=2.9123  COCO_mAP=0.258317  grad_norm=2.9426  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.9172  COCO_mAP=0.296207  grad_norm=3.1190  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.9464  COCO_mAP=0.315507  grad_norm=3.6629  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.9259  COCO_mAP=0.252675  grad_norm=2.4993  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.9876  COCO_mAP=0.254306  grad_norm=5.4368  lr=0.000800
+Validation on GPU[3]:  val_loss=3.049142  val_COCO_mAP=0.197236
+(GPU[3]): Epoch 11 completed. Time elapsed: 01:29:11
+GPU[3]: Epoch 12 started.
+GPU[3]:  batch [100/462]:  loss=2.8760  COCO_mAP=0.345924  grad_norm=3.0694  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.9010  COCO_mAP=0.270502  grad_norm=2.8562  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.9051  COCO_mAP=0.270859  grad_norm=2.8794  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.9084  COCO_mAP=0.329142  grad_norm=2.8244  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.9111  COCO_mAP=0.318383  grad_norm=3.1261  lr=0.000800
+Validation on GPU[3]:  val_loss=3.066542  val_COCO_mAP=0.191019
+(GPU[3]): Epoch 12 completed. Time elapsed: 01:36:37
+GPU[3]: Epoch 13 started.
+GPU[3]:  batch [100/462]:  loss=2.8420  COCO_mAP=0.339137  grad_norm=2.8769  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.8769  COCO_mAP=0.249832  grad_norm=2.7627  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.8776  COCO_mAP=0.301232  grad_norm=2.8359  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.8970  COCO_mAP=0.264082  grad_norm=3.0243  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.8960  COCO_mAP=0.302842  grad_norm=3.3498  lr=0.000800
+Validation on GPU[3]:  val_loss=3.035721  val_COCO_mAP=0.200372
+(GPU[3]): Epoch 13 completed. Time elapsed: 01:43:59
+GPU[3]: Epoch 14 started.
+GPU[3]:  batch [100/462]:  loss=2.7800  COCO_mAP=0.280689  grad_norm=2.7126  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.8527  COCO_mAP=0.294909  grad_norm=5.3626  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.8400  COCO_mAP=0.287095  grad_norm=3.4530  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.8302  COCO_mAP=0.293605  grad_norm=2.8215  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.8479  COCO_mAP=0.278443  grad_norm=2.4957  lr=0.000800
+Validation on GPU[3]:  val_loss=3.011741  val_COCO_mAP=0.198974
+(GPU[3]): Epoch 14 completed. Time elapsed: 01:51:17
+GPU[3]: Epoch 15 started.
+GPU[3]:  batch [100/462]:  loss=2.7777  COCO_mAP=0.292680  grad_norm=2.9727  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.7975  COCO_mAP=0.292285  grad_norm=2.6431  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.8387  COCO_mAP=0.358123  grad_norm=2.6082  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.8317  COCO_mAP=0.326691  grad_norm=2.3708  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.8110  COCO_mAP=0.273433  grad_norm=3.3795  lr=0.000800
+Validation on GPU[3]:  val_loss=3.006337  val_COCO_mAP=0.202373
+(GPU[3]): Epoch 15 completed. Time elapsed: 01:58:35
+GPU[3]: Epoch 16 started.
+GPU[3]:  batch [100/462]:  loss=2.7646  COCO_mAP=0.260055  grad_norm=2.6494  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.7699  COCO_mAP=0.340805  grad_norm=2.3717  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.7871  COCO_mAP=0.263157  grad_norm=6.4002  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.7865  COCO_mAP=0.299604  grad_norm=2.8608  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.7799  COCO_mAP=0.319892  grad_norm=2.7629  lr=0.000800
+Validation on GPU[3]:  val_loss=3.012732  val_COCO_mAP=0.204398
+(GPU[3]): Epoch 16 completed. Time elapsed: 02:06:04
+GPU[3]: Epoch 17 started.
+GPU[3]:  batch [100/462]:  loss=2.7474  COCO_mAP=0.295997  grad_norm=3.0305  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.7484  COCO_mAP=0.280538  grad_norm=2.1990  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.7558  COCO_mAP=0.284238  grad_norm=2.2671  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.7913  COCO_mAP=0.292927  grad_norm=2.4894  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.7898  COCO_mAP=0.324604  grad_norm=3.9198  lr=0.000800
+Validation on GPU[3]:  val_loss=2.990335  val_COCO_mAP=0.207234
+(GPU[3]): Epoch 17 completed. Time elapsed: 02:13:24
+GPU[3]: Epoch 18 started.
+GPU[3]:  batch [100/462]:  loss=2.7166  COCO_mAP=0.367195  grad_norm=3.6938  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.7208  COCO_mAP=0.286222  grad_norm=2.0958  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.7302  COCO_mAP=0.314215  grad_norm=2.3362  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.7504  COCO_mAP=0.314089  grad_norm=2.1208  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.7390  COCO_mAP=0.287008  grad_norm=3.9150  lr=0.000800
+Validation on GPU[3]:  val_loss=2.968801  val_COCO_mAP=0.211190
+(GPU[3]): Epoch 18 completed. Time elapsed: 02:20:40
+GPU[3]: Epoch 19 started.
+GPU[3]:  batch [100/462]:  loss=2.6708  COCO_mAP=0.336426  grad_norm=5.8771  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.6924  COCO_mAP=0.324414  grad_norm=2.4115  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.7185  COCO_mAP=0.288860  grad_norm=3.8061  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.7193  COCO_mAP=0.272743  grad_norm=3.5180  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.7461  COCO_mAP=0.258493  grad_norm=2.6635  lr=0.000800
+Validation on GPU[3]:  val_loss=2.964897  val_COCO_mAP=0.213589
+(GPU[3]): Epoch 19 completed. Time elapsed: 02:28:05
+GPU[3]: Epoch 20 started.
+GPU[3]:  batch [100/462]:  loss=2.6627  COCO_mAP=0.311583  grad_norm=2.7005  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.6587  COCO_mAP=0.329043  grad_norm=2.6413  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.6994  COCO_mAP=0.306656  grad_norm=2.5679  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.7093  COCO_mAP=0.311411  grad_norm=2.8394  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.7356  COCO_mAP=0.327752  grad_norm=5.0978  lr=0.000800
+Validation on GPU[3]:  val_loss=2.995571  val_COCO_mAP=0.211255
+(GPU[3]): Epoch 20 completed. Time elapsed: 02:35:25
+GPU[3]: Epoch 21 started.
+GPU[3]:  batch [100/462]:  loss=2.6482  COCO_mAP=0.362659  grad_norm=2.6087  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.6242  COCO_mAP=0.354399  grad_norm=2.5610  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.6792  COCO_mAP=0.290828  grad_norm=2.8293  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.6724  COCO_mAP=0.349582  grad_norm=2.3745  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.7027  COCO_mAP=0.306510  grad_norm=2.5476  lr=0.000800
+Validation on GPU[3]:  val_loss=2.983756  val_COCO_mAP=0.210935
+(GPU[3]): Epoch 21 completed. Time elapsed: 02:42:48
+GPU[3]: Epoch 22 started.
+GPU[3]:  batch [100/462]:  loss=2.6014  COCO_mAP=0.370783  grad_norm=3.8045  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.6178  COCO_mAP=0.349148  grad_norm=3.2304  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.6415  COCO_mAP=0.307015  grad_norm=2.1316  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.6693  COCO_mAP=0.390488  grad_norm=4.3179  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.7005  COCO_mAP=0.340171  grad_norm=2.8273  lr=0.000800
+Validation on GPU[3]:  val_loss=2.962788  val_COCO_mAP=0.211175
+(GPU[3]): Epoch 22 completed. Time elapsed: 02:50:10
+GPU[3]: Epoch 23 started.
+GPU[3]:  batch [100/462]:  loss=2.5898  COCO_mAP=0.337269  grad_norm=2.5693  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.6068  COCO_mAP=0.363964  grad_norm=3.5388  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.6462  COCO_mAP=0.308725  grad_norm=2.7800  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.6591  COCO_mAP=0.383583  grad_norm=2.5126  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.6597  COCO_mAP=0.330077  grad_norm=2.5142  lr=0.000800
+Validation on GPU[3]:  val_loss=2.958797  val_COCO_mAP=0.214490
+(GPU[3]): Epoch 23 completed. Time elapsed: 02:57:30
+GPU[3]: Epoch 24 started.
+GPU[3]:  batch [100/462]:  loss=2.5654  COCO_mAP=0.394948  grad_norm=2.3370  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.5924  COCO_mAP=0.318618  grad_norm=4.2314  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.6105  COCO_mAP=0.307032  grad_norm=2.4771  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.6226  COCO_mAP=0.300923  grad_norm=2.6892  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.6331  COCO_mAP=0.344089  grad_norm=2.5227  lr=0.000800
+Validation on GPU[3]:  val_loss=2.990029  val_COCO_mAP=0.214831
+(GPU[3]): Epoch 24 completed. Time elapsed: 03:04:54
+GPU[3]: Epoch 25 started.
+GPU[3]:  batch [100/462]:  loss=2.5444  COCO_mAP=0.335872  grad_norm=4.2401  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.5834  COCO_mAP=0.330525  grad_norm=3.0908  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.5908  COCO_mAP=0.325669  grad_norm=2.4058  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.6193  COCO_mAP=0.269445  grad_norm=2.3387  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.6388  COCO_mAP=0.274401  grad_norm=3.8030  lr=0.000800
+Validation on GPU[3]:  val_loss=2.946998  val_COCO_mAP=0.212154
+(GPU[3]): Epoch 25 completed. Time elapsed: 03:12:14
+GPU[3]: Epoch 26 started.
+GPU[3]:  batch [100/462]:  loss=2.5342  COCO_mAP=0.360815  grad_norm=2.1979  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.5582  COCO_mAP=0.312520  grad_norm=2.2194  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.5741  COCO_mAP=0.328909  grad_norm=2.5316  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.6033  COCO_mAP=0.332118  grad_norm=2.4571  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.6118  COCO_mAP=0.284147  grad_norm=3.4641  lr=0.000800
+Validation on GPU[3]:  val_loss=2.933875  val_COCO_mAP=0.213119
+(GPU[3]): Epoch 26 completed. Time elapsed: 03:19:34
+GPU[3]: Epoch 27 started.
+GPU[3]:  batch [100/462]:  loss=2.5198  COCO_mAP=0.369360  grad_norm=2.2118  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.5791  COCO_mAP=0.298328  grad_norm=3.2760  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.5821  COCO_mAP=0.340226  grad_norm=3.9390  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.6037  COCO_mAP=0.345130  grad_norm=3.5803  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.6078  COCO_mAP=0.314568  grad_norm=2.4477  lr=0.000800
+Validation on GPU[3]:  val_loss=2.932313  val_COCO_mAP=0.219511
+(GPU[3]): Epoch 27 completed. Time elapsed: 03:26:53
+GPU[3]: Epoch 28 started.
+GPU[3]:  batch [100/462]:  loss=2.4929  COCO_mAP=0.325731  grad_norm=2.6481  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.5438  COCO_mAP=0.337724  grad_norm=3.0748  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.5412  COCO_mAP=0.316830  grad_norm=2.1557  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.5761  COCO_mAP=0.368027  grad_norm=2.5545  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.5750  COCO_mAP=0.335376  grad_norm=5.2307  lr=0.000800
+Validation on GPU[3]:  val_loss=2.910955  val_COCO_mAP=0.218523
+(GPU[3]): Epoch 28 completed. Time elapsed: 03:34:21
+GPU[3]: Epoch 29 started.
+GPU[3]:  batch [100/462]:  loss=2.4854  COCO_mAP=0.333494  grad_norm=2.5379  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.5425  COCO_mAP=0.430351  grad_norm=4.5043  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.5369  COCO_mAP=0.362859  grad_norm=2.8213  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.5322  COCO_mAP=0.357299  grad_norm=2.5838  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.5554  COCO_mAP=0.299988  grad_norm=3.0645  lr=0.000800
+Validation on GPU[3]:  val_loss=2.927900  val_COCO_mAP=0.215440
+(GPU[3]): Epoch 29 completed. Time elapsed: 03:41:41
+GPU[3]: Epoch 30 started.
+GPU[3]:  batch [100/462]:  loss=2.4912  COCO_mAP=0.336978  grad_norm=3.9951  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.4983  COCO_mAP=0.388156  grad_norm=2.6430  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.5114  COCO_mAP=0.335931  grad_norm=3.2191  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.5513  COCO_mAP=0.334663  grad_norm=2.8113  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.5399  COCO_mAP=0.356732  grad_norm=2.6884  lr=0.000800
+Validation on GPU[3]:  val_loss=2.957300  val_COCO_mAP=0.219190
+(GPU[3]): Epoch 30 completed. Time elapsed: 03:48:58
+GPU[3]: Epoch 31 started.
+GPU[3]:  batch [100/462]:  loss=2.4580  COCO_mAP=0.335994  grad_norm=3.6088  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.4957  COCO_mAP=0.348548  grad_norm=3.0443  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.4888  COCO_mAP=0.377632  grad_norm=2.4760  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.5254  COCO_mAP=0.332348  grad_norm=3.0093  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.5673  COCO_mAP=0.361577  grad_norm=4.5921  lr=0.000800
+Validation on GPU[3]:  val_loss=2.917642  val_COCO_mAP=0.218054
+(GPU[3]): Epoch 31 completed. Time elapsed: 03:56:21
+GPU[3]: Epoch 32 started.
+GPU[3]:  batch [100/462]:  loss=2.4618  COCO_mAP=0.351235  grad_norm=2.5272  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.5041  COCO_mAP=0.304859  grad_norm=2.9983  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.5130  COCO_mAP=0.367053  grad_norm=2.9560  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.5145  COCO_mAP=0.299323  grad_norm=2.8688  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.5325  COCO_mAP=0.343132  grad_norm=2.7222  lr=0.000800
+Validation on GPU[3]:  val_loss=2.925919  val_COCO_mAP=0.217223
+(GPU[3]): Epoch 32 completed. Time elapsed: 04:03:43
+GPU[3]: Epoch 33 started.
+GPU[3]:  batch [100/462]:  loss=2.4404  COCO_mAP=0.327179  grad_norm=2.6530  lr=0.000800
+GPU[3]:  batch [200/462]:  loss=2.4593  COCO_mAP=0.343230  grad_norm=2.4345  lr=0.000800
+GPU[3]:  batch [300/462]:  loss=2.4727  COCO_mAP=0.399131  grad_norm=2.7428  lr=0.000800
+GPU[3]:  batch [400/462]:  loss=2.4967  COCO_mAP=0.390248  grad_norm=2.4954  lr=0.000800
+GPU[3]:  batch [462/462]:  loss=2.5306  COCO_mAP=0.317307  grad_norm=2.6954  lr=0.000080
+Validation on GPU[3]:  val_loss=2.898869  val_COCO_mAP=0.225373
+(GPU[3]): Epoch 33 completed. Time elapsed: 04:11:00
+GPU[3]: Epoch 34 started.
+GPU[3]:  batch [100/462]:  loss=2.2837  COCO_mAP=0.418572  grad_norm=1.5237  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=2.2123  COCO_mAP=0.414900  grad_norm=1.4433  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=2.2000  COCO_mAP=0.394785  grad_norm=1.7230  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=2.1621  COCO_mAP=0.380957  grad_norm=1.6023  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=2.1449  COCO_mAP=0.400218  grad_norm=1.7490  lr=0.000080
+Validation on GPU[3]:  val_loss=2.737443  val_COCO_mAP=0.248806
+(GPU[3]): Epoch 34 completed. Time elapsed: 04:18:24
+GPU[3]: Epoch 35 started.
+GPU[3]:  batch [100/462]:  loss=2.1253  COCO_mAP=0.345081  grad_norm=1.6823  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=2.1140  COCO_mAP=0.368777  grad_norm=1.9405  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=2.1133  COCO_mAP=0.395924  grad_norm=1.5267  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=2.1145  COCO_mAP=0.440015  grad_norm=1.9273  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=2.1184  COCO_mAP=0.381096  grad_norm=2.3559  lr=0.000080
+Validation on GPU[3]:  val_loss=2.731059  val_COCO_mAP=0.249475
+(GPU[3]): Epoch 35 completed. Time elapsed: 04:25:44
+GPU[3]: Epoch 36 started.
+GPU[3]:  batch [100/462]:  loss=2.0797  COCO_mAP=0.404457  grad_norm=1.4859  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=2.0945  COCO_mAP=0.442439  grad_norm=1.5549  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=2.0895  COCO_mAP=0.393450  grad_norm=1.4381  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=2.0833  COCO_mAP=0.391274  grad_norm=1.3973  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=2.0941  COCO_mAP=0.418772  grad_norm=1.3848  lr=0.000080
+Validation on GPU[3]:  val_loss=2.742043  val_COCO_mAP=0.250809
+(GPU[3]): Epoch 36 completed. Time elapsed: 04:33:06
+GPU[3]: Epoch 37 started.
+GPU[3]:  batch [100/462]:  loss=2.0514  COCO_mAP=0.405236  grad_norm=1.6301  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=2.0678  COCO_mAP=0.412004  grad_norm=1.5658  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=2.0649  COCO_mAP=0.418338  grad_norm=1.3214  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=2.0517  COCO_mAP=0.422913  grad_norm=1.4951  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=2.0576  COCO_mAP=0.402166  grad_norm=1.8573  lr=0.000080
+Validation on GPU[3]:  val_loss=2.738621  val_COCO_mAP=0.252756
+(GPU[3]): Epoch 37 completed. Time elapsed: 04:40:29
+GPU[3]: Epoch 38 started.
+GPU[3]:  batch [100/462]:  loss=2.0084  COCO_mAP=0.399828  grad_norm=1.4475  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=2.0272  COCO_mAP=0.432207  grad_norm=1.4876  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=2.0504  COCO_mAP=0.451113  grad_norm=1.6636  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=2.0458  COCO_mAP=0.413539  grad_norm=1.6489  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=2.0422  COCO_mAP=0.534915  grad_norm=1.4941  lr=0.000080
+Validation on GPU[3]:  val_loss=2.744254  val_COCO_mAP=0.253046
+(GPU[3]): Epoch 38 completed. Time elapsed: 04:47:54
+GPU[3]: Epoch 39 started.
+GPU[3]:  batch [100/462]:  loss=2.0291  COCO_mAP=0.418901  grad_norm=1.5269  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=2.0108  COCO_mAP=0.363158  grad_norm=1.4538  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=2.0227  COCO_mAP=0.428278  grad_norm=1.7346  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=2.0333  COCO_mAP=0.401674  grad_norm=1.5191  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=2.0452  COCO_mAP=0.440659  grad_norm=1.4109  lr=0.000080
+Validation on GPU[3]:  val_loss=2.736788  val_COCO_mAP=0.254839
+(GPU[3]): Epoch 39 completed. Time elapsed: 04:55:13
+GPU[3]: Epoch 40 started.
+GPU[3]:  batch [100/462]:  loss=2.0057  COCO_mAP=0.441116  grad_norm=1.4360  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=2.0008  COCO_mAP=0.450515  grad_norm=1.4917  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=2.0306  COCO_mAP=0.411065  grad_norm=1.5695  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=2.0111  COCO_mAP=0.392054  grad_norm=1.5551  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=2.0176  COCO_mAP=0.415878  grad_norm=1.5098  lr=0.000080
+Validation on GPU[3]:  val_loss=2.750514  val_COCO_mAP=0.254128
+(GPU[3]): Epoch 40 completed. Time elapsed: 05:02:32
+GPU[3]: Epoch 41 started.
+GPU[3]:  batch [100/462]:  loss=1.9877  COCO_mAP=0.456569  grad_norm=1.5745  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=1.9926  COCO_mAP=0.426883  grad_norm=1.6863  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=2.0004  COCO_mAP=0.418647  grad_norm=1.8825  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=1.9805  COCO_mAP=0.373182  grad_norm=1.5254  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=1.9943  COCO_mAP=0.417044  grad_norm=1.8891  lr=0.000080
+Validation on GPU[3]:  val_loss=2.762084  val_COCO_mAP=0.253956
+(GPU[3]): Epoch 41 completed. Time elapsed: 05:09:52
+GPU[3]: Epoch 42 started.
+GPU[3]:  batch [100/462]:  loss=1.9834  COCO_mAP=0.452538  grad_norm=1.7015  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=1.9928  COCO_mAP=0.487696  grad_norm=1.4974  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=1.9917  COCO_mAP=0.447929  grad_norm=1.7017  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=1.9825  COCO_mAP=0.444897  grad_norm=1.8006  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=1.9745  COCO_mAP=0.418315  grad_norm=1.8218  lr=0.000080
+Validation on GPU[3]:  val_loss=2.770331  val_COCO_mAP=0.254503
+(GPU[3]): Epoch 42 completed. Time elapsed: 05:17:10
+GPU[3]: Epoch 43 started.
+GPU[3]:  batch [100/462]:  loss=1.9773  COCO_mAP=0.427182  grad_norm=1.7610  lr=0.000080
+GPU[3]:  batch [200/462]:  loss=1.9674  COCO_mAP=0.474773  grad_norm=1.5073  lr=0.000080
+GPU[3]:  batch [300/462]:  loss=1.9601  COCO_mAP=0.437426  grad_norm=1.6577  lr=0.000080
+GPU[3]:  batch [400/462]:  loss=1.9874  COCO_mAP=0.337954  grad_norm=1.4383  lr=0.000080
+GPU[3]:  batch [462/462]:  loss=1.9707  COCO_mAP=0.490479  grad_norm=1.4439  lr=0.000008
+Validation on GPU[3]:  val_loss=2.767194  val_COCO_mAP=0.254310
+(GPU[3]): Epoch 43 completed. Time elapsed: 05:24:27
+GPU[3]: Epoch 44 started.
+GPU[3]:  batch [100/462]:  loss=1.9341  COCO_mAP=0.450665  grad_norm=1.3891  lr=0.000008
+GPU[3]:  batch [200/462]:  loss=1.9272  COCO_mAP=0.466257  grad_norm=1.3471  lr=0.000008
+GPU[3]:  batch [300/462]:  loss=1.9457  COCO_mAP=0.424118  grad_norm=1.2936  lr=0.000008
+GPU[3]:  batch [400/462]:  loss=1.9195  COCO_mAP=0.448740  grad_norm=1.5057  lr=0.000008
+GPU[3]:  batch [462/462]:  loss=1.9369  COCO_mAP=0.468687  grad_norm=1.3966  lr=0.000008
+Validation on GPU[3]:  val_loss=2.761330  val_COCO_mAP=0.255498
+(GPU[3]): Epoch 44 completed. Time elapsed: 05:31:46
+GPU[3]: Epoch 45 started.
+GPU[3]:  batch [100/462]:  loss=1.9137  COCO_mAP=0.395082  grad_norm=1.3323  lr=0.000008
+GPU[3]:  batch [200/462]:  loss=1.9380  COCO_mAP=0.336230  grad_norm=1.6667  lr=0.000008
+GPU[3]:  batch [300/462]:  loss=1.9349  COCO_mAP=0.349050  grad_norm=1.6061  lr=0.000008
+GPU[3]:  batch [400/462]:  loss=1.9255  COCO_mAP=0.399757  grad_norm=1.2641  lr=0.000008
+GPU[3]:  batch [462/462]:  loss=1.8841  COCO_mAP=0.439053  grad_norm=1.6628  lr=0.000008
+Validation on GPU[3]:  val_loss=2.765247  val_COCO_mAP=0.255828
+(GPU[3]): Epoch 45 completed. Time elapsed: 05:39:02
+GPU[3]: Epoch 46 started.
+GPU[3]:  batch [100/462]:  loss=1.9276  COCO_mAP=0.429141  grad_norm=1.6852  lr=0.000008
+GPU[3]:  batch [200/462]:  loss=1.9170  COCO_mAP=0.460933  grad_norm=1.3225  lr=0.000008
+GPU[3]:  batch [300/462]:  loss=1.9422  COCO_mAP=0.430235  grad_norm=1.3453  lr=0.000008
+GPU[3]:  batch [400/462]:  loss=1.9232  COCO_mAP=0.374378  grad_norm=1.4425  lr=0.000008
+GPU[3]:  batch [462/462]:  loss=1.9274  COCO_mAP=0.474287  grad_norm=1.3384  lr=0.000008
+Validation on GPU[3]:  val_loss=2.764200  val_COCO_mAP=0.256163
+(GPU[3]): Epoch 46 completed. Time elapsed: 05:46:17
+GPU[3]: Epoch 47 started.
+GPU[3]:  batch [100/462]:  loss=1.9290  COCO_mAP=0.417778  grad_norm=1.2979  lr=0.000008
+GPU[3]:  batch [200/462]:  loss=1.9079  COCO_mAP=0.416780  grad_norm=1.4168  lr=0.000008
+GPU[3]:  batch [300/462]:  loss=1.9360  COCO_mAP=0.445526  grad_norm=1.6798  lr=0.000008
+GPU[3]:  batch [400/462]:  loss=1.9220  COCO_mAP=0.403300  grad_norm=1.4442  lr=0.000008
+GPU[3]:  batch [462/462]:  loss=1.9272  COCO_mAP=0.413767  grad_norm=1.6199  lr=0.000008
+Validation on GPU[3]:  val_loss=2.767144  val_COCO_mAP=0.255452
+(GPU[3]): Epoch 47 completed. Time elapsed: 05:53:30
+GPU[3]: Epoch 48 started.
+GPU[3]:  batch [100/462]:  loss=1.9289  COCO_mAP=0.459398  grad_norm=1.3784  lr=0.000008
+GPU[3]:  batch [200/462]:  loss=1.9175  COCO_mAP=0.481785  grad_norm=1.4445  lr=0.000008
+GPU[3]:  batch [300/462]:  loss=1.9148  COCO_mAP=0.387238  grad_norm=1.2641  lr=0.000008
+GPU[3]:  batch [400/462]:  loss=1.9227  COCO_mAP=0.475977  grad_norm=1.5352  lr=0.000008
+GPU[3]:  batch [462/462]:  loss=1.9155  COCO_mAP=0.414098  grad_norm=1.5062  lr=0.000008
+Validation on GPU[3]:  val_loss=2.770391  val_COCO_mAP=0.256661
+(GPU[3]): Epoch 48 completed. Time elapsed: 06:00:42
+GPU[3]: Epoch 49 started.
+GPU[3]:  batch [100/462]:  loss=1.9295  COCO_mAP=0.402259  grad_norm=1.4455  lr=0.000008
+GPU[3]:  batch [200/462]:  loss=1.9168  COCO_mAP=0.351429  grad_norm=1.3113  lr=0.000008
+GPU[3]:  batch [300/462]:  loss=1.8943  COCO_mAP=0.453317  grad_norm=1.3657  lr=0.000008
+GPU[3]:  batch [400/462]:  loss=1.9234  COCO_mAP=0.408633  grad_norm=1.3176  lr=0.000008
+GPU[3]:  batch [462/462]:  loss=1.9189  COCO_mAP=0.428749  grad_norm=1.4751  lr=0.000008
+Validation on GPU[3]:  val_loss=2.768701  val_COCO_mAP=0.255916
+(GPU[3]): Epoch 49 completed. Time elapsed: 06:07:54
+GPU[3]: Epoch 50 started.
+GPU[3]:  batch [100/462]:  loss=1.9276  COCO_mAP=0.467099  grad_norm=1.4880  lr=0.000008
+GPU[3]:  batch [200/462]:  loss=1.9215  COCO_mAP=0.388444  grad_norm=1.3924  lr=0.000008
+GPU[3]:  batch [300/462]:  loss=1.9188  COCO_mAP=0.454949  grad_norm=1.5143  lr=0.000008
+GPU[3]:  batch [400/462]:  loss=1.9080  COCO_mAP=0.458992  grad_norm=1.3375  lr=0.000008
+GPU[3]:  batch [462/462]:  loss=1.9186  COCO_mAP=0.463243  grad_norm=1.3630  lr=0.000001
+Validation on GPU[3]:  val_loss=2.767786  val_COCO_mAP=0.256826
+(GPU[3]): Epoch 50 completed. Time elapsed: 06:15:06
+GPU[3]: Epoch 51 started.
+GPU[3]:  batch [100/462]:  loss=1.9209  COCO_mAP=0.465858  grad_norm=1.4884  lr=0.000001
+GPU[3]:  batch [200/462]:  loss=1.9115  COCO_mAP=0.457584  grad_norm=1.4055  lr=0.000001
+GPU[3]:  batch [300/462]:  loss=1.9328  COCO_mAP=0.421333  grad_norm=1.4284  lr=0.000001
+GPU[3]:  batch [400/462]:  loss=1.9128  COCO_mAP=0.450364  grad_norm=1.6662  lr=0.000001
+GPU[3]:  batch [462/462]:  loss=1.9155  COCO_mAP=0.417449  grad_norm=1.5990  lr=0.000001
+Validation on GPU[3]:  val_loss=2.768749  val_COCO_mAP=0.256723
+(GPU[3]): Epoch 51 completed. Time elapsed: 06:22:22
+Training for 52 epochs  is completely finished. Results saved.
