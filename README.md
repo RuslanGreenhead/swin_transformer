@@ -32,7 +32,8 @@ The key detection results are summarized in the table below. The metric reported
 | SwinTBackbone_A       | 0.164175 |     --       |    --    |     --       |
 | SwinTBackbone_B       | 0.258104 | **0.259176** | 0.258641 |   0.256729   |
 
-Noteworthy: training with Swin backbones is ~1h faster (~6.5 hours versus ~7.5 hours) 
+Noteworthy: training with Swin backbones is \~1h faster (~6.5 hours versus ~7.5 hours) 
+
 ---
 
 ### Diffusion generation:
