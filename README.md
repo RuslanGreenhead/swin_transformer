@@ -47,7 +47,8 @@ Noteworthy: training with Swin backbones is ~1h faster (~6.5 hours versus ~7.5 h
  ┣ 📂configs                          # training configurations
  ┃ ┣ 📜SwinT_clf_300e_default.yaml
  ┃ ┣ 📜detection_ssd_SwinT.yaml
- ┃ ┗ 📜detection_ssd_resnet50.yaml
+ ┃ ┣ 📜detection_ssd_resnet50.yaml
+ ┃ ┗ 📜diffusion_unet_SwinT.yaml
  ┃ 
  ┣ 📂detection
  ┃ ┣ 📜backbones.py
@@ -60,9 +61,17 @@ Noteworthy: training with Swin backbones is ~1h faster (~6.5 hours versus ~7.5 h
  ┃ ┣ 📜training.py                    # source for training
  ┃ ┗ 📜utils.py
  ┃
+ ┣ 📂diffusion
+ ┃ ┣ 📜data.py
+ ┃ ┣ 📜diffusion_model.py
+ ┃ ┣ 📜schedulers.py
+ ┃ ┣ ⚙️train_diff_ddp.sbatch          # slurm script -> training.py (DDP)
+ ┃ ┗ 📜training.py                    # source for training
+ ┃ 
  ┣ 📂experiments
  ┃ ┣ 📂experiment_0                   # trial run
  ┃ ┣ 📂experiment_1                   # ImageNet classification -> SwinT
+ ┃ ┃
  ┃ ┣ 📂experiment_2                   # SSD detection -> ResNet (B)
  ┃ ┣ 📂experiment_3                   # SSD detection -> ResNet (B) + FPN
  ┃ ┣ 📂experiment_4                   # SSD detection -> ResNet (B) + PAN
@@ -70,7 +79,13 @@ Noteworthy: training with Swin backbones is ~1h faster (~6.5 hours versus ~7.5 h
  ┃ ┣ 📂experiment_6                   # SSD detection -> SwinT (A) (short scheduling)
  ┃ ┣ 📂experiment_7                   # SSD detection -> SwinT (B) (short scheduling)
  ┃ ┣ 📂experiment_8                   # SSD detection -> SwinT (B)
- ┃ ┗ 📂experiment_9                   # SSD detection -> SwinT (B) + FPN  
+ ┃ ┣ 📂experiment_9                   # SSD detection -> SwinT (B) + FPN  
+ ┃ ┣ 📂experiment_10                  # SSD detection -> SwinT (B) + PAN
+ ┃ ┣ 📂experiment_11                  # SSD detection -> SwinT (B) + DenseFPN
+ ┃ ┃
+ ┃ ┣ 📂experiment_12                  # diffusion -> SwinUNet (CIFAR-10)
+ ┃ ┣ 📂experiment_13                  # diffusion -> SwinUNet (CIFAR-10)
+ ┃ ┗ 📂experiment_14                  # diffusion -> SwinUNet (MNIST) 
  ┃
  ┣ 📂notebooks                        # some old colab drafts 
  ┃ ┣ 📜ImageNet_classification.ipynb
