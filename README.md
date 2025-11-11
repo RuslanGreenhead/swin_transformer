@@ -2,6 +2,8 @@
 
 This project is an implementation of the paper **"Swin Transformer: Hierarchical Vision Transformer using Shifted Windows"**. The Swin Transformer serves as a general-purpose backbone for computer vision tasks, effectively addressing the challenges of adapting Transformer models from language to vision.
 
+*(All experiments were done on the Higher School of Economics HPC cluster ['cHARISMa'](https://hpc.hse.ru/hardware/hpc-cluster/) — big thanks to the team!)*
+
 ### Model Architecture:
 
 ![Swin Transformer Architecture](https://amaarora.github.io/images/swin-transformer.png)
@@ -19,11 +21,7 @@ The Swin Transformer model (SwinT variant) was pretrained on the ImageNet-1k dat
 ### Detection:
 For the detection task, conducted on the Microsoft COCO dataset, an SSD framework was implemented. Several Swin-based backbones were designed alongside reference ResNet-based backbones. The SSD detector was evaluated with different backbones and neck variants—two well-known and one newly proposed. The architectures of the proposed backbone networks are illustrated below:
 
-ResNet50-based backbones:
-<p align="left"> <img src="imgs/resnet_scheme.jpg" alt="ResNet50 backbones" /> </p>
-
-Swin Transformer-based backbones:
-<p align="left"> <img src="imgs/swin_scheme.jpg" alt="SwinT backbones" /> </p>
+<p align="left"> <img src="imgs/mutual_scheme.jpg" alt="ResNet50 backbones" /> </p>
 
 The key detection results are summarized in the table below. The metric reported is the *COCO mean Average Precision (COCO_mAP)*, calculated over IoU thresholds ranging from 0.5 to 0.95 with 11 evaluation points:
 
@@ -34,10 +32,13 @@ The key detection results are summarized in the table below. The metric reported
 | SwinTBackbone_A       | 0.164175 |     --       |    --    |     --       |
 | SwinTBackbone_B       | 0.258104 | **0.259176** | 0.258641 |   0.256729   |
 
+Noteworthy: training with Swin backbones is ~1h faster (~6.5 hours versus ~7.5 hours) 
 ---
 
 ### Diffusion generation:
 -- in progress 
+
+---
 
 ### Repo structure:
 
@@ -87,7 +88,9 @@ The key detection results are summarized in the table below. The metric reported
  ┗ 📜training.py                      # source for classification training
  ```
 
-### References:
+### References & Useful sources:
 
 * [Original Swin paper](https://arxiv.org/abs/2103.14030)
 * [Official Swin implementation by Microsoft](https://github.com/microsoft/Swin-Transformer)
+* [Original SSD paper](https://arxiv.org/abs/1512.02325)
+* [Very good SSD tutorial](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection/tree/master)

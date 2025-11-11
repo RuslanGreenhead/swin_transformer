@@ -1,0 +1,472 @@
+GPU[0]: Epoch 0 started.
+GPU[0]:  batch [100/390]:  loss=1.0242  grad_norm=0.0730  lr=0.000017
+GPU[0]:  batch [200/390]:  loss=0.9994  grad_norm=0.0680  lr=0.000034
+GPU[0]:  batch [300/390]:  loss=0.9795  grad_norm=3.0429  lr=0.000051
+GPU[0]:  batch [390/390]:  loss=0.8775  grad_norm=4.6139  lr=0.000067
+(GPU[0]): Epoch 0 completed. Time elapsed: 00:06:03
+GPU[0]: Epoch 1 started.
+GPU[0]:  batch [100/390]:  loss=0.7280  grad_norm=5.8025  lr=0.000084
+GPU[0]:  batch [200/390]:  loss=0.6036  grad_norm=6.7694  lr=0.000101
+GPU[0]:  batch [300/390]:  loss=0.4896  grad_norm=9.0921  lr=0.000118
+GPU[0]:  batch [390/390]:  loss=0.3879  grad_norm=10.3526  lr=0.000133
+(GPU[0]): Epoch 1 completed. Time elapsed: 00:11:58
+GPU[0]: Epoch 2 started.
+GPU[0]:  batch [100/390]:  loss=0.3073  grad_norm=7.7515  lr=0.000150
+GPU[0]:  batch [200/390]:  loss=0.2384  grad_norm=7.8858  lr=0.000167
+GPU[0]:  batch [300/390]:  loss=0.1821  grad_norm=6.9982  lr=0.000184
+GPU[0]:  batch [390/390]:  loss=0.1523  grad_norm=5.8229  lr=0.000200
+(GPU[0]): Epoch 2 completed. Time elapsed: 00:17:53
+GPU[0]: Epoch 3 started.
+GPU[0]:  batch [100/390]:  loss=0.1250  grad_norm=5.1274  lr=0.000200
+GPU[0]:  batch [200/390]:  loss=0.1034  grad_norm=4.0428  lr=0.000200
+GPU[0]:  batch [300/390]:  loss=0.0905  grad_norm=4.6465  lr=0.000200
+GPU[0]:  batch [390/390]:  loss=0.0826  grad_norm=1.8094  lr=0.000200
+(GPU[0]): Epoch 3 completed. Time elapsed: 00:23:49
+GPU[0]: Epoch 4 started.
+GPU[0]:  batch [100/390]:  loss=0.0757  grad_norm=6.0094  lr=0.000200
+GPU[0]:  batch [200/390]:  loss=0.0733  grad_norm=3.7082  lr=0.000200
+GPU[0]:  batch [300/390]:  loss=0.0685  grad_norm=3.3277  lr=0.000200
+GPU[0]:  batch [390/390]:  loss=0.0680  grad_norm=2.9575  lr=0.000200
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 4 completed. Time elapsed: 00:31:44
+GPU[0]: Epoch 5 started.
+GPU[0]:  batch [100/390]:  loss=0.0641  grad_norm=2.7399  lr=0.000200
+GPU[0]:  batch [200/390]:  loss=0.0616  grad_norm=2.9510  lr=0.000199
+GPU[0]:  batch [300/390]:  loss=0.0607  grad_norm=4.7321  lr=0.000199
+GPU[0]:  batch [390/390]:  loss=0.0576  grad_norm=2.3363  lr=0.000199
+(GPU[0]): Epoch 5 completed. Time elapsed: 00:37:40
+GPU[0]: Epoch 6 started.
+GPU[0]:  batch [100/390]:  loss=0.0566  grad_norm=3.2775  lr=0.000199
+GPU[0]:  batch [200/390]:  loss=0.0534  grad_norm=2.0634  lr=0.000199
+GPU[0]:  batch [300/390]:  loss=0.0515  grad_norm=4.5788  lr=0.000199
+GPU[0]:  batch [390/390]:  loss=0.0503  grad_norm=3.1801  lr=0.000199
+(GPU[0]): Epoch 6 completed. Time elapsed: 00:43:35
+GPU[0]: Epoch 7 started.
+GPU[0]:  batch [100/390]:  loss=0.0490  grad_norm=3.5701  lr=0.000198
+GPU[0]:  batch [200/390]:  loss=0.0491  grad_norm=2.5834  lr=0.000198
+GPU[0]:  batch [300/390]:  loss=0.0468  grad_norm=2.3255  lr=0.000198
+GPU[0]:  batch [390/390]:  loss=0.0448  grad_norm=2.4840  lr=0.000198
+(GPU[0]): Epoch 7 completed. Time elapsed: 00:49:31
+GPU[0]: Epoch 8 started.
+GPU[0]:  batch [100/390]:  loss=0.0441  grad_norm=6.9942  lr=0.000198
+GPU[0]:  batch [200/390]:  loss=0.0490  grad_norm=5.1810  lr=0.000197
+GPU[0]:  batch [300/390]:  loss=0.0417  grad_norm=2.6328  lr=0.000197
+GPU[0]:  batch [390/390]:  loss=0.0430  grad_norm=2.7215  lr=0.000197
+(GPU[0]): Epoch 8 completed. Time elapsed: 00:55:27
+GPU[0]: Epoch 9 started.
+GPU[0]:  batch [100/390]:  loss=0.0411  grad_norm=1.6755  lr=0.000196
+GPU[0]:  batch [200/390]:  loss=0.0398  grad_norm=1.5266  lr=0.000196
+GPU[0]:  batch [300/390]:  loss=0.0388  grad_norm=2.6337  lr=0.000196
+GPU[0]:  batch [390/390]:  loss=0.0368  grad_norm=3.0183  lr=0.000196
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 9 completed. Time elapsed: 01:03:22
+GPU[0]: Epoch 10 started.
+GPU[0]:  batch [100/390]:  loss=0.0377  grad_norm=2.4727  lr=0.000195
+GPU[0]:  batch [200/390]:  loss=0.0361  grad_norm=2.8369  lr=0.000195
+GPU[0]:  batch [300/390]:  loss=0.0360  grad_norm=3.1003  lr=0.000195
+GPU[0]:  batch [390/390]:  loss=0.0347  grad_norm=2.1183  lr=0.000194
+(GPU[0]): Epoch 10 completed. Time elapsed: 01:09:18
+GPU[0]: Epoch 11 started.
+GPU[0]:  batch [100/390]:  loss=0.0346  grad_norm=3.2155  lr=0.000194
+GPU[0]:  batch [200/390]:  loss=0.0341  grad_norm=4.1001  lr=0.000194
+GPU[0]:  batch [300/390]:  loss=0.0330  grad_norm=1.3869  lr=0.000193
+GPU[0]:  batch [390/390]:  loss=0.0366  grad_norm=3.0877  lr=0.000193
+(GPU[0]): Epoch 11 completed. Time elapsed: 01:15:14
+GPU[0]: Epoch 12 started.
+GPU[0]:  batch [100/390]:  loss=0.0327  grad_norm=1.1897  lr=0.000192
+GPU[0]:  batch [200/390]:  loss=0.0307  grad_norm=1.4945  lr=0.000192
+GPU[0]:  batch [300/390]:  loss=0.0317  grad_norm=2.0301  lr=0.000192
+GPU[0]:  batch [390/390]:  loss=0.0296  grad_norm=1.5832  lr=0.000191
+(GPU[0]): Epoch 12 completed. Time elapsed: 01:21:10
+GPU[0]: Epoch 13 started.
+GPU[0]:  batch [100/390]:  loss=0.0318  grad_norm=2.9156  lr=0.000191
+GPU[0]:  batch [200/390]:  loss=0.0278  grad_norm=2.0701  lr=0.000190
+GPU[0]:  batch [300/390]:  loss=0.0263  grad_norm=2.5086  lr=0.000190
+GPU[0]:  batch [390/390]:  loss=0.0278  grad_norm=1.8987  lr=0.000189
+(GPU[0]): Epoch 13 completed. Time elapsed: 01:27:06
+GPU[0]: Epoch 14 started.
+GPU[0]:  batch [100/390]:  loss=0.0254  grad_norm=1.0266  lr=0.000189
+GPU[0]:  batch [200/390]:  loss=0.0230  grad_norm=1.5555  lr=0.000188
+GPU[0]:  batch [300/390]:  loss=0.0232  grad_norm=2.5642  lr=0.000188
+GPU[0]:  batch [390/390]:  loss=0.0224  grad_norm=1.1534  lr=0.000187
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+Epoch 14 | Training snapshot saved at model_snapshot.pth.
+(GPU[0]): Epoch 14 completed. Time elapsed: 01:35:04
+GPU[0]: Epoch 15 started.
+GPU[0]:  batch [100/390]:  loss=0.0208  grad_norm=1.2259  lr=0.000187
+GPU[0]:  batch [200/390]:  loss=0.0200  grad_norm=1.3413  lr=0.000186
+GPU[0]:  batch [300/390]:  loss=0.0196  grad_norm=1.4759  lr=0.000186
+GPU[0]:  batch [390/390]:  loss=0.0214  grad_norm=1.4594  lr=0.000185
+(GPU[0]): Epoch 15 completed. Time elapsed: 01:40:60
+GPU[0]: Epoch 16 started.
+GPU[0]:  batch [100/390]:  loss=0.0188  grad_norm=1.4048  lr=0.000185
+GPU[0]:  batch [200/390]:  loss=0.0184  grad_norm=1.2428  lr=0.000184
+GPU[0]:  batch [300/390]:  loss=0.0182  grad_norm=1.8138  lr=0.000183
+GPU[0]:  batch [390/390]:  loss=0.0167  grad_norm=1.4781  lr=0.000183
+(GPU[0]): Epoch 16 completed. Time elapsed: 01:46:56
+GPU[0]: Epoch 17 started.
+GPU[0]:  batch [100/390]:  loss=0.0169  grad_norm=1.0313  lr=0.000182
+GPU[0]:  batch [200/390]:  loss=0.0178  grad_norm=0.6644  lr=0.000182
+GPU[0]:  batch [300/390]:  loss=0.0160  grad_norm=1.4631  lr=0.000181
+GPU[0]:  batch [390/390]:  loss=0.0157  grad_norm=1.4980  lr=0.000180
+(GPU[0]): Epoch 17 completed. Time elapsed: 01:52:53
+GPU[0]: Epoch 18 started.
+GPU[0]:  batch [100/390]:  loss=0.0176  grad_norm=1.4640  lr=0.000180
+GPU[0]:  batch [200/390]:  loss=0.0152  grad_norm=0.8916  lr=0.000179
+GPU[0]:  batch [300/390]:  loss=0.0167  grad_norm=1.3124  lr=0.000178
+GPU[0]:  batch [390/390]:  loss=0.0151  grad_norm=1.7340  lr=0.000178
+(GPU[0]): Epoch 18 completed. Time elapsed: 01:58:49
+GPU[0]: Epoch 19 started.
+GPU[0]:  batch [100/390]:  loss=0.0173  grad_norm=1.3545  lr=0.000177
+GPU[0]:  batch [200/390]:  loss=0.0154  grad_norm=1.5191  lr=0.000176
+GPU[0]:  batch [300/390]:  loss=0.0169  grad_norm=1.7425  lr=0.000176
+GPU[0]:  batch [390/390]:  loss=0.0151  grad_norm=1.4238  lr=0.000175
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 19 completed. Time elapsed: 02:06:46
+GPU[0]: Epoch 20 started.
+GPU[0]:  batch [100/390]:  loss=0.0148  grad_norm=0.8755  lr=0.000174
+GPU[0]:  batch [200/390]:  loss=0.0140  grad_norm=1.2946  lr=0.000174
+GPU[0]:  batch [300/390]:  loss=0.0152  grad_norm=1.6820  lr=0.000173
+GPU[0]:  batch [390/390]:  loss=0.0145  grad_norm=0.8728  lr=0.000172
+(GPU[0]): Epoch 20 completed. Time elapsed: 02:12:42
+GPU[0]: Epoch 21 started.
+GPU[0]:  batch [100/390]:  loss=0.0144  grad_norm=2.7592  lr=0.000171
+GPU[0]:  batch [200/390]:  loss=0.0144  grad_norm=0.9961  lr=0.000171
+GPU[0]:  batch [300/390]:  loss=0.0141  grad_norm=0.9505  lr=0.000170
+GPU[0]:  batch [390/390]:  loss=0.0139  grad_norm=0.8969  lr=0.000169
+(GPU[0]): Epoch 21 completed. Time elapsed: 02:18:39
+GPU[0]: Epoch 22 started.
+GPU[0]:  batch [100/390]:  loss=0.0147  grad_norm=1.3954  lr=0.000168
+GPU[0]:  batch [200/390]:  loss=0.0136  grad_norm=2.2517  lr=0.000168
+GPU[0]:  batch [300/390]:  loss=0.0130  grad_norm=0.6767  lr=0.000167
+GPU[0]:  batch [390/390]:  loss=0.0139  grad_norm=0.9441  lr=0.000166
+(GPU[0]): Epoch 22 completed. Time elapsed: 02:24:36
+GPU[0]: Epoch 23 started.
+GPU[0]:  batch [100/390]:  loss=0.0136  grad_norm=1.8171  lr=0.000165
+GPU[0]:  batch [200/390]:  loss=0.0137  grad_norm=0.7476  lr=0.000164
+GPU[0]:  batch [300/390]:  loss=0.0132  grad_norm=1.3335  lr=0.000164
+GPU[0]:  batch [390/390]:  loss=0.0127  grad_norm=1.1181  lr=0.000163
+(GPU[0]): Epoch 23 completed. Time elapsed: 02:30:33
+GPU[0]: Epoch 24 started.
+GPU[0]:  batch [100/390]:  loss=0.0120  grad_norm=2.1430  lr=0.000162
+GPU[0]:  batch [200/390]:  loss=0.0132  grad_norm=1.7604  lr=0.000161
+GPU[0]:  batch [300/390]:  loss=0.0124  grad_norm=1.1072  lr=0.000160
+GPU[0]:  batch [390/390]:  loss=0.0129  grad_norm=1.6319  lr=0.000159
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 24 completed. Time elapsed: 02:38:30
+GPU[0]: Epoch 25 started.
+GPU[0]:  batch [100/390]:  loss=0.0127  grad_norm=1.0297  lr=0.000159
+GPU[0]:  batch [200/390]:  loss=0.0123  grad_norm=1.2754  lr=0.000158
+GPU[0]:  batch [300/390]:  loss=0.0121  grad_norm=1.4287  lr=0.000157
+GPU[0]:  batch [390/390]:  loss=0.0117  grad_norm=0.8595  lr=0.000156
+(GPU[0]): Epoch 25 completed. Time elapsed: 02:44:25
+GPU[0]: Epoch 26 started.
+GPU[0]:  batch [100/390]:  loss=0.0122  grad_norm=0.8699  lr=0.000155
+GPU[0]:  batch [200/390]:  loss=0.0117  grad_norm=1.1540  lr=0.000154
+GPU[0]:  batch [300/390]:  loss=0.0119  grad_norm=1.2983  lr=0.000153
+GPU[0]:  batch [390/390]:  loss=0.0121  grad_norm=1.6370  lr=0.000153
+(GPU[0]): Epoch 26 completed. Time elapsed: 02:50:20
+GPU[0]: Epoch 27 started.
+GPU[0]:  batch [100/390]:  loss=0.0115  grad_norm=0.4298  lr=0.000152
+GPU[0]:  batch [200/390]:  loss=0.0119  grad_norm=1.0288  lr=0.000151
+GPU[0]:  batch [300/390]:  loss=0.0114  grad_norm=1.6350  lr=0.000150
+GPU[0]:  batch [390/390]:  loss=0.0118  grad_norm=0.8222  lr=0.000149
+(GPU[0]): Epoch 27 completed. Time elapsed: 02:56:16
+GPU[0]: Epoch 28 started.
+GPU[0]:  batch [100/390]:  loss=0.0114  grad_norm=1.1017  lr=0.000148
+GPU[0]:  batch [200/390]:  loss=0.0119  grad_norm=0.8308  lr=0.000147
+GPU[0]:  batch [300/390]:  loss=0.0107  grad_norm=1.2281  lr=0.000146
+GPU[0]:  batch [390/390]:  loss=0.0111  grad_norm=1.2828  lr=0.000145
+(GPU[0]): Epoch 28 completed. Time elapsed: 03:02:11
+GPU[0]: Epoch 29 started.
+GPU[0]:  batch [100/390]:  loss=0.0107  grad_norm=1.6626  lr=0.000144
+GPU[0]:  batch [200/390]:  loss=0.0113  grad_norm=2.3061  lr=0.000143
+GPU[0]:  batch [300/390]:  loss=0.0110  grad_norm=1.1106  lr=0.000142
+GPU[0]:  batch [390/390]:  loss=0.0106  grad_norm=0.8932  lr=0.000141
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+Epoch 29 | Training snapshot saved at model_snapshot.pth.
+(GPU[0]): Epoch 29 completed. Time elapsed: 03:10:08
+GPU[0]: Epoch 30 started.
+GPU[0]:  batch [100/390]:  loss=0.0114  grad_norm=1.8122  lr=0.000140
+GPU[0]:  batch [200/390]:  loss=0.0108  grad_norm=1.8005  lr=0.000139
+GPU[0]:  batch [300/390]:  loss=0.0110  grad_norm=0.9447  lr=0.000138
+GPU[0]:  batch [390/390]:  loss=0.0105  grad_norm=1.5458  lr=0.000138
+(GPU[0]): Epoch 30 completed. Time elapsed: 03:16:03
+GPU[0]: Epoch 31 started.
+GPU[0]:  batch [100/390]:  loss=0.0114  grad_norm=0.8009  lr=0.000137
+GPU[0]:  batch [200/390]:  loss=0.0103  grad_norm=0.8118  lr=0.000135
+GPU[0]:  batch [300/390]:  loss=0.0103  grad_norm=0.5328  lr=0.000134
+GPU[0]:  batch [390/390]:  loss=0.0103  grad_norm=0.8221  lr=0.000134
+(GPU[0]): Epoch 31 completed. Time elapsed: 03:21:60
+GPU[0]: Epoch 32 started.
+GPU[0]:  batch [100/390]:  loss=0.0098  grad_norm=1.0596  lr=0.000133
+GPU[0]:  batch [200/390]:  loss=0.0102  grad_norm=1.4037  lr=0.000132
+GPU[0]:  batch [300/390]:  loss=0.0100  grad_norm=0.8018  lr=0.000131
+GPU[0]:  batch [390/390]:  loss=0.0098  grad_norm=0.8074  lr=0.000130
+(GPU[0]): Epoch 32 completed. Time elapsed: 03:27:54
+GPU[0]: Epoch 33 started.
+GPU[0]:  batch [100/390]:  loss=0.0096  grad_norm=1.2301  lr=0.000129
+GPU[0]:  batch [200/390]:  loss=0.0106  grad_norm=0.7291  lr=0.000128
+GPU[0]:  batch [300/390]:  loss=0.0101  grad_norm=0.9044  lr=0.000127
+GPU[0]:  batch [390/390]:  loss=0.0098  grad_norm=0.6188  lr=0.000126
+(GPU[0]): Epoch 33 completed. Time elapsed: 03:33:49
+GPU[0]: Epoch 34 started.
+GPU[0]:  batch [100/390]:  loss=0.0109  grad_norm=0.6246  lr=0.000125
+GPU[0]:  batch [200/390]:  loss=0.0095  grad_norm=0.7679  lr=0.000123
+GPU[0]:  batch [300/390]:  loss=0.0162  grad_norm=0.7769  lr=0.000122
+GPU[0]:  batch [390/390]:  loss=0.0103  grad_norm=0.7980  lr=0.000122
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 34 completed. Time elapsed: 03:41:45
+GPU[0]: Epoch 35 started.
+GPU[0]:  batch [100/390]:  loss=0.0096  grad_norm=1.0659  lr=0.000120
+GPU[0]:  batch [200/390]:  loss=0.0097  grad_norm=0.6031  lr=0.000119
+GPU[0]:  batch [300/390]:  loss=0.0094  grad_norm=1.2853  lr=0.000118
+GPU[0]:  batch [390/390]:  loss=0.0090  grad_norm=0.3188  lr=0.000117
+(GPU[0]): Epoch 35 completed. Time elapsed: 03:47:40
+GPU[0]: Epoch 36 started.
+GPU[0]:  batch [100/390]:  loss=0.0089  grad_norm=0.7591  lr=0.000116
+GPU[0]:  batch [200/390]:  loss=0.0097  grad_norm=1.3486  lr=0.000115
+GPU[0]:  batch [300/390]:  loss=0.0102  grad_norm=1.2422  lr=0.000114
+GPU[0]:  batch [390/390]:  loss=0.0091  grad_norm=1.1837  lr=0.000113
+(GPU[0]): Epoch 36 completed. Time elapsed: 03:53:35
+GPU[0]: Epoch 37 started.
+GPU[0]:  batch [100/390]:  loss=0.0091  grad_norm=0.7351  lr=0.000112
+GPU[0]:  batch [200/390]:  loss=0.0098  grad_norm=1.0845  lr=0.000111
+GPU[0]:  batch [300/390]:  loss=0.0089  grad_norm=0.9273  lr=0.000110
+GPU[0]:  batch [390/390]:  loss=0.0097  grad_norm=0.5837  lr=0.000109
+(GPU[0]): Epoch 37 completed. Time elapsed: 03:59:30
+GPU[0]: Epoch 38 started.
+GPU[0]:  batch [100/390]:  loss=0.0095  grad_norm=1.4528  lr=0.000108
+GPU[0]:  batch [200/390]:  loss=0.0088  grad_norm=0.5813  lr=0.000107
+GPU[0]:  batch [300/390]:  loss=0.0088  grad_norm=1.1186  lr=0.000106
+GPU[0]:  batch [390/390]:  loss=0.0086  grad_norm=0.6736  lr=0.000105
+(GPU[0]): Epoch 38 completed. Time elapsed: 04:05:26
+GPU[0]: Epoch 39 started.
+GPU[0]:  batch [100/390]:  loss=0.0088  grad_norm=1.3682  lr=0.000104
+GPU[0]:  batch [200/390]:  loss=0.0090  grad_norm=1.0945  lr=0.000103
+GPU[0]:  batch [300/390]:  loss=0.0088  grad_norm=0.4948  lr=0.000102
+GPU[0]:  batch [390/390]:  loss=0.0087  grad_norm=0.5428  lr=0.000101
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 39 completed. Time elapsed: 04:13:22
+GPU[0]: Epoch 40 started.
+GPU[0]:  batch [100/390]:  loss=0.0086  grad_norm=0.7701  lr=0.000100
+GPU[0]:  batch [200/390]:  loss=0.0087  grad_norm=1.2108  lr=0.000099
+GPU[0]:  batch [300/390]:  loss=0.0086  grad_norm=0.6596  lr=0.000098
+GPU[0]:  batch [390/390]:  loss=0.0091  grad_norm=1.1370  lr=0.000097
+(GPU[0]): Epoch 40 completed. Time elapsed: 04:19:18
+GPU[0]: Epoch 41 started.
+GPU[0]:  batch [100/390]:  loss=0.0082  grad_norm=0.6509  lr=0.000096
+GPU[0]:  batch [200/390]:  loss=0.0089  grad_norm=1.4416  lr=0.000095
+GPU[0]:  batch [300/390]:  loss=0.0081  grad_norm=0.6572  lr=0.000094
+GPU[0]:  batch [390/390]:  loss=0.0084  grad_norm=0.9910  lr=0.000093
+(GPU[0]): Epoch 41 completed. Time elapsed: 04:25:14
+GPU[0]: Epoch 42 started.
+GPU[0]:  batch [100/390]:  loss=0.0093  grad_norm=0.7338  lr=0.000092
+GPU[0]:  batch [200/390]:  loss=0.0088  grad_norm=0.9324  lr=0.000091
+GPU[0]:  batch [300/390]:  loss=0.0086  grad_norm=0.4550  lr=0.000089
+GPU[0]:  batch [390/390]:  loss=0.0084  grad_norm=0.8292  lr=0.000089
+(GPU[0]): Epoch 42 completed. Time elapsed: 04:31:09
+GPU[0]: Epoch 43 started.
+GPU[0]:  batch [100/390]:  loss=0.0083  grad_norm=0.5210  lr=0.000087
+GPU[0]:  batch [200/390]:  loss=0.0081  grad_norm=1.2847  lr=0.000086
+GPU[0]:  batch [300/390]:  loss=0.0084  grad_norm=1.0569  lr=0.000085
+GPU[0]:  batch [390/390]:  loss=0.0083  grad_norm=0.4655  lr=0.000084
+(GPU[0]): Epoch 43 completed. Time elapsed: 04:37:05
+GPU[0]: Epoch 44 started.
+GPU[0]:  batch [100/390]:  loss=0.0080  grad_norm=0.5438  lr=0.000083
+GPU[0]:  batch [200/390]:  loss=0.0082  grad_norm=0.6195  lr=0.000082
+GPU[0]:  batch [300/390]:  loss=0.0081  grad_norm=1.3570  lr=0.000081
+GPU[0]:  batch [390/390]:  loss=0.0080  grad_norm=0.4207  lr=0.000080
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+Epoch 44 | Training snapshot saved at model_snapshot.pth.
+(GPU[0]): Epoch 44 completed. Time elapsed: 04:45:01
+GPU[0]: Epoch 45 started.
+GPU[0]:  batch [100/390]:  loss=0.0087  grad_norm=1.1805  lr=0.000079
+GPU[0]:  batch [200/390]:  loss=0.0082  grad_norm=0.7617  lr=0.000078
+GPU[0]:  batch [300/390]:  loss=0.0078  grad_norm=0.3465  lr=0.000077
+GPU[0]:  batch [390/390]:  loss=0.0077  grad_norm=0.4384  lr=0.000076
+(GPU[0]): Epoch 45 completed. Time elapsed: 04:50:55
+GPU[0]: Epoch 46 started.
+GPU[0]:  batch [100/390]:  loss=0.0081  grad_norm=0.7010  lr=0.000075
+GPU[0]:  batch [200/390]:  loss=0.0077  grad_norm=0.3749  lr=0.000074
+GPU[0]:  batch [300/390]:  loss=0.0079  grad_norm=0.8667  lr=0.000073
+GPU[0]:  batch [390/390]:  loss=0.0079  grad_norm=0.3184  lr=0.000073
+(GPU[0]): Epoch 46 completed. Time elapsed: 04:56:50
+GPU[0]: Epoch 47 started.
+GPU[0]:  batch [100/390]:  loss=0.0077  grad_norm=0.9446  lr=0.000072
+GPU[0]:  batch [200/390]:  loss=0.0084  grad_norm=0.8488  lr=0.000071
+GPU[0]:  batch [300/390]:  loss=0.0080  grad_norm=1.0043  lr=0.000070
+GPU[0]:  batch [390/390]:  loss=0.0078  grad_norm=0.4143  lr=0.000069
+(GPU[0]): Epoch 47 completed. Time elapsed: 05:02:46
+GPU[0]: Epoch 48 started.
+GPU[0]:  batch [100/390]:  loss=0.0078  grad_norm=0.5863  lr=0.000068
+GPU[0]:  batch [200/390]:  loss=0.0081  grad_norm=0.3402  lr=0.000067
+GPU[0]:  batch [300/390]:  loss=0.0077  grad_norm=0.9881  lr=0.000066
+GPU[0]:  batch [390/390]:  loss=0.0074  grad_norm=0.3386  lr=0.000065
+(GPU[0]): Epoch 48 completed. Time elapsed: 05:08:41
+GPU[0]: Epoch 49 started.
+GPU[0]:  batch [100/390]:  loss=0.0075  grad_norm=0.5538  lr=0.000064
+GPU[0]:  batch [200/390]:  loss=0.0076  grad_norm=0.6443  lr=0.000063
+GPU[0]:  batch [300/390]:  loss=0.0074  grad_norm=0.3932  lr=0.000062
+GPU[0]:  batch [390/390]:  loss=0.0078  grad_norm=0.7370  lr=0.000061
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 49 completed. Time elapsed: 05:16:36
+GPU[0]: Epoch 50 started.
+GPU[0]:  batch [100/390]:  loss=0.0076  grad_norm=0.4072  lr=0.000060
+GPU[0]:  batch [200/390]:  loss=0.0075  grad_norm=0.4064  lr=0.000059
+GPU[0]:  batch [300/390]:  loss=0.0074  grad_norm=1.3285  lr=0.000058
+GPU[0]:  batch [390/390]:  loss=0.0078  grad_norm=0.5282  lr=0.000058
+(GPU[0]): Epoch 50 completed. Time elapsed: 05:22:31
+GPU[0]: Epoch 51 started.
+GPU[0]:  batch [100/390]:  loss=0.0077  grad_norm=0.3308  lr=0.000057
+GPU[0]:  batch [200/390]:  loss=0.0074  grad_norm=0.7036  lr=0.000056
+GPU[0]:  batch [300/390]:  loss=0.0080  grad_norm=0.7995  lr=0.000055
+GPU[0]:  batch [390/390]:  loss=0.0077  grad_norm=0.5407  lr=0.000054
+(GPU[0]): Epoch 51 completed. Time elapsed: 05:28:28
+GPU[0]: Epoch 52 started.
+GPU[0]:  batch [100/390]:  loss=0.0076  grad_norm=0.5540  lr=0.000053
+GPU[0]:  batch [200/390]:  loss=0.0070  grad_norm=0.3893  lr=0.000052
+GPU[0]:  batch [300/390]:  loss=0.0075  grad_norm=0.4186  lr=0.000051
+GPU[0]:  batch [390/390]:  loss=0.0073  grad_norm=0.4371  lr=0.000051
+(GPU[0]): Epoch 52 completed. Time elapsed: 05:34:23
+GPU[0]: Epoch 53 started.
+GPU[0]:  batch [100/390]:  loss=0.0074  grad_norm=0.3472  lr=0.000050
+GPU[0]:  batch [200/390]:  loss=0.0074  grad_norm=0.8675  lr=0.000049
+GPU[0]:  batch [300/390]:  loss=0.0072  grad_norm=0.3717  lr=0.000048
+GPU[0]:  batch [390/390]:  loss=0.0073  grad_norm=0.4633  lr=0.000047
+(GPU[0]): Epoch 53 completed. Time elapsed: 05:40:17
+GPU[0]: Epoch 54 started.
+GPU[0]:  batch [100/390]:  loss=0.0075  grad_norm=0.5897  lr=0.000046
+GPU[0]:  batch [200/390]:  loss=0.0073  grad_norm=0.4146  lr=0.000046
+GPU[0]:  batch [300/390]:  loss=0.0070  grad_norm=0.4071  lr=0.000045
+GPU[0]:  batch [390/390]:  loss=0.0073  grad_norm=0.5847  lr=0.000044
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 54 completed. Time elapsed: 05:48:13
+GPU[0]: Epoch 55 started.
+GPU[0]:  batch [100/390]:  loss=0.0070  grad_norm=0.2893  lr=0.000043
+GPU[0]:  batch [200/390]:  loss=0.0072  grad_norm=0.6158  lr=0.000042
+GPU[0]:  batch [300/390]:  loss=0.0072  grad_norm=0.3780  lr=0.000042
+GPU[0]:  batch [390/390]:  loss=0.0074  grad_norm=0.6978  lr=0.000041
+(GPU[0]): Epoch 55 completed. Time elapsed: 05:54:08
+GPU[0]: Epoch 56 started.
+GPU[0]:  batch [100/390]:  loss=0.0070  grad_norm=0.6362  lr=0.000040
+GPU[0]:  batch [200/390]:  loss=0.0074  grad_norm=0.6050  lr=0.000039
+GPU[0]:  batch [300/390]:  loss=0.0072  grad_norm=1.2536  lr=0.000039
+GPU[0]:  batch [390/390]:  loss=0.0072  grad_norm=0.3506  lr=0.000038
+(GPU[0]): Epoch 56 completed. Time elapsed: 06:00:02
+GPU[0]: Epoch 57 started.
+GPU[0]:  batch [100/390]:  loss=0.0071  grad_norm=0.1695  lr=0.000037
+GPU[0]:  batch [200/390]:  loss=0.0069  grad_norm=0.3032  lr=0.000036
+GPU[0]:  batch [300/390]:  loss=0.0070  grad_norm=0.4956  lr=0.000036
+GPU[0]:  batch [390/390]:  loss=0.0069  grad_norm=0.2319  lr=0.000035
+(GPU[0]): Epoch 57 completed. Time elapsed: 06:05:57
+GPU[0]: Epoch 58 started.
+GPU[0]:  batch [100/390]:  loss=0.0067  grad_norm=0.3589  lr=0.000034
+GPU[0]:  batch [200/390]:  loss=0.0069  grad_norm=0.3708  lr=0.000034
+GPU[0]:  batch [300/390]:  loss=0.0072  grad_norm=0.5862  lr=0.000033
+GPU[0]:  batch [390/390]:  loss=0.0068  grad_norm=0.3042  lr=0.000032
+(GPU[0]): Epoch 58 completed. Time elapsed: 06:11:52
+GPU[0]: Epoch 59 started.
+GPU[0]:  batch [100/390]:  loss=0.0071  grad_norm=0.4079  lr=0.000032
+GPU[0]:  batch [200/390]:  loss=0.0069  grad_norm=0.4773  lr=0.000031
+GPU[0]:  batch [300/390]:  loss=0.0068  grad_norm=0.4474  lr=0.000030
+GPU[0]:  batch [390/390]:  loss=0.0067  grad_norm=0.4392  lr=0.000030
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+Epoch 59 | Training snapshot saved at model_snapshot.pth.
+(GPU[0]): Epoch 59 completed. Time elapsed: 06:19:50
+GPU[0]: Epoch 60 started.
+GPU[0]:  batch [100/390]:  loss=0.0070  grad_norm=0.4262  lr=0.000029
+GPU[0]:  batch [200/390]:  loss=0.0069  grad_norm=0.3202  lr=0.000028
+GPU[0]:  batch [300/390]:  loss=0.0069  grad_norm=1.1676  lr=0.000028
+GPU[0]:  batch [390/390]:  loss=0.0070  grad_norm=0.3354  lr=0.000027
+(GPU[0]): Epoch 60 completed. Time elapsed: 06:25:46
+GPU[0]: Epoch 61 started.
+GPU[0]:  batch [100/390]:  loss=0.0067  grad_norm=0.3326  lr=0.000027
+GPU[0]:  batch [200/390]:  loss=0.0065  grad_norm=0.2577  lr=0.000026
+GPU[0]:  batch [300/390]:  loss=0.0067  grad_norm=0.4193  lr=0.000025
+GPU[0]:  batch [390/390]:  loss=0.0069  grad_norm=0.3524  lr=0.000025
+(GPU[0]): Epoch 61 completed. Time elapsed: 06:31:43
+GPU[0]: Epoch 62 started.
+GPU[0]:  batch [100/390]:  loss=0.0070  grad_norm=0.7130  lr=0.000024
+GPU[0]:  batch [200/390]:  loss=0.0069  grad_norm=0.5739  lr=0.000024
+GPU[0]:  batch [300/390]:  loss=0.0067  grad_norm=0.1827  lr=0.000023
+GPU[0]:  batch [390/390]:  loss=0.0066  grad_norm=0.5069  lr=0.000023
+(GPU[0]): Epoch 62 completed. Time elapsed: 06:37:39
+GPU[0]: Epoch 63 started.
+GPU[0]:  batch [100/390]:  loss=0.0066  grad_norm=0.2243  lr=0.000022
+GPU[0]:  batch [200/390]:  loss=0.0067  grad_norm=0.3036  lr=0.000022
+GPU[0]:  batch [300/390]:  loss=0.0069  grad_norm=0.4435  lr=0.000021
+GPU[0]:  batch [390/390]:  loss=0.0068  grad_norm=0.5079  lr=0.000021
+(GPU[0]): Epoch 63 completed. Time elapsed: 06:43:35
+GPU[0]: Epoch 64 started.
+GPU[0]:  batch [100/390]:  loss=0.0068  grad_norm=0.3313  lr=0.000020
+GPU[0]:  batch [200/390]:  loss=0.0066  grad_norm=0.1713  lr=0.000020
+GPU[0]:  batch [300/390]:  loss=0.0066  grad_norm=0.8401  lr=0.000019
+GPU[0]:  batch [390/390]:  loss=0.0067  grad_norm=0.4593  lr=0.000019
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 64 completed. Time elapsed: 06:51:32
+GPU[0]: Epoch 65 started.
+GPU[0]:  batch [100/390]:  loss=0.0067  grad_norm=0.5329  lr=0.000018
+GPU[0]:  batch [200/390]:  loss=0.0069  grad_norm=0.2347  lr=0.000018
+GPU[0]:  batch [300/390]:  loss=0.0067  grad_norm=0.3543  lr=0.000018
+GPU[0]:  batch [390/390]:  loss=0.0064  grad_norm=0.3282  lr=0.000017
+(GPU[0]): Epoch 65 completed. Time elapsed: 06:57:28
+GPU[0]: Epoch 66 started.
+GPU[0]:  batch [100/390]:  loss=0.0068  grad_norm=0.2509  lr=0.000017
+GPU[0]:  batch [200/390]:  loss=0.0066  grad_norm=0.3306  lr=0.000016
+GPU[0]:  batch [300/390]:  loss=0.0065  grad_norm=0.2622  lr=0.000016
+GPU[0]:  batch [390/390]:  loss=0.0065  grad_norm=0.4927  lr=0.000016
+(GPU[0]): Epoch 66 completed. Time elapsed: 07:03:23
+GPU[0]: Epoch 67 started.
+GPU[0]:  batch [100/390]:  loss=0.0068  grad_norm=0.3842  lr=0.000015
+GPU[0]:  batch [200/390]:  loss=0.0067  grad_norm=0.2699  lr=0.000015
+GPU[0]:  batch [300/390]:  loss=0.0067  grad_norm=0.3098  lr=0.000015
+GPU[0]:  batch [390/390]:  loss=0.0065  grad_norm=0.3257  lr=0.000014
+(GPU[0]): Epoch 67 completed. Time elapsed: 07:09:20
+GPU[0]: Epoch 68 started.
+GPU[0]:  batch [100/390]:  loss=0.0066  grad_norm=0.4092  lr=0.000014
+GPU[0]:  batch [200/390]:  loss=0.0067  grad_norm=0.4697  lr=0.000014
+GPU[0]:  batch [300/390]:  loss=0.0067  grad_norm=0.2550  lr=0.000013
+GPU[0]:  batch [390/390]:  loss=0.0064  grad_norm=0.2523  lr=0.000013
+(GPU[0]): Epoch 68 completed. Time elapsed: 07:15:18
+GPU[0]: Epoch 69 started.
+GPU[0]:  batch [100/390]:  loss=0.0066  grad_norm=0.1615  lr=0.000013
+GPU[0]:  batch [200/390]:  loss=0.0065  grad_norm=0.1974  lr=0.000013
+GPU[0]:  batch [300/390]:  loss=0.0067  grad_norm=0.3776  lr=0.000012
+GPU[0]:  batch [390/390]:  loss=0.0068  grad_norm=0.6622  lr=0.000012
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+(GPU[0]): Epoch 69 completed. Time elapsed: 07:23:15
+GPU[0]: Epoch 70 started.
+GPU[0]:  batch [100/390]:  loss=0.0065  grad_norm=0.2121  lr=0.000012
+GPU[0]:  batch [200/390]:  loss=0.0065  grad_norm=0.1442  lr=0.000012
+GPU[0]:  batch [300/390]:  loss=0.0065  grad_norm=0.1861  lr=0.000012
+GPU[0]:  batch [390/390]:  loss=0.0062  grad_norm=0.2274  lr=0.000011
+(GPU[0]): Epoch 70 completed. Time elapsed: 07:29:11
+GPU[0]: Epoch 71 started.
+GPU[0]:  batch [100/390]:  loss=0.0065  grad_norm=0.3611  lr=0.000011
+GPU[0]:  batch [200/390]:  loss=0.0065  grad_norm=0.1998  lr=0.000011
+GPU[0]:  batch [300/390]:  loss=0.0067  grad_norm=0.2651  lr=0.000011
+GPU[0]:  batch [390/390]:  loss=0.0065  grad_norm=0.1850  lr=0.000011
+(GPU[0]): Epoch 71 completed. Time elapsed: 07:35:08
+GPU[0]: Epoch 72 started.
+GPU[0]:  batch [100/390]:  loss=0.0065  grad_norm=0.3106  lr=0.000011
+GPU[0]:  batch [200/390]:  loss=0.0066  grad_norm=0.2239  lr=0.000011
+GPU[0]:  batch [300/390]:  loss=0.0064  grad_norm=0.2467  lr=0.000010
+GPU[0]:  batch [390/390]:  loss=0.0066  grad_norm=0.3745  lr=0.000010
+(GPU[0]): Epoch 72 completed. Time elapsed: 07:41:05
+GPU[0]: Epoch 73 started.
+GPU[0]:  batch [100/390]:  loss=0.0064  grad_norm=0.4684  lr=0.000010
+GPU[0]:  batch [200/390]:  loss=0.0068  grad_norm=0.3831  lr=0.000010
+GPU[0]:  batch [300/390]:  loss=0.0065  grad_norm=0.1461  lr=0.000010
+GPU[0]:  batch [390/390]:  loss=0.0065  grad_norm=0.3783  lr=0.000010
+(GPU[0]): Epoch 73 completed. Time elapsed: 07:47:02
+GPU[0]: Epoch 74 started.
+GPU[0]:  batch [100/390]:  loss=0.0063  grad_norm=0.3213  lr=0.000010
+GPU[0]:  batch [200/390]:  loss=0.0065  grad_norm=0.6628  lr=0.000010
+GPU[0]:  batch [300/390]:  loss=0.0064  grad_norm=0.1512  lr=0.000010
+GPU[0]:  batch [390/390]:  loss=0.0065  grad_norm=0.4062  lr=0.000010
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+Epoch 74 | Training snapshot saved at model_snapshot.pth.
+(GPU[0]): Epoch 74 completed. Time elapsed: 07:54:60
+Saving model by GPU[0]...
+Training for 75 epochs  is completely finished. Results saved.

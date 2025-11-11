@@ -9,7 +9,7 @@ model:
     attn_drop: 0.0
     drop_path: 0.2
   backbone_weights: "IMAGENET_CUSTOM"
-  neck: "PAN"
+  neck: "DenseFPN"
   image_size: 336
   n_classes: 80            # without "background"
   sync_batchnorm: False    # syncrhronize BN calculation across all GPUs

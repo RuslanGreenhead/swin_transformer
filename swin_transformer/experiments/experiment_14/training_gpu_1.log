@@ -1,0 +1,526 @@
+GPU[1]: Epoch 0 started.
+GPU[1]:  batch [100/468]:  loss=1.0346  grad_norm=0.2466  lr=0.000014
+GPU[1]:  batch [200/468]:  loss=0.9662  grad_norm=1.6536  lr=0.000028
+GPU[1]:  batch [300/468]:  loss=0.6963  grad_norm=7.9714  lr=0.000043
+GPU[1]:  batch [400/468]:  loss=0.3959  grad_norm=6.0807  lr=0.000057
+GPU[1]:  batch [468/468]:  loss=0.2417  grad_norm=5.9720  lr=0.000067
+(GPU[1]): Epoch 0 completed. Time elapsed: 00:07:06
+GPU[1]: Epoch 1 started.
+GPU[1]:  batch [100/468]:  loss=0.1702  grad_norm=9.5648  lr=0.000081
+GPU[1]:  batch [200/468]:  loss=0.1316  grad_norm=8.0809  lr=0.000095
+GPU[1]:  batch [300/468]:  loss=0.1067  grad_norm=10.4837  lr=0.000109
+GPU[1]:  batch [400/468]:  loss=0.0949  grad_norm=8.5392  lr=0.000124
+GPU[1]:  batch [468/468]:  loss=0.0888  grad_norm=10.8272  lr=0.000133
+(GPU[1]): Epoch 1 completed. Time elapsed: 00:14:04
+GPU[1]: Epoch 2 started.
+GPU[1]:  batch [100/468]:  loss=0.0825  grad_norm=9.9060  lr=0.000147
+GPU[1]:  batch [200/468]:  loss=0.0780  grad_norm=8.6960  lr=0.000162
+GPU[1]:  batch [300/468]:  loss=0.0733  grad_norm=7.1733  lr=0.000176
+GPU[1]:  batch [400/468]:  loss=0.0705  grad_norm=8.2056  lr=0.000190
+GPU[1]:  batch [468/468]:  loss=0.0640  grad_norm=4.5469  lr=0.000200
+(GPU[1]): Epoch 2 completed. Time elapsed: 00:21:02
+GPU[1]: Epoch 3 started.
+GPU[1]:  batch [100/468]:  loss=0.0566  grad_norm=5.0575  lr=0.000200
+GPU[1]:  batch [200/468]:  loss=0.0532  grad_norm=4.3671  lr=0.000200
+GPU[1]:  batch [300/468]:  loss=0.0482  grad_norm=3.3935  lr=0.000200
+GPU[1]:  batch [400/468]:  loss=0.0430  grad_norm=6.1845  lr=0.000200
+GPU[1]:  batch [468/468]:  loss=0.0407  grad_norm=8.3552  lr=0.000200
+(GPU[1]): Epoch 3 completed. Time elapsed: 00:28:01
+GPU[1]: Epoch 4 started.
+GPU[1]:  batch [100/468]:  loss=0.0416  grad_norm=3.2086  lr=0.000200
+GPU[1]:  batch [200/468]:  loss=0.0350  grad_norm=2.0860  lr=0.000200
+GPU[1]:  batch [300/468]:  loss=0.0327  grad_norm=7.8874  lr=0.000200
+GPU[1]:  batch [400/468]:  loss=0.0302  grad_norm=3.6902  lr=0.000200
+GPU[1]:  batch [468/468]:  loss=0.0289  grad_norm=6.7222  lr=0.000200
+(GPU[1]): Epoch 4 completed. Time elapsed: 00:38:18
+GPU[1]: Epoch 5 started.
+GPU[1]:  batch [100/468]:  loss=0.0274  grad_norm=3.8517  lr=0.000200
+GPU[1]:  batch [200/468]:  loss=0.0260  grad_norm=2.6375  lr=0.000199
+GPU[1]:  batch [300/468]:  loss=0.0255  grad_norm=5.6250  lr=0.000199
+GPU[1]:  batch [400/468]:  loss=0.0262  grad_norm=2.6871  lr=0.000199
+GPU[1]:  batch [468/468]:  loss=0.0235  grad_norm=4.6262  lr=0.000199
+(GPU[1]): Epoch 5 completed. Time elapsed: 00:45:16
+GPU[1]: Epoch 6 started.
+GPU[1]:  batch [100/468]:  loss=0.0239  grad_norm=4.1067  lr=0.000199
+GPU[1]:  batch [200/468]:  loss=0.0213  grad_norm=2.7863  lr=0.000199
+GPU[1]:  batch [300/468]:  loss=0.0208  grad_norm=2.8299  lr=0.000199
+GPU[1]:  batch [400/468]:  loss=0.0190  grad_norm=1.5485  lr=0.000199
+GPU[1]:  batch [468/468]:  loss=0.0185  grad_norm=4.0840  lr=0.000199
+(GPU[1]): Epoch 6 completed. Time elapsed: 00:52:15
+GPU[1]: Epoch 7 started.
+GPU[1]:  batch [100/468]:  loss=0.0192  grad_norm=3.0556  lr=0.000198
+GPU[1]:  batch [200/468]:  loss=0.0183  grad_norm=3.8426  lr=0.000198
+GPU[1]:  batch [300/468]:  loss=0.0179  grad_norm=1.7197  lr=0.000198
+GPU[1]:  batch [400/468]:  loss=0.0164  grad_norm=2.4664  lr=0.000198
+GPU[1]:  batch [468/468]:  loss=0.0177  grad_norm=2.6001  lr=0.000198
+(GPU[1]): Epoch 7 completed. Time elapsed: 00:59:13
+GPU[1]: Epoch 8 started.
+GPU[1]:  batch [100/468]:  loss=0.0153  grad_norm=2.9932  lr=0.000198
+GPU[1]:  batch [200/468]:  loss=0.0161  grad_norm=3.5515  lr=0.000197
+GPU[1]:  batch [300/468]:  loss=0.0153  grad_norm=2.3952  lr=0.000197
+GPU[1]:  batch [400/468]:  loss=0.0151  grad_norm=1.2315  lr=0.000197
+GPU[1]:  batch [468/468]:  loss=0.0135  grad_norm=2.7603  lr=0.000197
+(GPU[1]): Epoch 8 completed. Time elapsed: 01:06:10
+GPU[1]: Epoch 9 started.
+GPU[1]:  batch [100/468]:  loss=0.0168  grad_norm=1.6417  lr=0.000197
+GPU[1]:  batch [200/468]:  loss=0.0137  grad_norm=2.3559  lr=0.000196
+GPU[1]:  batch [300/468]:  loss=0.0142  grad_norm=1.4783  lr=0.000196
+GPU[1]:  batch [400/468]:  loss=0.0131  grad_norm=3.4286  lr=0.000196
+GPU[1]:  batch [468/468]:  loss=0.0156  grad_norm=2.8511  lr=0.000196
+(GPU[1]): Epoch 9 completed. Time elapsed: 01:16:27
+GPU[1]: Epoch 10 started.
+GPU[1]:  batch [100/468]:  loss=0.0119  grad_norm=1.3235  lr=0.000195
+GPU[1]:  batch [200/468]:  loss=0.0124  grad_norm=1.7024  lr=0.000195
+GPU[1]:  batch [300/468]:  loss=0.0160  grad_norm=2.0652  lr=0.000195
+GPU[1]:  batch [400/468]:  loss=0.0112  grad_norm=1.3243  lr=0.000194
+GPU[1]:  batch [468/468]:  loss=0.0110  grad_norm=1.4542  lr=0.000194
+(GPU[1]): Epoch 10 completed. Time elapsed: 01:23:25
+GPU[1]: Epoch 11 started.
+GPU[1]:  batch [100/468]:  loss=0.0128  grad_norm=1.2509  lr=0.000194
+GPU[1]:  batch [200/468]:  loss=0.0121  grad_norm=1.3840  lr=0.000194
+GPU[1]:  batch [300/468]:  loss=0.0092  grad_norm=1.1378  lr=0.000193
+GPU[1]:  batch [400/468]:  loss=0.0112  grad_norm=2.8179  lr=0.000193
+GPU[1]:  batch [468/468]:  loss=0.0113  grad_norm=1.8123  lr=0.000193
+(GPU[1]): Epoch 11 completed. Time elapsed: 01:30:22
+GPU[1]: Epoch 12 started.
+GPU[1]:  batch [100/468]:  loss=0.0103  grad_norm=0.5698  lr=0.000192
+GPU[1]:  batch [200/468]:  loss=0.0102  grad_norm=1.4778  lr=0.000192
+GPU[1]:  batch [300/468]:  loss=0.0103  grad_norm=1.1736  lr=0.000192
+GPU[1]:  batch [400/468]:  loss=0.0087  grad_norm=0.9261  lr=0.000191
+GPU[1]:  batch [468/468]:  loss=0.0088  grad_norm=1.0000  lr=0.000191
+(GPU[1]): Epoch 12 completed. Time elapsed: 01:37:20
+GPU[1]: Epoch 13 started.
+GPU[1]:  batch [100/468]:  loss=0.0083  grad_norm=0.7596  lr=0.000191
+GPU[1]:  batch [200/468]:  loss=0.0111  grad_norm=2.3425  lr=0.000190
+GPU[1]:  batch [300/468]:  loss=0.0121  grad_norm=1.1060  lr=0.000190
+GPU[1]:  batch [400/468]:  loss=0.0098  grad_norm=1.1994  lr=0.000190
+GPU[1]:  batch [468/468]:  loss=0.0082  grad_norm=0.9240  lr=0.000189
+(GPU[1]): Epoch 13 completed. Time elapsed: 01:44:18
+GPU[1]: Epoch 14 started.
+GPU[1]:  batch [100/468]:  loss=0.0107  grad_norm=1.6706  lr=0.000189
+GPU[1]:  batch [200/468]:  loss=0.0076  grad_norm=0.9419  lr=0.000188
+GPU[1]:  batch [300/468]:  loss=0.0103  grad_norm=1.0433  lr=0.000188
+GPU[1]:  batch [400/468]:  loss=0.0081  grad_norm=0.8601  lr=0.000188
+GPU[1]:  batch [468/468]:  loss=0.0076  grad_norm=1.4621  lr=0.000187
+(GPU[1]): Epoch 14 completed. Time elapsed: 01:54:35
+GPU[1]: Epoch 15 started.
+GPU[1]:  batch [100/468]:  loss=0.0096  grad_norm=1.6286  lr=0.000187
+GPU[1]:  batch [200/468]:  loss=0.0097  grad_norm=2.6062  lr=0.000186
+GPU[1]:  batch [300/468]:  loss=0.0092  grad_norm=1.6225  lr=0.000186
+GPU[1]:  batch [400/468]:  loss=0.0091  grad_norm=1.2516  lr=0.000185
+GPU[1]:  batch [468/468]:  loss=0.0076  grad_norm=1.4512  lr=0.000185
+(GPU[1]): Epoch 15 completed. Time elapsed: 02:01:34
+GPU[1]: Epoch 16 started.
+GPU[1]:  batch [100/468]:  loss=0.0074  grad_norm=1.1233  lr=0.000185
+GPU[1]:  batch [200/468]:  loss=0.0082  grad_norm=1.6029  lr=0.000184
+GPU[1]:  batch [300/468]:  loss=0.0118  grad_norm=3.5290  lr=0.000184
+GPU[1]:  batch [400/468]:  loss=0.0084  grad_norm=1.3538  lr=0.000183
+GPU[1]:  batch [468/468]:  loss=0.0084  grad_norm=3.0580  lr=0.000183
+(GPU[1]): Epoch 16 completed. Time elapsed: 02:08:32
+GPU[1]: Epoch 17 started.
+GPU[1]:  batch [100/468]:  loss=0.0064  grad_norm=2.1359  lr=0.000182
+GPU[1]:  batch [200/468]:  loss=0.0073  grad_norm=1.5020  lr=0.000182
+GPU[1]:  batch [300/468]:  loss=0.0063  grad_norm=0.8078  lr=0.000181
+GPU[1]:  batch [400/468]:  loss=0.0059  grad_norm=0.8916  lr=0.000181
+GPU[1]:  batch [468/468]:  loss=0.0069  grad_norm=0.6056  lr=0.000180
+(GPU[1]): Epoch 17 completed. Time elapsed: 02:15:32
+GPU[1]: Epoch 18 started.
+GPU[1]:  batch [100/468]:  loss=0.0063  grad_norm=1.6839  lr=0.000180
+GPU[1]:  batch [200/468]:  loss=0.0060  grad_norm=0.9791  lr=0.000179
+GPU[1]:  batch [300/468]:  loss=0.0061  grad_norm=0.7776  lr=0.000179
+GPU[1]:  batch [400/468]:  loss=0.0076  grad_norm=2.0198  lr=0.000178
+GPU[1]:  batch [468/468]:  loss=0.0084  grad_norm=0.8584  lr=0.000178
+(GPU[1]): Epoch 18 completed. Time elapsed: 02:22:30
+GPU[1]: Epoch 19 started.
+GPU[1]:  batch [100/468]:  loss=0.0081  grad_norm=1.5111  lr=0.000177
+GPU[1]:  batch [200/468]:  loss=0.0100  grad_norm=1.4433  lr=0.000177
+GPU[1]:  batch [300/468]:  loss=0.0066  grad_norm=0.7843  lr=0.000176
+GPU[1]:  batch [400/468]:  loss=0.0048  grad_norm=0.5658  lr=0.000175
+GPU[1]:  batch [468/468]:  loss=0.0047  grad_norm=0.9637  lr=0.000175
+(GPU[1]): Epoch 19 completed. Time elapsed: 02:32:48
+GPU[1]: Epoch 20 started.
+GPU[1]:  batch [100/468]:  loss=0.0079  grad_norm=1.0714  lr=0.000174
+GPU[1]:  batch [200/468]:  loss=0.0061  grad_norm=1.6963  lr=0.000174
+GPU[1]:  batch [300/468]:  loss=0.0068  grad_norm=0.8738  lr=0.000173
+GPU[1]:  batch [400/468]:  loss=0.0057  grad_norm=0.8352  lr=0.000173
+GPU[1]:  batch [468/468]:  loss=0.0055  grad_norm=0.8971  lr=0.000172
+(GPU[1]): Epoch 20 completed. Time elapsed: 02:39:47
+GPU[1]: Epoch 21 started.
+GPU[1]:  batch [100/468]:  loss=0.0062  grad_norm=1.4492  lr=0.000172
+GPU[1]:  batch [200/468]:  loss=0.0109  grad_norm=2.6224  lr=0.000171
+GPU[1]:  batch [300/468]:  loss=0.0149  grad_norm=1.6593  lr=0.000170
+GPU[1]:  batch [400/468]:  loss=0.0071  grad_norm=1.0120  lr=0.000170
+GPU[1]:  batch [468/468]:  loss=0.0047  grad_norm=0.8779  lr=0.000169
+(GPU[1]): Epoch 21 completed. Time elapsed: 02:46:46
+GPU[1]: Epoch 22 started.
+GPU[1]:  batch [100/468]:  loss=0.0042  grad_norm=0.5173  lr=0.000169
+GPU[1]:  batch [200/468]:  loss=0.0047  grad_norm=0.9461  lr=0.000168
+GPU[1]:  batch [300/468]:  loss=0.0045  grad_norm=0.6066  lr=0.000167
+GPU[1]:  batch [400/468]:  loss=0.0047  grad_norm=0.8993  lr=0.000167
+GPU[1]:  batch [468/468]:  loss=0.0053  grad_norm=0.9069  lr=0.000166
+(GPU[1]): Epoch 22 completed. Time elapsed: 02:53:44
+GPU[1]: Epoch 23 started.
+GPU[1]:  batch [100/468]:  loss=0.0044  grad_norm=0.4672  lr=0.000165
+GPU[1]:  batch [200/468]:  loss=0.0043  grad_norm=0.6518  lr=0.000165
+GPU[1]:  batch [300/468]:  loss=0.0051  grad_norm=0.7800  lr=0.000164
+GPU[1]:  batch [400/468]:  loss=0.0054  grad_norm=1.4016  lr=0.000163
+GPU[1]:  batch [468/468]:  loss=0.0065  grad_norm=1.3889  lr=0.000163
+(GPU[1]): Epoch 23 completed. Time elapsed: 03:00:43
+GPU[1]: Epoch 24 started.
+GPU[1]:  batch [100/468]:  loss=0.0051  grad_norm=0.8758  lr=0.000162
+GPU[1]:  batch [200/468]:  loss=0.0044  grad_norm=1.1176  lr=0.000161
+GPU[1]:  batch [300/468]:  loss=0.0045  grad_norm=0.8752  lr=0.000161
+GPU[1]:  batch [400/468]:  loss=0.0059  grad_norm=0.6382  lr=0.000160
+GPU[1]:  batch [468/468]:  loss=0.0051  grad_norm=1.3025  lr=0.000159
+(GPU[1]): Epoch 24 completed. Time elapsed: 03:10:60
+GPU[1]: Epoch 25 started.
+GPU[1]:  batch [100/468]:  loss=0.0046  grad_norm=0.4545  lr=0.000159
+GPU[1]:  batch [200/468]:  loss=0.0041  grad_norm=0.8688  lr=0.000158
+GPU[1]:  batch [300/468]:  loss=0.0057  grad_norm=0.6355  lr=0.000157
+GPU[1]:  batch [400/468]:  loss=0.0069  grad_norm=1.9060  lr=0.000157
+GPU[1]:  batch [468/468]:  loss=0.0167  grad_norm=1.1170  lr=0.000156
+(GPU[1]): Epoch 25 completed. Time elapsed: 03:17:57
+GPU[1]: Epoch 26 started.
+GPU[1]:  batch [100/468]:  loss=0.0048  grad_norm=0.9975  lr=0.000155
+GPU[1]:  batch [200/468]:  loss=0.0041  grad_norm=0.7690  lr=0.000155
+GPU[1]:  batch [300/468]:  loss=0.0047  grad_norm=0.7622  lr=0.000154
+GPU[1]:  batch [400/468]:  loss=0.0048  grad_norm=0.3171  lr=0.000153
+GPU[1]:  batch [468/468]:  loss=0.0039  grad_norm=0.5516  lr=0.000153
+(GPU[1]): Epoch 26 completed. Time elapsed: 03:24:55
+GPU[1]: Epoch 27 started.
+GPU[1]:  batch [100/468]:  loss=0.0041  grad_norm=0.8079  lr=0.000152
+GPU[1]:  batch [200/468]:  loss=0.0046  grad_norm=1.7256  lr=0.000151
+GPU[1]:  batch [300/468]:  loss=0.0040  grad_norm=0.7216  lr=0.000150
+GPU[1]:  batch [400/468]:  loss=0.0042  grad_norm=0.8424  lr=0.000149
+GPU[1]:  batch [468/468]:  loss=0.0038  grad_norm=0.5813  lr=0.000149
+(GPU[1]): Epoch 27 completed. Time elapsed: 03:31:53
+GPU[1]: Epoch 28 started.
+GPU[1]:  batch [100/468]:  loss=0.0039  grad_norm=0.6599  lr=0.000148
+GPU[1]:  batch [200/468]:  loss=0.0044  grad_norm=1.1317  lr=0.000147
+GPU[1]:  batch [300/468]:  loss=0.0038  grad_norm=0.3215  lr=0.000147
+GPU[1]:  batch [400/468]:  loss=0.0037  grad_norm=0.5583  lr=0.000146
+GPU[1]:  batch [468/468]:  loss=0.0037  grad_norm=0.7823  lr=0.000145
+(GPU[1]): Epoch 28 completed. Time elapsed: 03:38:51
+GPU[1]: Epoch 29 started.
+GPU[1]:  batch [100/468]:  loss=0.0046  grad_norm=1.2595  lr=0.000144
+GPU[1]:  batch [200/468]:  loss=0.0043  grad_norm=0.6523  lr=0.000144
+GPU[1]:  batch [300/468]:  loss=0.0036  grad_norm=0.4862  lr=0.000143
+GPU[1]:  batch [400/468]:  loss=0.0095  grad_norm=0.5678  lr=0.000142
+GPU[1]:  batch [468/468]:  loss=0.0049  grad_norm=0.7428  lr=0.000141
+(GPU[1]): Epoch 29 completed. Time elapsed: 03:49:08
+GPU[1]: Epoch 30 started.
+GPU[1]:  batch [100/468]:  loss=0.0040  grad_norm=0.6172  lr=0.000141
+GPU[1]:  batch [200/468]:  loss=0.0033  grad_norm=0.5685  lr=0.000140
+GPU[1]:  batch [300/468]:  loss=0.0039  grad_norm=0.5291  lr=0.000139
+GPU[1]:  batch [400/468]:  loss=0.0036  grad_norm=0.5015  lr=0.000138
+GPU[1]:  batch [468/468]:  loss=0.0032  grad_norm=0.7239  lr=0.000138
+(GPU[1]): Epoch 30 completed. Time elapsed: 03:56:07
+GPU[1]: Epoch 31 started.
+GPU[1]:  batch [100/468]:  loss=0.0039  grad_norm=0.5995  lr=0.000137
+GPU[1]:  batch [200/468]:  loss=0.0036  grad_norm=0.4403  lr=0.000136
+GPU[1]:  batch [300/468]:  loss=0.0042  grad_norm=0.3982  lr=0.000135
+GPU[1]:  batch [400/468]:  loss=0.0034  grad_norm=0.2773  lr=0.000134
+GPU[1]:  batch [468/468]:  loss=0.0041  grad_norm=0.7701  lr=0.000134
+(GPU[1]): Epoch 31 completed. Time elapsed: 04:03:05
+GPU[1]: Epoch 32 started.
+GPU[1]:  batch [100/468]:  loss=0.0038  grad_norm=0.4135  lr=0.000133
+GPU[1]:  batch [200/468]:  loss=0.0032  grad_norm=0.4884  lr=0.000132
+GPU[1]:  batch [300/468]:  loss=0.0037  grad_norm=0.6888  lr=0.000131
+GPU[1]:  batch [400/468]:  loss=0.0036  grad_norm=0.4347  lr=0.000130
+GPU[1]:  batch [468/468]:  loss=0.0030  grad_norm=0.8700  lr=0.000130
+(GPU[1]): Epoch 32 completed. Time elapsed: 04:10:03
+GPU[1]: Epoch 33 started.
+GPU[1]:  batch [100/468]:  loss=0.0036  grad_norm=0.5389  lr=0.000129
+GPU[1]:  batch [200/468]:  loss=0.0037  grad_norm=0.4479  lr=0.000128
+GPU[1]:  batch [300/468]:  loss=0.0030  grad_norm=0.3201  lr=0.000127
+GPU[1]:  batch [400/468]:  loss=0.0040  grad_norm=0.6327  lr=0.000126
+GPU[1]:  batch [468/468]:  loss=0.0032  grad_norm=0.5018  lr=0.000126
+(GPU[1]): Epoch 33 completed. Time elapsed: 04:17:01
+GPU[1]: Epoch 34 started.
+GPU[1]:  batch [100/468]:  loss=0.0032  grad_norm=0.4188  lr=0.000125
+GPU[1]:  batch [200/468]:  loss=0.0037  grad_norm=0.7475  lr=0.000124
+GPU[1]:  batch [300/468]:  loss=0.0033  grad_norm=0.6149  lr=0.000123
+GPU[1]:  batch [400/468]:  loss=0.0031  grad_norm=0.4575  lr=0.000122
+GPU[1]:  batch [468/468]:  loss=0.0031  grad_norm=1.7151  lr=0.000122
+(GPU[1]): Epoch 34 completed. Time elapsed: 04:27:18
+GPU[1]: Epoch 35 started.
+GPU[1]:  batch [100/468]:  loss=0.0030  grad_norm=0.4163  lr=0.000121
+GPU[1]:  batch [200/468]:  loss=0.0032  grad_norm=0.4108  lr=0.000120
+GPU[1]:  batch [300/468]:  loss=0.0029  grad_norm=0.9505  lr=0.000119
+GPU[1]:  batch [400/468]:  loss=0.0032  grad_norm=0.4699  lr=0.000118
+GPU[1]:  batch [468/468]:  loss=0.0035  grad_norm=0.5841  lr=0.000117
+(GPU[1]): Epoch 35 completed. Time elapsed: 04:34:16
+GPU[1]: Epoch 36 started.
+GPU[1]:  batch [100/468]:  loss=0.0028  grad_norm=0.9140  lr=0.000117
+GPU[1]:  batch [200/468]:  loss=0.0030  grad_norm=0.5526  lr=0.000116
+GPU[1]:  batch [300/468]:  loss=0.0026  grad_norm=0.3578  lr=0.000115
+GPU[1]:  batch [400/468]:  loss=0.0031  grad_norm=0.5730  lr=0.000114
+GPU[1]:  batch [468/468]:  loss=0.0029  grad_norm=0.6709  lr=0.000113
+(GPU[1]): Epoch 36 completed. Time elapsed: 04:41:14
+GPU[1]: Epoch 37 started.
+GPU[1]:  batch [100/468]:  loss=0.0031  grad_norm=0.4595  lr=0.000112
+GPU[1]:  batch [200/468]:  loss=0.0044  grad_norm=0.8701  lr=0.000112
+GPU[1]:  batch [300/468]:  loss=0.0029  grad_norm=0.5038  lr=0.000111
+GPU[1]:  batch [400/468]:  loss=0.0027  grad_norm=0.4155  lr=0.000110
+GPU[1]:  batch [468/468]:  loss=0.0040  grad_norm=1.1269  lr=0.000109
+(GPU[1]): Epoch 37 completed. Time elapsed: 04:48:12
+GPU[1]: Epoch 38 started.
+GPU[1]:  batch [100/468]:  loss=0.0039  grad_norm=0.5374  lr=0.000108
+GPU[1]:  batch [200/468]:  loss=0.0027  grad_norm=0.4819  lr=0.000107
+GPU[1]:  batch [300/468]:  loss=0.0026  grad_norm=0.3937  lr=0.000106
+GPU[1]:  batch [400/468]:  loss=0.0030  grad_norm=0.3228  lr=0.000106
+GPU[1]:  batch [468/468]:  loss=0.0026  grad_norm=0.4699  lr=0.000105
+(GPU[1]): Epoch 38 completed. Time elapsed: 04:55:10
+GPU[1]: Epoch 39 started.
+GPU[1]:  batch [100/468]:  loss=0.0026  grad_norm=0.5612  lr=0.000104
+GPU[1]:  batch [200/468]:  loss=0.0030  grad_norm=0.4183  lr=0.000103
+GPU[1]:  batch [300/468]:  loss=0.0028  grad_norm=0.5439  lr=0.000102
+GPU[1]:  batch [400/468]:  loss=0.0028  grad_norm=0.2708  lr=0.000101
+GPU[1]:  batch [468/468]:  loss=0.0049  grad_norm=1.7924  lr=0.000101
+(GPU[1]): Epoch 39 completed. Time elapsed: 05:05:27
+GPU[1]: Epoch 40 started.
+GPU[1]:  batch [100/468]:  loss=0.0041  grad_norm=0.8504  lr=0.000100
+GPU[1]:  batch [200/468]:  loss=0.0027  grad_norm=0.7066  lr=0.000099
+GPU[1]:  batch [300/468]:  loss=0.0027  grad_norm=0.2814  lr=0.000098
+GPU[1]:  batch [400/468]:  loss=0.0028  grad_norm=0.3780  lr=0.000097
+GPU[1]:  batch [468/468]:  loss=0.0028  grad_norm=0.2689  lr=0.000097
+(GPU[1]): Epoch 40 completed. Time elapsed: 05:12:25
+GPU[1]: Epoch 41 started.
+GPU[1]:  batch [100/468]:  loss=0.0027  grad_norm=0.3225  lr=0.000096
+GPU[1]:  batch [200/468]:  loss=0.0023  grad_norm=0.2971  lr=0.000095
+GPU[1]:  batch [300/468]:  loss=0.0026  grad_norm=0.4594  lr=0.000094
+GPU[1]:  batch [400/468]:  loss=0.0033  grad_norm=0.6736  lr=0.000093
+GPU[1]:  batch [468/468]:  loss=0.0026  grad_norm=0.6006  lr=0.000093
+(GPU[1]): Epoch 41 completed. Time elapsed: 05:19:23
+GPU[1]: Epoch 42 started.
+GPU[1]:  batch [100/468]:  loss=0.0026  grad_norm=0.3673  lr=0.000092
+GPU[1]:  batch [200/468]:  loss=0.0028  grad_norm=0.6416  lr=0.000091
+GPU[1]:  batch [300/468]:  loss=0.0025  grad_norm=0.3279  lr=0.000090
+GPU[1]:  batch [400/468]:  loss=0.0026  grad_norm=0.5333  lr=0.000089
+GPU[1]:  batch [468/468]:  loss=0.0025  grad_norm=0.3254  lr=0.000089
+(GPU[1]): Epoch 42 completed. Time elapsed: 05:26:21
+GPU[1]: Epoch 43 started.
+GPU[1]:  batch [100/468]:  loss=0.0025  grad_norm=0.6976  lr=0.000088
+GPU[1]:  batch [200/468]:  loss=0.0027  grad_norm=0.6409  lr=0.000087
+GPU[1]:  batch [300/468]:  loss=0.0058  grad_norm=1.5787  lr=0.000086
+GPU[1]:  batch [400/468]:  loss=0.0039  grad_norm=0.1541  lr=0.000085
+GPU[1]:  batch [468/468]:  loss=0.0027  grad_norm=0.3538  lr=0.000084
+(GPU[1]): Epoch 43 completed. Time elapsed: 05:33:19
+GPU[1]: Epoch 44 started.
+GPU[1]:  batch [100/468]:  loss=0.0023  grad_norm=0.2010  lr=0.000084
+GPU[1]:  batch [200/468]:  loss=0.0023  grad_norm=0.4483  lr=0.000083
+GPU[1]:  batch [300/468]:  loss=0.0024  grad_norm=0.1858  lr=0.000082
+GPU[1]:  batch [400/468]:  loss=0.0024  grad_norm=0.4481  lr=0.000081
+GPU[1]:  batch [468/468]:  loss=0.0024  grad_norm=0.3663  lr=0.000080
+(GPU[1]): Epoch 44 completed. Time elapsed: 05:43:35
+GPU[1]: Epoch 45 started.
+GPU[1]:  batch [100/468]:  loss=0.0023  grad_norm=0.2630  lr=0.000080
+GPU[1]:  batch [200/468]:  loss=0.0023  grad_norm=0.4407  lr=0.000079
+GPU[1]:  batch [300/468]:  loss=0.0025  grad_norm=0.5629  lr=0.000078
+GPU[1]:  batch [400/468]:  loss=0.0027  grad_norm=0.5522  lr=0.000077
+GPU[1]:  batch [468/468]:  loss=0.0024  grad_norm=0.2412  lr=0.000076
+(GPU[1]): Epoch 45 completed. Time elapsed: 05:50:33
+GPU[1]: Epoch 46 started.
+GPU[1]:  batch [100/468]:  loss=0.0022  grad_norm=0.4814  lr=0.000076
+GPU[1]:  batch [200/468]:  loss=0.0024  grad_norm=0.2751  lr=0.000075
+GPU[1]:  batch [300/468]:  loss=0.0024  grad_norm=0.7672  lr=0.000074
+GPU[1]:  batch [400/468]:  loss=0.0033  grad_norm=0.4346  lr=0.000073
+GPU[1]:  batch [468/468]:  loss=0.0022  grad_norm=0.1798  lr=0.000073
+(GPU[1]): Epoch 46 completed. Time elapsed: 05:57:32
+GPU[1]: Epoch 47 started.
+GPU[1]:  batch [100/468]:  loss=0.0023  grad_norm=0.5068  lr=0.000072
+GPU[1]:  batch [200/468]:  loss=0.0022  grad_norm=0.5142  lr=0.000071
+GPU[1]:  batch [300/468]:  loss=0.0024  grad_norm=0.3288  lr=0.000070
+GPU[1]:  batch [400/468]:  loss=0.0029  grad_norm=0.6848  lr=0.000069
+GPU[1]:  batch [468/468]:  loss=0.0028  grad_norm=0.2925  lr=0.000069
+(GPU[1]): Epoch 47 completed. Time elapsed: 06:04:30
+GPU[1]: Epoch 48 started.
+GPU[1]:  batch [100/468]:  loss=0.0020  grad_norm=0.2474  lr=0.000068
+GPU[1]:  batch [200/468]:  loss=0.0023  grad_norm=0.4018  lr=0.000067
+GPU[1]:  batch [300/468]:  loss=0.0023  grad_norm=0.2677  lr=0.000066
+GPU[1]:  batch [400/468]:  loss=0.0022  grad_norm=0.4927  lr=0.000065
+GPU[1]:  batch [468/468]:  loss=0.0025  grad_norm=0.2607  lr=0.000065
+(GPU[1]): Epoch 48 completed. Time elapsed: 06:11:28
+GPU[1]: Epoch 49 started.
+GPU[1]:  batch [100/468]:  loss=0.0022  grad_norm=0.3442  lr=0.000064
+GPU[1]:  batch [200/468]:  loss=0.0022  grad_norm=0.2682  lr=0.000063
+GPU[1]:  batch [300/468]:  loss=0.0020  grad_norm=0.5309  lr=0.000062
+GPU[1]:  batch [400/468]:  loss=0.0024  grad_norm=0.2429  lr=0.000062
+GPU[1]:  batch [468/468]:  loss=0.0021  grad_norm=1.3488  lr=0.000061
+(GPU[1]): Epoch 49 completed. Time elapsed: 06:21:44
+GPU[1]: Epoch 50 started.
+GPU[1]:  batch [100/468]:  loss=0.0027  grad_norm=0.2247  lr=0.000060
+GPU[1]:  batch [200/468]:  loss=0.0024  grad_norm=0.2229  lr=0.000060
+GPU[1]:  batch [300/468]:  loss=0.0021  grad_norm=0.3329  lr=0.000059
+GPU[1]:  batch [400/468]:  loss=0.0024  grad_norm=0.3962  lr=0.000058
+GPU[1]:  batch [468/468]:  loss=0.0021  grad_norm=0.5295  lr=0.000058
+(GPU[1]): Epoch 50 completed. Time elapsed: 06:28:43
+GPU[1]: Epoch 51 started.
+GPU[1]:  batch [100/468]:  loss=0.0021  grad_norm=0.3343  lr=0.000057
+GPU[1]:  batch [200/468]:  loss=0.0021  grad_norm=0.2089  lr=0.000056
+GPU[1]:  batch [300/468]:  loss=0.0022  grad_norm=0.4032  lr=0.000055
+GPU[1]:  batch [400/468]:  loss=0.0021  grad_norm=0.4024  lr=0.000054
+GPU[1]:  batch [468/468]:  loss=0.0021  grad_norm=0.3134  lr=0.000054
+(GPU[1]): Epoch 51 completed. Time elapsed: 06:35:42
+GPU[1]: Epoch 52 started.
+GPU[1]:  batch [100/468]:  loss=0.0020  grad_norm=0.5298  lr=0.000053
+GPU[1]:  batch [200/468]:  loss=0.0021  grad_norm=0.2625  lr=0.000052
+GPU[1]:  batch [300/468]:  loss=0.0022  grad_norm=0.2949  lr=0.000052
+GPU[1]:  batch [400/468]:  loss=0.0022  grad_norm=0.5654  lr=0.000051
+GPU[1]:  batch [468/468]:  loss=0.0023  grad_norm=0.2237  lr=0.000051
+(GPU[1]): Epoch 52 completed. Time elapsed: 06:42:40
+GPU[1]: Epoch 53 started.
+GPU[1]:  batch [100/468]:  loss=0.0021  grad_norm=0.2702  lr=0.000050
+GPU[1]:  batch [200/468]:  loss=0.0021  grad_norm=0.4015  lr=0.000049
+GPU[1]:  batch [300/468]:  loss=0.0025  grad_norm=0.4946  lr=0.000048
+GPU[1]:  batch [400/468]:  loss=0.0020  grad_norm=0.2703  lr=0.000048
+GPU[1]:  batch [468/468]:  loss=0.0022  grad_norm=0.2028  lr=0.000047
+(GPU[1]): Epoch 53 completed. Time elapsed: 06:49:39
+GPU[1]: Epoch 54 started.
+GPU[1]:  batch [100/468]:  loss=0.0020  grad_norm=0.4904  lr=0.000046
+GPU[1]:  batch [200/468]:  loss=0.0020  grad_norm=1.1391  lr=0.000046
+GPU[1]:  batch [300/468]:  loss=0.0021  grad_norm=0.3356  lr=0.000045
+GPU[1]:  batch [400/468]:  loss=0.0020  grad_norm=0.2479  lr=0.000044
+GPU[1]:  batch [468/468]:  loss=0.0026  grad_norm=0.3476  lr=0.000044
+(GPU[1]): Epoch 54 completed. Time elapsed: 06:59:56
+GPU[1]: Epoch 55 started.
+GPU[1]:  batch [100/468]:  loss=0.0019  grad_norm=0.2954  lr=0.000043
+GPU[1]:  batch [200/468]:  loss=0.0020  grad_norm=0.4645  lr=0.000043
+GPU[1]:  batch [300/468]:  loss=0.0021  grad_norm=0.7005  lr=0.000042
+GPU[1]:  batch [400/468]:  loss=0.0021  grad_norm=0.2150  lr=0.000041
+GPU[1]:  batch [468/468]:  loss=0.0021  grad_norm=0.6942  lr=0.000041
+(GPU[1]): Epoch 55 completed. Time elapsed: 07:06:54
+GPU[1]: Epoch 56 started.
+GPU[1]:  batch [100/468]:  loss=0.0021  grad_norm=0.1972  lr=0.000040
+GPU[1]:  batch [200/468]:  loss=0.0020  grad_norm=0.1531  lr=0.000040
+GPU[1]:  batch [300/468]:  loss=0.0021  grad_norm=0.3036  lr=0.000039
+GPU[1]:  batch [400/468]:  loss=0.0020  grad_norm=0.2974  lr=0.000038
+GPU[1]:  batch [468/468]:  loss=0.0020  grad_norm=0.4651  lr=0.000038
+(GPU[1]): Epoch 56 completed. Time elapsed: 07:13:52
+GPU[1]: Epoch 57 started.
+GPU[1]:  batch [100/468]:  loss=0.0020  grad_norm=0.4886  lr=0.000037
+GPU[1]:  batch [200/468]:  loss=0.0019  grad_norm=0.2349  lr=0.000037
+GPU[1]:  batch [300/468]:  loss=0.0021  grad_norm=0.1707  lr=0.000036
+GPU[1]:  batch [400/468]:  loss=0.0019  grad_norm=0.7201  lr=0.000035
+GPU[1]:  batch [468/468]:  loss=0.0020  grad_norm=0.1912  lr=0.000035
+(GPU[1]): Epoch 57 completed. Time elapsed: 07:20:51
+GPU[1]: Epoch 58 started.
+GPU[1]:  batch [100/468]:  loss=0.0019  grad_norm=0.4315  lr=0.000034
+GPU[1]:  batch [200/468]:  loss=0.0020  grad_norm=0.3293  lr=0.000034
+GPU[1]:  batch [300/468]:  loss=0.0019  grad_norm=0.0947  lr=0.000033
+GPU[1]:  batch [400/468]:  loss=0.0021  grad_norm=0.2402  lr=0.000033
+GPU[1]:  batch [468/468]:  loss=0.0019  grad_norm=0.3557  lr=0.000032
+(GPU[1]): Epoch 58 completed. Time elapsed: 07:27:49
+GPU[1]: Epoch 59 started.
+GPU[1]:  batch [100/468]:  loss=0.0019  grad_norm=0.5449  lr=0.000032
+GPU[1]:  batch [200/468]:  loss=0.0020  grad_norm=0.1975  lr=0.000031
+GPU[1]:  batch [300/468]:  loss=0.0019  grad_norm=0.5869  lr=0.000031
+GPU[1]:  batch [400/468]:  loss=0.0019  grad_norm=0.3663  lr=0.000030
+GPU[1]:  batch [468/468]:  loss=0.0018  grad_norm=0.2989  lr=0.000030
+(GPU[1]): Epoch 59 completed. Time elapsed: 07:38:05
+GPU[1]: Epoch 60 started.
+GPU[1]:  batch [100/468]:  loss=0.0019  grad_norm=0.4044  lr=0.000029
+GPU[1]:  batch [200/468]:  loss=0.0019  grad_norm=0.2510  lr=0.000029
+GPU[1]:  batch [300/468]:  loss=0.0020  grad_norm=0.4473  lr=0.000028
+GPU[1]:  batch [400/468]:  loss=0.0018  grad_norm=0.4123  lr=0.000028
+GPU[1]:  batch [468/468]:  loss=0.0018  grad_norm=0.2088  lr=0.000027
+(GPU[1]): Epoch 60 completed. Time elapsed: 07:45:04
+GPU[1]: Epoch 61 started.
+GPU[1]:  batch [100/468]:  loss=0.0020  grad_norm=0.2521  lr=0.000027
+GPU[1]:  batch [200/468]:  loss=0.0018  grad_norm=0.1976  lr=0.000026
+GPU[1]:  batch [300/468]:  loss=0.0019  grad_norm=0.1622  lr=0.000026
+GPU[1]:  batch [400/468]:  loss=0.0018  grad_norm=0.4433  lr=0.000025
+GPU[1]:  batch [468/468]:  loss=0.0019  grad_norm=0.2313  lr=0.000025
+(GPU[1]): Epoch 61 completed. Time elapsed: 07:52:02
+GPU[1]: Epoch 62 started.
+GPU[1]:  batch [100/468]:  loss=0.0019  grad_norm=0.2502  lr=0.000024
+GPU[1]:  batch [200/468]:  loss=0.0018  grad_norm=0.1661  lr=0.000024
+GPU[1]:  batch [300/468]:  loss=0.0018  grad_norm=0.1670  lr=0.000023
+GPU[1]:  batch [400/468]:  loss=0.0019  grad_norm=0.2835  lr=0.000023
+GPU[1]:  batch [468/468]:  loss=0.0018  grad_norm=0.2571  lr=0.000023
+(GPU[1]): Epoch 62 completed. Time elapsed: 07:58:60
+GPU[1]: Epoch 63 started.
+GPU[1]:  batch [100/468]:  loss=0.0018  grad_norm=0.3787  lr=0.000022
+GPU[1]:  batch [200/468]:  loss=0.0021  grad_norm=0.1670  lr=0.000022
+GPU[1]:  batch [300/468]:  loss=0.0018  grad_norm=0.4203  lr=0.000021
+GPU[1]:  batch [400/468]:  loss=0.0020  grad_norm=0.1725  lr=0.000021
+GPU[1]:  batch [468/468]:  loss=0.0019  grad_norm=0.3410  lr=0.000021
+(GPU[1]): Epoch 63 completed. Time elapsed: 08:05:58
+GPU[1]: Epoch 64 started.
+GPU[1]:  batch [100/468]:  loss=0.0019  grad_norm=0.2823  lr=0.000020
+GPU[1]:  batch [200/468]:  loss=0.0018  grad_norm=0.1110  lr=0.000020
+GPU[1]:  batch [300/468]:  loss=0.0019  grad_norm=0.1731  lr=0.000020
+GPU[1]:  batch [400/468]:  loss=0.0017  grad_norm=0.1458  lr=0.000019
+GPU[1]:  batch [468/468]:  loss=0.0017  grad_norm=0.1501  lr=0.000019
+(GPU[1]): Epoch 64 completed. Time elapsed: 08:16:15
+GPU[1]: Epoch 65 started.
+GPU[1]:  batch [100/468]:  loss=0.0017  grad_norm=0.1682  lr=0.000019
+GPU[1]:  batch [200/468]:  loss=0.0018  grad_norm=0.1791  lr=0.000018
+GPU[1]:  batch [300/468]:  loss=0.0019  grad_norm=0.4480  lr=0.000018
+GPU[1]:  batch [400/468]:  loss=0.0018  grad_norm=0.0748  lr=0.000017
+GPU[1]:  batch [468/468]:  loss=0.0017  grad_norm=0.1932  lr=0.000017
+(GPU[1]): Epoch 65 completed. Time elapsed: 08:23:13
+GPU[1]: Epoch 66 started.
+GPU[1]:  batch [100/468]:  loss=0.0020  grad_norm=0.5101  lr=0.000017
+GPU[1]:  batch [200/468]:  loss=0.0018  grad_norm=0.0752  lr=0.000017
+GPU[1]:  batch [300/468]:  loss=0.0017  grad_norm=0.1036  lr=0.000016
+GPU[1]:  batch [400/468]:  loss=0.0018  grad_norm=0.1870  lr=0.000016
+GPU[1]:  batch [468/468]:  loss=0.0018  grad_norm=0.3540  lr=0.000016
+(GPU[1]): Epoch 66 completed. Time elapsed: 08:30:11
+GPU[1]: Epoch 67 started.
+GPU[1]:  batch [100/468]:  loss=0.0018  grad_norm=0.1869  lr=0.000015
+GPU[1]:  batch [200/468]:  loss=0.0018  grad_norm=0.1975  lr=0.000015
+GPU[1]:  batch [300/468]:  loss=0.0018  grad_norm=0.0885  lr=0.000015
+GPU[1]:  batch [400/468]:  loss=0.0017  grad_norm=0.2866  lr=0.000015
+GPU[1]:  batch [468/468]:  loss=0.0018  grad_norm=0.2703  lr=0.000014
+(GPU[1]): Epoch 67 completed. Time elapsed: 08:37:21
+GPU[1]: Epoch 68 started.
+GPU[1]:  batch [100/468]:  loss=0.0017  grad_norm=0.0641  lr=0.000014
+GPU[1]:  batch [200/468]:  loss=0.0018  grad_norm=0.0895  lr=0.000014
+GPU[1]:  batch [300/468]:  loss=0.0018  grad_norm=0.7979  lr=0.000014
+GPU[1]:  batch [400/468]:  loss=0.0018  grad_norm=0.1944  lr=0.000013
+GPU[1]:  batch [468/468]:  loss=0.0018  grad_norm=0.2094  lr=0.000013
+(GPU[1]): Epoch 68 completed. Time elapsed: 08:44:38
+GPU[1]: Epoch 69 started.
+GPU[1]:  batch [100/468]:  loss=0.0018  grad_norm=0.1556  lr=0.000013
+GPU[1]:  batch [200/468]:  loss=0.0017  grad_norm=0.1362  lr=0.000013
+GPU[1]:  batch [300/468]:  loss=0.0018  grad_norm=0.2844  lr=0.000013
+GPU[1]:  batch [400/468]:  loss=0.0018  grad_norm=0.2319  lr=0.000012
+GPU[1]:  batch [468/468]:  loss=0.0017  grad_norm=0.3290  lr=0.000012
+(GPU[1]): Epoch 69 completed. Time elapsed: 08:55:15
+GPU[1]: Epoch 70 started.
+GPU[1]:  batch [100/468]:  loss=0.0017  grad_norm=0.1061  lr=0.000012
+GPU[1]:  batch [200/468]:  loss=0.0017  grad_norm=0.2189  lr=0.000012
+GPU[1]:  batch [300/468]:  loss=0.0019  grad_norm=0.4975  lr=0.000012
+GPU[1]:  batch [400/468]:  loss=0.0017  grad_norm=0.0925  lr=0.000012
+GPU[1]:  batch [468/468]:  loss=0.0017  grad_norm=0.1774  lr=0.000011
+(GPU[1]): Epoch 70 completed. Time elapsed: 09:02:31
+GPU[1]: Epoch 71 started.
+GPU[1]:  batch [100/468]:  loss=0.0017  grad_norm=0.1548  lr=0.000011
+GPU[1]:  batch [200/468]:  loss=0.0018  grad_norm=0.2704  lr=0.000011
+GPU[1]:  batch [300/468]:  loss=0.0017  grad_norm=0.1711  lr=0.000011
+GPU[1]:  batch [400/468]:  loss=0.0018  grad_norm=0.2905  lr=0.000011
+GPU[1]:  batch [468/468]:  loss=0.0017  grad_norm=0.2899  lr=0.000011
+(GPU[1]): Epoch 71 completed. Time elapsed: 09:09:49
+GPU[1]: Epoch 72 started.
+GPU[1]:  batch [100/468]:  loss=0.0017  grad_norm=0.2557  lr=0.000011
+GPU[1]:  batch [200/468]:  loss=0.0017  grad_norm=0.4680  lr=0.000011
+GPU[1]:  batch [300/468]:  loss=0.0017  grad_norm=0.1835  lr=0.000011
+GPU[1]:  batch [400/468]:  loss=0.0017  grad_norm=0.1584  lr=0.000010
+GPU[1]:  batch [468/468]:  loss=0.0017  grad_norm=0.1448  lr=0.000010
+(GPU[1]): Epoch 72 completed. Time elapsed: 09:17:06
+GPU[1]: Epoch 73 started.
+GPU[1]:  batch [100/468]:  loss=0.0018  grad_norm=0.1692  lr=0.000010
+GPU[1]:  batch [200/468]:  loss=0.0017  grad_norm=0.1295  lr=0.000010
+GPU[1]:  batch [300/468]:  loss=0.0017  grad_norm=0.2314  lr=0.000010
+GPU[1]:  batch [400/468]:  loss=0.0018  grad_norm=0.1354  lr=0.000010
+GPU[1]:  batch [468/468]:  loss=0.0016  grad_norm=0.3574  lr=0.000010
+(GPU[1]): Epoch 73 completed. Time elapsed: 09:24:22
+GPU[1]: Epoch 74 started.
+GPU[1]:  batch [100/468]:  loss=0.0017  grad_norm=0.2925  lr=0.000010
+GPU[1]:  batch [200/468]:  loss=0.0018  grad_norm=0.4681  lr=0.000010
+GPU[1]:  batch [300/468]:  loss=0.0017  grad_norm=0.2707  lr=0.000010
+GPU[1]:  batch [400/468]:  loss=0.0017  grad_norm=1.3477  lr=0.000010
+GPU[1]:  batch [468/468]:  loss=0.0019  grad_norm=0.1944  lr=0.000010
+(GPU[1]): Epoch 74 completed. Time elapsed: 09:34:57
+Training for 75 epochs  is completely finished. Results saved.
